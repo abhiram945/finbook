@@ -1,0 +1,38 @@
+*{
+    margin: 0;
+    padding:0;
+    box-sizing: border-box;
+    font-family: Helvetica;
+    text-decoration: none;
+}
+:root {
+    --primaryColor: #220E3F;
+    --secondaryColor: #254C87;
+    --accentColor: #e74c3c;
+    --backgroundColor: #ecf0f1;
+    --textColor: #2c3e50;
+    --glassBackgroundColor :rgba(255, 255, 255, 0.01);
+    --glassBoxShadowColor:rgba(0, 0, 0, 0.25);
+}
+
+.flex{
+    display: flex;
+}
+.flexColumn{
+    flex-direction: column;
+}
+.justifyCenter{
+    justify-content: center;
+}
+.spaceBetween{
+    justify-content: space-between;
+}
+.spaceEvenly{
+    justify-content: space-evenly;
+}
+.alignCenter{
+    align-items: center;
+}
+.w50{
+    width: 50%;
+}

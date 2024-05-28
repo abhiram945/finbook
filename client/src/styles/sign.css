@@ -1,0 +1,77 @@
+.signMainContainer{
+    height: 90vh;
+    overflow: hidden;
+    background-image: url('../../public/assets/images/mainBackground.jpg');
+    background-size: cover;
+    background-position: center;
+}
+.signMainContainer .signContainer{
+    width: 90%;
+    height: 90%;
+    padding: 1rem 5rem;
+    background: var(--glassBackgroundColor);
+    border-radius: 1rem;
+    box-shadow: 0 4px 30px var(--glassBoxShadowColor);
+    backdrop-filter: blur(5.2px);
+    -webkit-backdrop-filter: blur(5.2px);
+}
+.signMainContainer .signContainer .signMessageContainer h3,h2{
+    color: var(--backgroundColor);
+    font-size: 3rem;
+}
+.signMainContainer .signContainer .signMessageContainer p{
+    color: var(--backgroundColor);
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+}
+.signMainContainer .signContainer .signFormContainer h3{
+    color: var(--backgroundColor);
+    text-shadow: 0 0 1rem var(--secondaryColor);
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 1.75rem;
+}
+.signMainContainer .signContainer .signFormContainer input{
+    width: 70%;
+    margin: 0 auto;
+    outline: none;
+    padding: 0.75rem 0.75rem;
+    background-color: var(--backgroundColor);
+    border-radius: 0.75rem;
+    border: solid 0.1rem var(--primaryColor);
+    color: var(--primaryColor);
+}
+.signMainContainer .signContainer .signFormContainer button{
+    width: 20%;
+    padding:0.5rem 0.75rem;
+    margin:0 auto;
+    border: none;
+    border-radius: 0.8rem;
+    background:linear-gradient(to right, var(--primaryColor), var(--secondaryColor));
+    color: var(--backgroundColor);
+    cursor: pointer;
+}
+.signMainContainer .signContainer .signFormContainer .signInButtonContainer{
+    width: 100%;
+    text-align: center;
+}
+.signInButtonContainer p{
+    color: var(--backgroundColor);
+}
+.signInButtonContainer .sign{
+    padding:0.5rem 1rem;
+    border-radius: 1rem;
+    margin: 0 0.5rem;
+    text-decoration: none;
+    background-color: var(--backgroundColor);
+    color: var(--primaryColor);
+}
+.signFormContainer .errorMessage{
+    width: max-content;
+    margin: 0 auto;
+    padding:0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    color: var(--backgroundColor);
+    font-size: 1.25rem;
+    background-color: var(--accentColor);
+}

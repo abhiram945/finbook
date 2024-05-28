@@ -1,0 +1,141 @@
+.navContainer{
+    width: 100%;
+    height: 20vh;
+    padding: 1rem;
+}
+.navContainer .daysContainer{
+    padding:0.25rem 0;
+}
+.navContainer .daysContainer button{
+    border: none;
+    cursor: pointer;
+    color: var(--secondaryColor);
+    background-color: var(--backgroundColor);
+    padding:0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+.navContainer .daysContainer .active{
+    background-color: var(--secondaryColor);
+    color: var(--backgroundColor);
+}
+.addContainer{
+    margin: 1rem 0;
+}
+.addContainer .villagesContainer{
+    height: 100%;
+    width: 75%;
+    overflow-x: scroll;
+    &::-webkit-scrollbar{
+        display: none;
+    }
+}
+.addContainer .villagesContainer a{
+    padding:0.5rem 1rem;
+    margin:0 1rem;
+    color: var(--secondaryColor);
+    background-color: var(--backgroundColor);
+}
+.addContainer .villagesContainer .active{
+    background-color: var(--secondaryColor);
+    color: var(--backgroundColor);
+}
+.addContainer .addButtonsContainer{
+    width: 25%;
+}
+.addButtonsContainer button{
+    border: none;
+    background-color: var(--textColor);
+    color: var(--backgroundColor);
+    padding:0.3rem 0.6rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    &:hover{
+        background-color: var(--backgroundColor);
+        color: var(--textColor);
+    }
+}
+.navContainer p{
+    text-align: center;
+}
+
+.navContainer .addVillageForm,.navContainer .addPersonForm{
+    width: max-content;
+    margin: 0 auto;
+    gap:1rem;
+    padding:1rem 2rem;
+    box-shadow:0 0 1rem var(--glassBoxShadowColor);
+    background-color: var(--backgroundColor);
+    position: fixed;
+    top:50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 9;
+}
+.addVillageForm input, .addPersonForm input{
+    padding:0.5rem;
+    border: none;
+    border-bottom: solid 0.1rem var(--glassBoxShadowColor);
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+.addCancelButtonsContainer button{
+    border: none;
+    padding:0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    &:first-child{
+        background-color: var(--secondaryColor);
+        color:var(--backgroundColor);
+    }
+    &:last-child{
+        background-color: var(--accentColor);
+        color: var(--backgroundColor);
+    }
+}
+.newUserContainer{
+    background-color: var(--backgroundColor);
+    padding:1rem;
+    height: 70vh;
+    width: 100%;
+}
+.newUserContainer .welcomeContainer{
+    & p{
+        font-size: 1.5rem;
+        margin:1rem 0;
+        text-align: center;
+        color: var(--textColor);
+        & h2{
+            display: inline-block;
+            color: var(--secondaryColor);
+        }
+        & h1{
+            display: inline-block;
+            color: var(--primayColor);
+            font-size: 3.5rem;
+        }
+    }
+    & .userName{
+        background-color: var(--secondaryColor);
+        color: var(--backgroundColor);
+        font-size: 3rem;
+        padding:0 0.1rem;
+    }
+}
+.newUserContainer .noDataContainer{
+    & p{
+        font-size: 1.25rem;
+    }
+    margin-top: 1rem;
+    & span{
+        color: var(--secondaryColor);
+        font-size : 2.5rem;
+    }
+}
+.selectVillageMessageContainer{
+    height: 10vh;
+    background-color: var(--backgroundColor);
+    color: var(--textColor);
+    font-size: 1.5rem;
+}
