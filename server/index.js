@@ -13,7 +13,7 @@ app.listen(8080, () => {
     console.log("Server running on port 8080");
 });
 app.get("/",()=>{
-    console.log("Root route.")
+    return res.json({message:"Root route."})
 })
 let userName = null;
 app.post("/signin", async (req, res) => {
