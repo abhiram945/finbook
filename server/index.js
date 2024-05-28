@@ -11,12 +11,6 @@ app.use(cors());
 app.listen(8080, () => {
     console.log("Server running on port 8080");
 });
-app.get("/",(req,res)=>{
-    return res.json({message:"Root route."})
-})
-app.get("/test",(req,res)=>{
-    return res.json({message:"test route."})
-})
 
 let userName = null;
 app.post("/signin", async (req, res) => {

@@ -80,3 +80,6 @@
     height: 50vh;
     background-color: var(--backgroundColor);
 }
+.noUsersFound p{
+    text-align: center;
+}

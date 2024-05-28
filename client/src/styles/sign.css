@@ -1,11 +1,12 @@
-.signMainContainer{
+.signMainContainer {
     height: 90vh;
     overflow: hidden;
     background-image: url('../../public/assets/images/mainBackground.jpg');
     background-size: cover;
     background-position: center;
 }
-.signMainContainer .signContainer{
+
+.signMainContainer .signContainer {
     width: 90%;
     height: 90%;
     padding: 1rem 5rem;
@@ -15,23 +16,28 @@
     backdrop-filter: blur(5.2px);
     -webkit-backdrop-filter: blur(5.2px);
 }
-.signMainContainer .signContainer .signMessageContainer h3,h2{
+
+.signMainContainer .signContainer .signMessageContainer h3,
+h2 {
     color: var(--backgroundColor);
     font-size: 3rem;
 }
-.signMainContainer .signContainer .signMessageContainer p{
+
+.signMainContainer .signContainer .signMessageContainer p {
     color: var(--backgroundColor);
     font-size: 1.25rem;
     margin-top: 1.5rem;
 }
-.signMainContainer .signContainer .signFormContainer h3{
+
+.signMainContainer .signContainer .signFormContainer h3 {
     color: var(--backgroundColor);
     text-shadow: 0 0 1rem var(--secondaryColor);
     text-align: center;
     margin-bottom: 1rem;
     font-size: 1.75rem;
 }
-.signMainContainer .signContainer .signFormContainer input{
+
+.signMainContainer .signContainer .signFormContainer input {
     width: 70%;
     margin: 0 auto;
     outline: none;
@@ -41,37 +47,69 @@
     border: solid 0.1rem var(--primaryColor);
     color: var(--primaryColor);
 }
-.signMainContainer .signContainer .signFormContainer button{
+
+.signMainContainer .signContainer .signFormContainer button {
     width: 20%;
-    padding:0.5rem 0.75rem;
-    margin:0 auto;
+    padding: 0.5rem 0.75rem;
+    margin: 0 auto;
     border: none;
     border-radius: 0.8rem;
-    background:linear-gradient(to right, var(--primaryColor), var(--secondaryColor));
+    background: linear-gradient(to right, var(--primaryColor), var(--secondaryColor));
     color: var(--backgroundColor);
     cursor: pointer;
 }
-.signMainContainer .signContainer .signFormContainer .signInButtonContainer{
-    width: 100%;
-    text-align: center;
-}
-.signInButtonContainer p{
-    color: var(--backgroundColor);
-}
-.signInButtonContainer .sign{
-    padding:0.5rem 1rem;
-    border-radius: 1rem;
-    margin: 0 0.5rem;
-    text-decoration: none;
-    background-color: var(--backgroundColor);
-    color: var(--primaryColor);
-}
-.signFormContainer .errorMessage{
+
+.signFormContainer .errorMessage {
     width: max-content;
-    margin: 0 auto;
-    padding:0.25rem 0.5rem;
+    margin: 0.5rem auto 0;
+    padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     color: var(--backgroundColor);
     font-size: 1.25rem;
     background-color: var(--accentColor);
+}
+
+
+@media screen and (max-width:426px) {
+    .signMainContainer {
+        height: 92vh;
+        background-position: left;
+    }
+
+    .signMainContainer .signContainer {
+        flex-direction: column;
+        gap: 0;
+        padding: 2.5rem 1rem;
+    }
+
+    .signMainContainer .signContainer .signMessageContainer h3 {
+        font-size: 2rem;
+        text-align: center;
+    }
+
+    .signMainContainer .signContainer .signMessageContainer h2 {
+        background: linear-gradient(to bottom, var(--secondaryColor), var(--primaryColor));
+        margin: 0.75rem 0;
+        text-align: center;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .signMainContainer .signContainer .signMessageContainer p {
+        text-align: center;
+        margin-top: 0;
+    }
+
+    .signMainContainer .signContainer .signFormContainer {
+        width: 90%;
+        max-height: 100%;
+    }
+    .signMainContainer .signContainer .signFormContainer input{
+        width: 90%;
+    }
+    .signMainContainer .signContainer .signFormContainer button{
+        width: 40%;
+        font-size: 1rem;
+    }
 }

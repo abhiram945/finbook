@@ -15,6 +15,12 @@ export const SignIn = () => {
     };
     const handleCreateAccount = async (e) => {
         e.preventDefault();
+        if(!formData.mail||!formData.mail.includes('@gmail.com')){
+            return setErrMessage("Please enter a valid mail.")
+        }
+        if(!formData.password){
+            return setErrMessage("Please enter password")
+        }
         try {
             const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/signin`, {
                 method: "POST",
@@ -37,8 +43,8 @@ export const SignIn = () => {
     return <main className="signMainContainer flex alignCenter justifyCenter">
         <div className="signContainer flex spaceBetween alignCenter w50">
             <div className="signMessageContainer">
-                <h3>Your Go-To Source To</h3>
-                <h2>Manage Payments</h2>
+                <h3>Your Go-To Source for </h3>
+                <h2>Managing Payments</h2>
                 <p>Manage all your client's payments at one place with ease</p>
             </div>
             <form className="signFormContainer flex flexColumn w50" method="POST" onSubmit={handleCreateAccount}>
@@ -47,10 +53,8 @@ export const SignIn = () => {
                 <br />
                 <input type="password" name='password' placeholder="Set your password" onChange={handleChange} value={formData.password}/>
                 <br />
-                <button>Continue</button>
-                <br />
+                <button>Continue</button>                
                 {errMessage&&<p className='errorMessage'>{errMessage}</p>}
-                <br/>
             </form>
         </div>
     </main>

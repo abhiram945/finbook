@@ -40,3 +40,24 @@ header .navProfileOptions p,header .navProfileOptions a{
     background-color: var(--backgroundColor);
     border-radius: 0.25rem;
 }
+
+
+
+/* media queries */
+
+@media screen and (max-width : 426px) {
+    header{
+        padding: 0 1rem;
+        height: 8vh;
+    }
+    header nav{
+        height: 2.5rem;
+        width: 2.5rem;
+    }
+    header nav h3{
+        font-size: 1.75rem;
+    }
+    header .navProfileOptions{
+        top:8vh;
+    }
+}
