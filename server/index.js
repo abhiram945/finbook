@@ -7,22 +7,17 @@ const newUserSchema = require("./db/mongodb.js");
 
 app.use(bodyParser.json());
 app.use(express.json())
-app.use(cors({
-    origin:"*",
-    credentials:true,
-    methods:["GET","POST","PUT","DELETE"],
-}));
-app.options("",cors({
-    origin:"*",
-    credentials:true,
-    methods:["GET","POST","PUT","DELETE"],
-}))
+app.use(cors());
 app.listen(8080, () => {
     console.log("Server running on port 8080");
 });
 app.get("/",()=>{
     return res.json({message:"Root route."})
 })
+app.get("/test",()=>{
+    return res.json({message:"test route."})
+})
+
 let userName = null;
 app.post("/signin", async (req, res) => {
     const { mail, password } = req.body;
