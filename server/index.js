@@ -7,7 +7,7 @@ const newUserSchema = require("./db/mongodb.js");
 
 app.use(bodyParser.json());
 app.use(express.json())
-app.use(cors());
+app.use(cors({origin:process.env.CLIENT_URL}));
 
 app.listen(8080, () => {
     console.log("Server running on port 8080");
