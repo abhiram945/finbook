@@ -44,7 +44,8 @@ export const SignIn = () => {
             setIsLoading(false);
             setIsNewUser(message.new);
         } catch (error) {
-            console.error('Error:', error);
+            setIsLoading(false);
+            return alert('Failed to login, Please refresh the page.');
         }
     };
     return <main className="signMainContainer flex flexColumn alignCenter justifyCenter">
