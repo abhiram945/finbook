@@ -1,11 +1,13 @@
 import '../styles/sign.css';
 import { context } from '../index';
 import { useContext, useState } from 'react';
-import { useNavigate} from "react-router-dom"
+import { useNavigate} from "react-router-dom";
+import { Loader } from './loader';
 export const SignIn = () => {
     const {setCompleteUserData, setIsNewUser}=useContext(context);
     const navigate = useNavigate();
     const [errMessage,setErrMessage]=useState(null);
+    const [isLoading,setIsLoading]=useState(false);
     const [formData, setFormData] = useState({
         mail: '',
         password: ''
@@ -14,11 +16,14 @@ export const SignIn = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
     const handleCreateAccount = async (e) => {
+        setIsLoading(true);
         e.preventDefault();
         if(!formData.mail||!formData.mail.includes('@gmail.com')){
+            setIsLoading(false);
             return setErrMessage("Please enter a valid mail.")
         }
         if(!formData.password){
+            setIsLoading(false);
             return setErrMessage("Please enter password")
         }
         try {
@@ -32,15 +37,17 @@ export const SignIn = () => {
             let message = await response.json();
             if(message.message==="success"){
                 await setCompleteUserData(message.completeUserData);
+                setIsLoading(false);
                 navigate("/");
             }
             setErrMessage(message.message);
+            setIsLoading(false);
             setIsNewUser(message.new);
         } catch (error) {
             console.error('Error:', error);
         }
     };
-    return <main className="signMainContainer flex alignCenter justifyCenter">
+    return <main className="signMainContainer flex flexColumn alignCenter justifyCenter">
         <div className="signContainer flex spaceBetween alignCenter w50">
             <div className="signMessageContainer">
                 <h3>Your Go-To Source for </h3>
@@ -53,9 +60,10 @@ export const SignIn = () => {
                 <br />
                 <input type="password" name='password' placeholder="Set your password" onChange={handleChange} value={formData.password}/>
                 <br />
-                <button>Continue</button>                
+                {isLoading?<Loader component="signIn"/>:<button>Continue</button>  }              
                 {errMessage&&<p className='errorMessage'>{errMessage}</p>}
             </form>
         </div>
+        <p>Designed and Developed by <a href="https://abhiram945.github.io/portfolio" target='_blank' rel="noreferrer">Abhi</a><span> &#8599;</span></p>
     </main>
 }

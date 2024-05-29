@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import '../styles/main.css';
 import { useState, useContext, useEffect } from "react";
 import { context } from "../index";
+import { Loader } from "./loader";
 
 export const Main = () => {
     const [isEditClicked, setIsEditClicked] = useState(false);
@@ -10,6 +11,7 @@ export const Main = () => {
     const [filteredPersons, setFilteredPersons] = useState(null);
     const [personToBeEdited, setPersonToBeEdited] = useState(null);
     const [amount, setAmount] = useState('');
+    const [isLoading, setIsLoading] = useState('');
     useEffect(() => {
         if (completeUserData) {
             const filteredDays = completeUserData.days?.find(dayObj => dayObj.day === day);
@@ -19,6 +21,7 @@ export const Main = () => {
     }, [village, day, completeUserData]);
 
     const handleEditPerson = async (e) => {
+        setIsLoading(personToBeEdited.name);
         e.preventDefault();
         setIsEditClicked(!isEditClicked);
         setAmount('');
@@ -33,26 +36,31 @@ export const Main = () => {
             const message = await response.json();
             if (message.message === "success") {
                 setCompleteUserData(message.completeUserData)
+                setIsLoading('');
             }
         } catch (error) {
-            console.log("Failed to Edit Person", error);
+            setIsLoading('');
+            return alert("Failed to Add amount, Refresh the page and Try Again.");
         }
     }
     const handleDeletePerson = async (personName) => {
+        setIsLoading(personName);
         try {
             const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/deletePerson`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ personName, day, village})
+                body: JSON.stringify({ personName, day, village })
             });
             const message = await response.json();
             if (message.message === "success") {
-                setCompleteUserData(message.completeUserData)
+                setCompleteUserData(message.completeUserData);
+                setIsLoading(false);
             }
         } catch (error) {
-            console.log("Failed to Edit Person", error);
+            setIsLoading(false);
+            return    alert("Failed to delete Person, Please refresh and try again.");
         }
     }
 
@@ -62,11 +70,9 @@ export const Main = () => {
     }
     return (
         <main className="mainContainer">
-            <div className="mainHeadingContainer">
-                <h3>{day.toUpperCase() + " - " + village.toUpperCase()} users details</h3>
-            </div>
-            <div className="tableContainer">
-                {filteredPersons && filteredPersons.length > 0 ? (
+            <h3>{day.toUpperCase() + " - " + village.toUpperCase()} logs details</h3>
+            {filteredPersons && filteredPersons.length > 0 ? (
+                <div className="tableContainer">
                     <table>
                         <thead>
                             <tr>
@@ -88,16 +94,21 @@ export const Main = () => {
                                     <td>{person.name.charAt(0).toUpperCase() + person.name.slice(1)}</td>
                                     <td>{person.totalAmount}</td>
                                     <td>{getTotPaid(person.weeks)}</td>
-                                    <td>{person.totalAmount-getTotPaid(person.weeks)}</td>
+                                    <td>{person.totalAmount - getTotPaid(person.weeks)}</td>
                                     {
                                         getTotPaid(person.weeks) >= Number(person.totalAmount) ?
-                                            <td onClick={() => {handleDeletePerson(person.name);}} className="editTd">
-                                                <img src="/assets/images/delete.svg" alt="delete" />
-                                            </td> :
-                                            <td onClick={() => { setIsEditClicked(!isEditClicked); setPersonToBeEdited(person) }} className="editTd">
-                                                <img src="/assets/images/edit.svg" alt="edit" />
-                                            </td>
+                                            (isLoading===person.name ? <Loader component="days" /> :
+                                                <td onClick={() => { handleDeletePerson(person.name); }} className="editTd">
+                                                    <img src="/assets/images/delete.svg" alt="delete" />
+                                                </td>
+                                            ) :
+                                            (isLoading===person.name ? <Loader component="days" /> :
+                                                <td onClick={() => { setIsEditClicked(!isEditClicked); setPersonToBeEdited(person); }} className="editTd">
+                                                    <img src="/assets/images/edit.svg" alt="edit" />
+                                                </td>
+                                            )
                                     }
+
                                     {person.weeks ?
                                         (
                                             person.weeks.length === 30 ? (
@@ -124,16 +135,15 @@ export const Main = () => {
                             ))}
                         </tbody>
                     </table>
-                ) : (
-                    <div className="noUsersFound flex justifyCenter alignCenter flexColumn">
-                        <p>No users found</p>
-                        <p>
-                            click on <strong>Add Person</strong> button on the top to add a new person in <i>{village.toUpperCase()}</i>
-                        </p>
-                    </div>
-                )}
+                </div>
+            ) : (
+                <div className="noUsersFoundContainer">
+                    <p><strong>No users found in {village.toUpperCase()}</strong></p>
+                    <p>click on <strong>Add Person</strong> button on the top to add a new person in <strong>{village.toUpperCase()}</strong></p>
+                    <img src="/assets/images/noUsersFound.jpg" alt="noUsersFound" className="noUsersFoundImage" />
+                </div>
+            )}
 
-            </div>
             {
                 isEditClicked && personToBeEdited && (
                     <form className="editContainer" onSubmit={handleEditPerson}>
@@ -143,7 +153,7 @@ export const Main = () => {
                         </div>
                         <div className="weeksInputContainer flex alignCenter">
                             <label>Add amount</label>
-                            <input type="number" onChange={(e) => setAmount(e.target.value)} value={amount} autoFocus/>
+                            <input type="number" onChange={(e) => setAmount(e.target.value)} value={amount} autoFocus required />
                         </div>
                         <div className="addCancelButtonsContainer flex spaceBetween">
                             <button type="submit">Submit</button>

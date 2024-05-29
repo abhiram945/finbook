@@ -8,13 +8,13 @@
 
 .signMainContainer .signContainer {
     width: 90%;
-    height: 90%;
+    height: 80%;
     padding: 1rem 5rem;
     background: var(--glassBackgroundColor);
     border-radius: 1rem;
     box-shadow: 0 4px 30px var(--glassBoxShadowColor);
-    backdrop-filter: blur(5.2px);
     -webkit-backdrop-filter: blur(5.2px);
+    backdrop-filter: blur(5.2px);
 }
 
 .signMainContainer .signContainer .signMessageContainer h3,
@@ -26,7 +26,7 @@ h2 {
 .signMainContainer .signContainer .signMessageContainer p {
     color: var(--backgroundColor);
     font-size: 1.25rem;
-    margin-top: 1.5rem;
+    margin-top: 2.5rem;
 }
 
 .signMainContainer .signContainer .signFormContainer h3 {
@@ -68,28 +68,42 @@ h2 {
     font-size: 1.25rem;
     background-color: var(--accentColor);
 }
+.signMainContainer > p{
+    margin-top: 2.5rem;
+    font-size: 1.5rem;
+    color: var(--backgroundColor);
+    text-align: center;
+}
+.signMainContainer p  a{
+    color: var(--accentColor);
+    cursor: pointer;
+    text-decoration: underline;
+}
+.signMainContainer p span{
+    color: var(--accentColor);
+}
 
 
-@media screen and (max-width:426px) {
+@media screen and (max-width:480px) {
     .signMainContainer {
-        height: 92vh;
+        height: 92dvh;
         background-position: left;
     }
 
     .signMainContainer .signContainer {
         flex-direction: column;
-        gap: 0;
-        padding: 2.5rem 1rem;
+        padding: 2rem 1rem;
     }
 
     .signMainContainer .signContainer .signMessageContainer h3 {
-        font-size: 2rem;
+        font-size: 1.75rem;
         text-align: center;
     }
 
     .signMainContainer .signContainer .signMessageContainer h2 {
         background: linear-gradient(to bottom, var(--secondaryColor), var(--primaryColor));
-        margin: 0.75rem 0;
+        margin:0;
+        font-size: 2.5rem;
         text-align: center;
         -webkit-background-clip: text;
         background-clip: text;
@@ -98,7 +112,8 @@ h2 {
 
     .signMainContainer .signContainer .signMessageContainer p {
         text-align: center;
-        margin-top: 0;
+        margin-left: 1rem;
+        margin-top: 0.5rem;
     }
 
     .signMainContainer .signContainer .signFormContainer {
@@ -111,5 +126,16 @@ h2 {
     .signMainContainer .signContainer .signFormContainer button{
         width: 40%;
         font-size: 1rem;
+    }
+    .signMainContainer p{
+        width: 90%;
+        margin-top: 2rem;
+        font-size: 1rem;
+    }
+    .signMainContainer p a{
+        font-size: 1.5rem;
+    }
+    .signMainContainer p span{
+        font-size: 1.75rem;
     }
 }

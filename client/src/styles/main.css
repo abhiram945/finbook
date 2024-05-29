@@ -1,13 +1,10 @@
 .mainContainer{
     width: 100%;
-    position: relative;
 }
-.mainContainer .mainHeadingContainer{
-    text-align: center;
-}
-.mainHeadingContainer h3{
+.mainContainer h3{
     color: var(--textColor);
     margin: 1rem 0;
+    text-align: center;
 }
 .mainContainer .tableContainer{
     overflow-x: auto;
@@ -20,6 +17,7 @@
     top:0;
 }
 .tableContainer table thead tr th{
+    padding:0.2rem 0;
     position: sticky;
     top:0;
     z-index: 2;
@@ -27,7 +25,6 @@
     color: var(--accentColor) !important;
 }
 .tableContainer table thead tr th, .tableContainer table tbody tr td{
-    padding:0.25rem;
     &:nth-child(even){
         background-color: var(--secondaryColor);
         color: var(--backgroundColor);
@@ -36,6 +33,9 @@
         background-color: var(--backgroundColor);
         color: var(--secondaryColor);
     }
+}
+.tableContainer table tbody tr{
+    height: 35px;
 }
 .tableContainer table .name{
     width: max-content;
@@ -74,12 +74,33 @@
 .weeksInputContainer label, .weeksInputContainer input{
     margin:0.5rem 0;
 }
-.noUsersFound{
-    gap:2.5rem;
+.noUsersFoundContainer{
     padding:2.5rem;
-    height: 50vh;
-    background-color: var(--backgroundColor);
+    padding-top: 0;
+    height: 62vh;
+    width: 100%;
+    background-color: var(--white);
 }
-.noUsersFound p{
+.noUsersFoundContainer .noUsersFoundImage{
+    display: block;
+    width: 44%;
+    margin: 0 auto;
+    height: 100%;
+}
+.noUsersFoundContainer p{
     text-align: center;
+    &:first-child{
+        color: var(--accentColor);
+        margin-bottom: 0.5rem;
+    }
+}
+@media screen and (max-width:480px) {
+    .noUsersFoundContainer{
+        padding:0rem 0.5rem;
+        height: 54dvh;
+    }
+    .noUsersFoundContainer .noUsersFoundImage{
+        width: 100%;
+        height: 75%;
+    }
 }

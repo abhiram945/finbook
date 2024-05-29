@@ -2,10 +2,12 @@ import '../styles/nav.css';
 import { useState, useContext, useEffect } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import { context } from '../index';
+import { Loader } from './loader';
 export const Nav = () => {
     const { completeUserData, isNewUser, setCompleteUserData } = useContext(context);
     const { day, village } = useParams();
 
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedDay, setSelectedDay] = useState(day !== "" || " " ? day : null);
     const [addInto, setAddInto] = useState(null);
     const [selectedDayObj, setSelectedDayObj] = useState([]);
@@ -35,8 +37,8 @@ export const Nav = () => {
 
 
     const handleAddVillageFunction = async (e) => {
+        setIsLoading(true);
         e.preventDefault();
-        setIsAddVillageClicked(!isAddVillageClicked);
         try {
             const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/addVillage`, {
                 method: "POST",
@@ -48,16 +50,19 @@ export const Nav = () => {
             const message = await response.json();
             if (message.message === "success") {
                 setCompleteUserData(message.completeUserData);
+                setIsLoading(false);
                 setSelectedDay(addInto);
             }
+            setIsAddVillageClicked(!isAddVillageClicked);
         } catch (error) {
-            console.error('Error:', error);
+            setIsLoading(false);
+            return alert("An error occured, Please try again.")
         }
     }
 
     const handleAddPersonFunction = async (e) => {
+        setIsLoading(true)
         e.preventDefault();
-        setIsAddPersonClicked(!isAddPersonClicked);
         const [year, month, day] = personFormData.givenDate.toString().split('-');
         personFormData.givenDate = `${day}-${month}-${year}`;
         try {
@@ -71,6 +76,8 @@ export const Nav = () => {
             const message = await response.json();
             if (message.message === "success") {
                 setCompleteUserData(message.completeUserData);
+                setIsLoading(false);
+                setIsAddPersonClicked(!isAddPersonClicked);
                 setPersonFormData({
                     cardNo: "",
                     personName: "",
@@ -80,7 +87,9 @@ export const Nav = () => {
                 })
             }
         } catch (error) {
-            console.log("Failed to add Person", error);
+            setIsAddPersonClicked(!isAddPersonClicked);
+            setIsLoading(false);
+            return alert("An error occured, Please try again.");
         }
     }
 
@@ -103,11 +112,11 @@ export const Nav = () => {
                         }}>
                         {d.day.charAt(0).toUpperCase() + d.day.slice(1)}
                     </button>
-                )) : <p>Loading...</p>}
+                )) : <Loader component="days" />}
             </div>
 
             {/* Village Links */}
-            {selectedDayObj ?
+            {selectedDayObj &&
                 <div className='addContainer flex spaceBetween alignCenter'>
                     <div className='villagesContainer flex'>
                         {selectedDayObj.villages && selectedDayObj.villages.map((villageObj, index) => <NavLink key={index} to={selectedDay && `/${selectedDay}/${villageObj.villageName}`}
@@ -134,7 +143,6 @@ export const Nav = () => {
                     </div>
 
                 </div>
-                : <p>Select a day to get the villages details.</p>
             }
 
             {/* Add village form */}
@@ -143,8 +151,10 @@ export const Nav = () => {
                     <h3>Add new Village into {addInto ? addInto.toUpperCase() : selectedDay?.toUpperCase()}</h3>
                     <input type='text' placeholder='Enter new village name' required onChange={(e) => setaddVillageFormName(e.target.value)} autoFocus />
                     <div className='addCancelButtonsContainer flex spaceEvenly'>
-                        <button type='submit'>Add</button>
-                        <button type='button' onClick={() => { setIsAddVillageClicked(false); setAddInto(null) }}>Cancel</button>
+                        {isLoading ? <Loader component="addVillageAndPerson" /> : <>
+                            <button type='submit'>Add</button>
+                            <button type='button' onClick={() => { setIsAddVillageClicked(false); setAddInto(null) }}>Cancel</button>
+                        </>}
                     </div>
                 </form>
             )}
@@ -153,31 +163,51 @@ export const Nav = () => {
             {isAddPersonClicked && selectedDay && village && (
                 <form className='addPersonForm flex flexColumn' onSubmit={handleAddPersonFunction}>
                     <h3>Add new Person into<br /> {day?.toUpperCase()} - {village?.toUpperCase()}</h3>
-                    <input type='number' name='cardNo' placeholder='Card no' required onChange={handleChange} value={personFormData.cardNo} autoFocus/>
+                    <input type='number' name='cardNo' placeholder='Card no' required onChange={handleChange} value={personFormData.cardNo} autoFocus />
                     <input type='text' name='personName' placeholder='Enter name' required onChange={handleChange} value={personFormData.personName} />
                     <input type='number' name='totalAmount' placeholder='Enter total amount' required onChange={handleChange} value={personFormData.totalAmount} />
                     <input type='text' name='villageName' placeholder='Enter village' onChange={handleChange} defaultValue={village} />
                     <input type='date' name='givenDate' required onChange={handleChange} value={personFormData.givenDate} />
                     <div className='addCancelButtonsContainer flex spaceEvenly'>
-                        <button type='submit'>Add</button>
-                        <button type='button' onClick={() => setIsAddPersonClicked(false)}>Cancel</button>
+                        {
+                            isLoading ? <Loader component="addVillageAndPerson" /> :
+                                <>
+                                    <button type='submit'>Add</button>
+                                    <button type='button' onClick={() => setIsAddPersonClicked(false)}>Cancel</button>
+                                </>
+                        }
                     </div>
                 </form>
             )}
         </nav>
 
         {/* new user welcome message */}
-        {isNewUser && completeUserData.username && !selectedDay && <div className='flex flexColumn alignCenter justifyCenter newUserContainer'>
-            <div className='welcomeContainer'>
+        {isNewUser && completeUserData.username && !selectedDay && <div className='flex alignCenter justifyCenter newUserContainer'>
+            <div className='welcomeContainer flex flexColumn'>
                 <p>Hello <span className='userName'>{completeUserData.username.toUpperCase()}</span>, welcome to <strong>FinBook</strong></p>
-                <p>Manage all your payments at one place...</p>
-            </div>
-            <div className='noDataContainer'>
+                <p>Manage all your finance logs at one place...</p>
                 <p>Click on the any <span>Day</span> on the top to add a new <span>Village</span> in your account.</p>
             </div>
+            <img src='/assets/images/welcome.jpg' className='welcomeImage' alt='welcomeImage' />
         </div>}
 
-        {selectedDay && !village && <div className='flex justifyCenter alignCenter selectVillageMessageContainer'>Please select a village</div>}
+        {isNewUser && !selectedDay ? (<></>) : (
+            <>{(!selectedDay || !village) && (
+                <div className='flex justifyCenter alignCenter selectVillageAndPersonMessageContainer'>
+                    {!selectedDayObj && (<p>Please <strong>select a day</strong> to <strong>add new Villages</strong> and get all the villages.</p>)}
+                    {selectedDay && !village && (<p>Please <strong>select a village</strong> to <strong>add new Persons</strong> and get the details.
+                        <br />
+                        <br />
+                        Click on <strong>Add Village</strong> button to add a new village in{' '}<strong>{selectedDay?.charAt(0).toUpperCase() + selectedDay?.slice(1)}</strong>.
+                    </p>
+                    )}
+                    <div className='selectImageContainer'>
+                        <img src='/assets/images/welcome.svg' className='selectImage' alt='welcomeImage' />
+                    </div>
+                </div>
+            )}</>
+        )}
+
     </>
     );
 };

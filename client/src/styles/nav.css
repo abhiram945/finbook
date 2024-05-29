@@ -57,12 +57,11 @@
 }
 .navContainer p{
     text-align: center;
-    margin-top: 5rem;
+    margin: auto 0;
 }
 
 .navContainer .addVillageForm,.navContainer .addPersonForm{
     width: max-content;
-    margin: 0 auto;
     gap:1rem;
     padding:1rem 2rem;
     box-shadow:0 0 1rem var(--glassBoxShadowColor);
@@ -97,53 +96,56 @@ input[type=number]::-webkit-outer-spin-button {
     }
 }
 .newUserContainer{
-    background-color: var(--backgroundColor);
+    background-color: var(--white);
     padding:1rem;
     height: 70vh;
     width: 100%;
+    gap:1rem;
 }
 .newUserContainer .welcomeContainer{
+    gap:2rem;
     & p{
         font-size: 1.5rem;
-        margin:1rem 0;
         text-align: center;
         color: var(--textColor);
-        & h2{
-            display: inline-block;
-            color: var(--secondaryColor);
-        }
-        & h1{
-            display: inline-block;
-            color: var(--primayColor);
-            font-size: 3.5rem;
-        }
     }
     & .userName{
-        background-color: var(--secondaryColor);
-        color: var(--backgroundColor);
+        color: var(--secondaryColor);
+        font-weight: bold;
         font-size: 3rem;
-        padding:0 0.1rem;
     }
-}
-.newUserContainer .noDataContainer{
-    & p{
-        font-size: 1.25rem;
-    }
-    margin-top: 1rem;
     & span{
         color: var(--secondaryColor);
         font-size : 2.5rem;
     }
 }
-.selectVillageMessageContainer{
-    height: 10vh;
+.newUserContainer .welcomeImage{
+   width: 35%;
+   height: 100%;
+}
+.selectVillageAndPersonMessageContainer{
+    height: 70vh;
     background-color: var(--backgroundColor);
     color: var(--textColor);
     font-size: 1.5rem;
+    padding: 1rem 5rem;
+}
+.selectVillageAndPersonMessageContainer p{
+    width: 40%;
+    text-align: center;
+}
+.selectVillageAndPersonMessageContainer .selectImageContainer{
+    width: 60%;
+    height: 100%;
+    overflow: hidden;
+}
+.selectVillageAndPersonMessageContainer .selectImageContainer .selectImage{
+    width: 65%;
+    display: block;
+    margin-left: auto;
 }
 
-
-@media screen and (max-width:426px) {
+@media screen and (max-width:480px) {
     .navContainer{
         padding: 0.5rem 0.25rem;
         height: 100%;
@@ -174,5 +176,39 @@ input[type=number]::-webkit-outer-spin-button {
     }
     .addButtonsContainer button{
         padding: 0.5rem 0.75rem;
+    }
+    .selectVillageAndPersonMessageContainer{
+        padding:2rem 1rem 0;
+        height: 81dvh;
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+    .selectVillageAndPersonMessageContainer p{
+        width: 100%;
+    }
+    .selectVillageAndPersonMessageContainer .selectImageContainer{
+        width: 100%;
+    }
+    .selectVillageAndPersonMessageContainer .selectImageContainer .selectImage{
+        margin: auto;
+    }
+    .newUserContainer{
+        height: 80dvh;
+        flex-direction: column;
+    }
+    .newUserContainer .welcomeContainer{
+        gap:1rem;
+        & p{
+            font-size: 1.25rem;
+        }
+        & .userName{
+            font-size: 1.75rem;
+        }
+        & span{
+            font-size:1.5rem;
+        }
+    }
+    .newUserContainer .welcomeImage{
+        width: 90%;
     }
 }
