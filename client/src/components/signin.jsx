@@ -65,6 +65,6 @@ export const SignIn = () => {
                 {errMessage&&<p className='errorMessage'>{errMessage}</p>}
             </form>
         </div>
-        <p>Designed and Developed by <a href="https://abhiram945.github.io/portfolio" target='_blank' rel="noreferrer">Abhi</a><span> &#8599;</span></p>
+        <p>Designed and Developed by <a href="https://abhiram945.vercel.app" target='_blank' rel="noreferrer">Abhi</a><span> &#8599;</span></p>
     </main>
 }
