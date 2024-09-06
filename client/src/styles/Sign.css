@@ -1,0 +1,86 @@
+.signPageContainer {
+    height: 90vh;
+    width: 100%;
+    background-color: var(--backgroundColor);
+}
+.signCardContainer{
+    height: 97.5%;
+    min-width: 27.5rem;
+    box-shadow: var(--boxShadow);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background-color: var(--white);
+}
+.signMessageContainer{
+    height: 45%;
+    width: 100%;
+    padding:1rem 0;
+    gap:0.5rem;
+    background-color: #000000;
+}
+.signMessageContainer img{
+    width: 10rem;
+    margin-bottom: 1rem;
+}
+.signMessageContainer h3, .signMessageContainer h2{
+    color: var(--white);
+}
+.signCardContainer p{
+    color: var(--textColor);
+}
+
+.signFormContainer{
+    height: 45%;
+    width: 100%;
+    padding: 2.5rem;
+}
+
+.signFormContainer input {
+    width: 100%;
+    outline: none;
+    padding: 0.75rem 1rem;
+    font-family: sans-serif;
+    font-weight:700;
+    background-color: var(--white);
+    border-radius: 0.75rem;
+    border: solid 0.1rem var(--borderColor);
+    color:#25282d;
+}
+.signFormContainer a{
+    margin-left: auto;
+    color: var(--textColor);
+}
+.signPageContainer .signFormContainer button {
+    width: 50%;
+    padding: 0.75rem;
+    margin: 0 auto;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: var(--primaryColor);
+    color: var(--white);
+    cursor: pointer;
+}
+.author{
+    height: 10%;
+}
+.author p{
+    display: block;
+    margin: auto;
+    color: var(--textColor);
+    text-align: center;
+}
+.author p  a{
+    color: var(--accentColor);
+    cursor: pointer;
+    text-decoration: underline;
+}
+.author p > a span{
+    color: var(--accentColor);
+}
+
+
+@media screen and (max-width:768px) {
+    .signCardContainer{
+        min-width: 95vw;
+    }
+}

@@ -1,0 +1,47 @@
+*{
+  margin: 0;
+  padding:0;
+  box-sizing: border-box;
+  font-family: Helvetica;
+  text-decoration: none;
+}
+:root {
+  --primaryColor: #3167f3;
+  --primaryLightColor:#3167f326;
+  --accentColor: #EE3E60;
+  --accentLightColor:#ef346326;
+  --backgroundColor: #F9FBFD;
+  --tableHeadBg:#F9FAFC;
+  --textColor: #96a0b5;
+  --white:#FFFFFF;
+  --borderColor: #edf2f9;
+  --btnsColor:#424d65;
+  --boxShadow:0 0 0.5rem rgba(20, 24, 36,0.5);
+  --tableHeadText:#9EA5AF;
+  --dashboardBg:#0F111A;
+}
+
+.flex{
+  display: flex;
+}
+.flexColumn{
+  flex-direction: column;
+}
+.justifyCenter{
+  justify-content: center;
+}
+.justifyLeft{
+  justify-content: left;
+}
+.spaceBetween{
+  justify-content: space-between;
+}
+.spaceEvenly{
+  justify-content: space-evenly;
+}
+.alignCenter{
+  align-items: center;
+}
+.alignDown{
+  align-items: end;
+}

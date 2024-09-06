@@ -1,0 +1,110 @@
+nav{
+    height: 20vh;
+    width: 100%;
+    background-color: var(--backgroundColor);
+    gap:2.5vh;
+}
+.daysContainer, .villagesContainer, .addBtnsContainer{
+    height: 5vh;
+    padding: 0 0.5rem;
+}
+.daysContainer button, .villagesContainer a{
+    border: none;
+    border-radius: 0.25rem;
+    outline:none;
+}
+.daysContainer button{
+    padding: 0 0.75rem;
+    background-color: var(--primaryLightColor);
+    color: var(--primaryColor);
+    cursor: pointer;
+}
+.daysContainer .active{
+    background-color: var(--primaryColor);
+    color: var(--white);
+}
+.villagesContainer a{
+    margin:auto 0;
+    margin-right: 0.5rem;
+    padding:0.25rem 0.5rem;
+    background-color: var(--accentLightColor);
+    color: var(--accentColor);
+}
+.villagesContainer .active{
+    background-color: var(--accentColor);
+    color: var(--white);
+}
+.addBtnsContainer button{
+    cursor: pointer;
+    border-radius: 0.25rem;
+    margin: 0 0.5rem;
+    padding: 0 0.5rem;
+    border: none;
+    outline: none;
+    background-color: var(--dashboardBg);
+    color: var(--white);
+}
+
+.addVillageForm, .addPersonForm{
+    width: max-content;
+    gap:1rem;
+    padding:1rem 2rem;
+    box-shadow:var(--boxShadow);
+    background-color: var(--backgroundColor);
+    position: fixed;
+    top:50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 9;
+}
+.addVillageForm h3, .addPersonForm h3{
+    color: var(--bgBlackColor);
+}
+.addVillageForm input, .addPersonForm input{
+    padding:0.5rem;
+    border: none;
+    border-bottom: solid 0.1rem var(--borderColor);
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+.addCancelButtonsContainer button{
+    border: none;
+    padding:0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    &:first-child{
+        background-color: var(--accentLightColor);
+        color: var(--accentColor);
+        &:hover{
+            background-color: var(--accentColor);
+            color: var(--white);
+        }
+    }
+    &:last-child{
+        background-color: var(--primaryLightColor);
+        color:var(--primaryColor);
+        &:hover{
+            background-color: var(--primaryColor);
+            color: var(--white);
+        }
+        
+    }
+}
+
+@media(max-width:720px){
+    nav{
+        height: 20dvh;
+    }
+    .daysContainer, .villagesContainer{
+        overflow-x: scroll;
+        &::-webkit-scrollbar{
+            display: none;
+        }
+    }
+    .daysContainer button, .villagesContainer a{
+        margin-right: 0.5rem;
+        margin-left: 0.5rem;
+    }
+}
