@@ -15,12 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: "*",
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/villages", villageRouter);
 app.use("/api/v1/persons", personRouter);
@@ -29,7 +24,7 @@ app.use("/api/v1/days", dayRouter);
 console.clear();
 connectDb()
   .then(() => {
-    app.listen(process.env.PORT || 8000, () =>
+    app.listen(8000, () =>
       console.log("Server is running...")
     );
   })
