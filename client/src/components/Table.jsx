@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 
 import { finbookContext } from "../main";
-import { Loader } from "../utils/loader";
+import { Loader } from "../utils/Loader";
 import { NoUsersFound } from "../utils/Select";
 
 import "../styles/Table.css"

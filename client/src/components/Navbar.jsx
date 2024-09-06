@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Navigate, NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { Loader } from "../utils/loader";
+import { Loader } from "../utils/Loader";
 import { finbookContext } from "../main";
 import { SelectDay, SelectVillage, AddVillage } from "../utils/Select"
 

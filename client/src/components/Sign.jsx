@@ -2,7 +2,7 @@ import React, {useState, useContext} from 'react';
 import { Navigate, NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { Loader } from '../utils/loader';
+import { Loader } from '../utils/Loader';
 import { finbookContext } from '../main';
 import "../styles/Sign.css";
 
