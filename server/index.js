@@ -15,17 +15,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-const corsOptions = {
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-};
-app.use(cors(corsOptions));
 
-app.get("/",(req,res)=>{
-  res.send("Server is running...")
-})
+app.use(cors());
+
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/villages", villageRouter);
 app.use("/api/v1/persons", personRouter);
