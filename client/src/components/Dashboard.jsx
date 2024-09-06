@@ -1,4 +1,4 @@
-import '../styles/dashboard.css';
+import '../styles/Dashboard.css';
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Loader } from '../utils/loader';
