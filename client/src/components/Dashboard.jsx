@@ -1,7 +1,6 @@
 import '../styles/Dashboard.css';
 import { useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { Loader } from '../utils/loader';
+import { Loader } from '../utils/Loader';
 import { finbookContext } from '../main';
 
 export const Dashboard = () => {
