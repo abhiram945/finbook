@@ -11,18 +11,21 @@ import dayRouter from "./routes/dayRoute.js";
 
 dotenv.config();
 
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-
 const corsOptions = {
   origin: "https://finbook.vercel.app",
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   allowedHeaders: "Content-Type,Authorization",
 };
+
+const app = express();
 app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+
+
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/villages", villageRouter);
