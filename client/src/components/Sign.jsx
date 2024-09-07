@@ -26,7 +26,7 @@ export const Sign=()=>{
         }
         try {
             setLoading(true);
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/users/registerOrLogin`, {
+            const response = await fetch(`https://finbook-server.vercel.app/api/v1/users/registerOrLogin`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
