@@ -10,6 +10,7 @@ const registerOrLogin = async (req, res) => {
   existingUser = existingUser[0];
   if (existingUser) {
     try {
+
       const isPasswordValid = await bcrypt.compare(password, existingUser.password);
       if (!isPasswordValid) {
         return res.json({

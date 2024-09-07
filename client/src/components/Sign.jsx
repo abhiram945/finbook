@@ -26,7 +26,8 @@ export const Sign=()=>{
         }
         try {
             setLoading(true);
-            const response = await fetch(`https://finbook-server.vercel.app/api/v1/users/registerOrLogin`, {
+            console.log("Fetching")
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/users/registerOrLogin`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -35,6 +36,7 @@ export const Sign=()=>{
             });
             
             const jsonResponse = await response.json();
+            console.log("Respoonse from server login",jsonResponse)
             if (!jsonResponse.success) {
                 setLoading(false)
                 return toast.error(jsonResponse.message)

@@ -25,8 +25,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
-
-app.use("/",(req,res)=>{res.send("server up")})
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/villages", villageRouter);
 app.use("/api/v1/persons", personRouter);
