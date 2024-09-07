@@ -5,12 +5,12 @@ const generateToekn = async (user, res) => {
     gmail:user.gmail
    }, process.env.JWT_SECRET);
 
-  res.cookie("jwt", token, {
-    httpsOnly: true,
-    secure: true,
-    sameSite: "none",
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-  });
+  // res.cookie("jwt", token, {
+  //   httpsOnly: true,
+  //   secure: true,
+  //   sameSite: "none",
+  //   maxAge: 30 * 24 * 60 * 60 * 1000,
+  // });
   return token;
 };
 
