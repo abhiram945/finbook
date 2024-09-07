@@ -14,12 +14,12 @@ export const Dashboard = () => {
             {loading ? <Loader component="dashboard"/>:<div className="daysContainer">
                 {days.length!==0 && days.map((dayData,index)=><div className="day flex flexColumn spaceBetween" key={index}>
                     <div className='flex spaceBetween alignCenter dayTitleContainer'>
-                        <p>Balance</p>
+                        <p>Total</p>
                         <h3>{dayData.dayName}</h3>
                     </div>
-                    <h2 className='balance'>Rs {dayData.balance}</h2>
+                    <h2 className='balance'>Rs {dayData.totalReturn}</h2>
                     <div className='flex alignDown justifyRight totalsContainer'>
-                        <h3 className='collected'>{dayData.totalCollected}</h3><span>/</span><h3 className='return'>{dayData.totalReturn}</h3>
+                        <h3 className='collected'>{dayData.balance}</h3><span>/</span><h3 className='return'>{dayData.totalCollected}</h3>
                     </div>
                 </div>)}
             </div>}

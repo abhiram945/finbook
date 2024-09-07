@@ -140,7 +140,7 @@ export const Navbar = () => {
     return <>{userData.length===0 ? <Navigate to="/"/>:<nav className="flex flexColumn">
         <div className="daysContainer flex spaceEvenly">
             {(loading && days.length === 0) ? <Loader /> : days.map((day, index) => <button key={index} onClick={() => {
-                setSelectedDay(day); setSelectedVillage([]);
+                setSelectedDay(day); setSelectedVillage([]); setVillages([])
                 if (location.pathname.split('/').length >= 2) {
                     navigate("/");
                 }

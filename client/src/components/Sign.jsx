@@ -10,8 +10,8 @@ export const Sign=()=>{
     const navigate = useNavigate();
     const {setUserData, loading,setLoading} = useContext(finbookContext);
     const [formData, setFormData] = useState({
-        gmail: 'abhi@gmail.com',
-        password: 'finbook@123'
+        gmail: '',
+        password: ''
     });
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });

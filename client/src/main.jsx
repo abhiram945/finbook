@@ -114,7 +114,7 @@ const Finbook = () => {
             <Route path='/:day/:village' element={userData.length === 0 ? <Navigate to="/" /> : <Table />} />
           </Route>
         </Route>
-        <Route path='/:user' element={<Dashboard />} />
+        <Route path='/:user' element={days.length!==0 ? <Dashboard />: <Navigate to="/"/>} />
         <Route path='*' element={<Navigate to="/" />} />
       </Routes>
     </finbookContext.Provider>

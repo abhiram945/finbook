@@ -3,9 +3,27 @@
     width: 100%;
     background-color: var(--backgroundColor);
 }
+.prevNextBtnsContainer{
+    width: 100%;
+    background-color: var(--backgroundColor);
+    padding: 0.25rem 0;
+}
+.prevNextBtnsContainer button{
+    background-color: var(--btnsColor);
+    color: var(--white);
+    border-radius: 0.25rem;
+    border: none;
+    padding:0.2rem 0.4rem;
+    margin: 0 0.2rem;
+}
+.prevNextBtnsContainer button:disabled{
+    background-color: var(--tableHeadText);
+    color: var(--tableHeadBg);
+}
 .tableContainer {
     padding:0 0.5rem;
     overflow: scroll;
+    background-color: var(--backgroundColor);
     &::-webkit-scrollbar {
         display: none;
     }

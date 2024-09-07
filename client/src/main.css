@@ -33,6 +33,9 @@
 .justifyLeft{
   justify-content: left;
 }
+.justifyRight{
+  justify-content: right;
+}
 .spaceBetween{
   justify-content: space-between;
 }

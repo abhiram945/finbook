@@ -7,14 +7,11 @@
     background-repeat: no-repeat;
     background-size: contain;
     background-color: var(--dashboardBg);
-    overflow-y: scroll;
-    &::-webkit-scrollbar{
-        display: none;
-    }
 }
 .dashboardContainer h2{
     color: var(--white);
     font-size: 2.5rem;
+    max-height: 20%;
 }
 h2 span{
     color: var(--primaryColor);
@@ -22,6 +19,7 @@ h2 span{
 }
 
 .dashboardContainer .daysContainer{
+    max-height: 80%;
     padding: 2.5rem 1rem;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
@@ -56,14 +54,20 @@ h2 span{
 @media screen and (max-width:480px) {
     .dashboardContainer{
         height: 92dvh;
+        padding-bottom: 0;
     }
     .dashboardContainer h2{
-        font-size: 1.5rem;
+        font-size: 1.25rem;
+        padding-bottom: 0.5rem;
     }
     h2 span{
-        font-size: 2.5rem;
+        font-size: 2.25rem;
     }
     .dashboardContainer .daysContainer{
-        padding: 0.75rem 0;
+        padding: 1rem 0;
+        padding-top:0.75rem;
+        padding-bottom: 0;
+        grid-template-columns: 1fr;
+        height: 100%;
     }
 }
