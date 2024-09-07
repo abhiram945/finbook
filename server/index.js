@@ -11,25 +11,28 @@ import dayRouter from "./routes/dayRoute.js";
 
 dotenv.config();
 
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-
 const corsOptions = {
   origin: "*",
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   allowedHeaders: "Content-Type,Authorization",
 };
-app.use(cors(corsOptions));
 
+const app = express();
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+
+
+app.use("/",(req,res)=>{res.send("server up")})
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/villages", villageRouter);
 app.use("/api/v1/persons", personRouter);
 app.use("/api/v1/days", dayRouter);
 
-console.clear();
+
 connectDb()
   .then(() => {
     app.listen(8000, () =>
