@@ -3,22 +3,23 @@
     width: 100%;
     background-color: var(--backgroundColor);
 }
-.prevNextBtnsContainer{
+.pageNumsContainer{
     width: 100%;
     background-color: var(--backgroundColor);
     padding: 0.25rem 0;
 }
-.prevNextBtnsContainer button{
-    background-color: var(--btnsColor);
-    color: var(--white);
+.pageNumsContainer button{
+    background-color: var(--textColor);
+    color: var(--borderColor);
     border-radius: 0.25rem;
     border: none;
     padding:0.2rem 0.4rem;
-    margin: 0 0.2rem;
+    margin: 0 0.5rem;
+    cursor: pointer;
 }
-.prevNextBtnsContainer button:disabled{
-    background-color: var(--tableHeadText);
-    color: var(--tableHeadBg);
+.pageNumsContainer .active{
+    background-color: var(--btnsColor);
+    color: var(--white);
 }
 .tableContainer {
     padding:0 0.5rem;

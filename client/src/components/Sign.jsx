@@ -26,7 +26,6 @@ export const Sign=()=>{
         }
         try {
             setLoading(true);
-            console.log("Fetching")
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/users/registerOrLogin`, {
                 method: "POST",
                 headers: {
@@ -36,7 +35,6 @@ export const Sign=()=>{
             });
             
             const jsonResponse = await response.json();
-            console.log("Respoonse from server login",jsonResponse)
             if (!jsonResponse.success) {
                 setLoading(false)
                 return toast.error(jsonResponse.message)

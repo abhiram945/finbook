@@ -13,6 +13,7 @@ export const Table = () => {
   const [amount, setAmount] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totals, setTotals] = useState([]);
+  const [pages, setPages] = useState(1);
 
   useEffect(() => {
     const tempTotals = [];
@@ -101,10 +102,12 @@ export const Table = () => {
     {loading ? <div className="loaderContainer flex justifyCenter alignCenter"><Loader component="table" /></div>
       : persons.length === 0 ? <NoUsersFound day={selectedDay?.dayName} village={selectedVillage?.villageName} />
         : <>
-          <div className="prevNextBtnsContainer flex justifyRight">
-            <button onClick={() => setCurrentPage(prev => prev - 1)} disabled={currentPage === 1}>Prev page</button>
-            <button onClick={() => setCurrentPage(prev => prev + 1)} disabled={(currentPage * 5) === selectedDay.dates.length}>Next page</button>
+          <div className="pageNumsContainer flex justifyLeft">
+            {[...Array(Math.ceil(selectedDay.dates.length / 5))].map((_, index) => (
+              <button key={index} onClick={() => setCurrentPage(index + 1)} className={currentPage===(index+1)?"active":""}>{index + 1}</button>
+            ))}
           </div>
+
           <div className="tableContainer">
             <table>
               <thead>
@@ -180,6 +183,6 @@ export const Table = () => {
               </form>
             )}
           </div>
-          </>}
-        </>
-    }
+        </>}
+  </>
+}
