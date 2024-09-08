@@ -4,6 +4,9 @@ const personSchema = new mongoose.Schema({
     date:{
         type:Date,
     },
+    pageNo:{
+        type:Number,
+    },
     cardNo:{
         type:Number
     },

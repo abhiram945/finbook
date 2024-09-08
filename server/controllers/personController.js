@@ -4,7 +4,7 @@ import { Person } from "../models/personModel.js";
 import { Day } from "../models/dayModel.js";
 
 const addPerson = async (req, res) => {
-  const { dayId, villageId, newCardNo, date, personName, amountTaken } = req.body;
+  const { dayId, villageId, newCardNo, date, pageNo, personName, amountTaken } = req.body;
   const objectVillageId = new mongoose.Types.ObjectId(villageId);
   try {
     const existingCardNo = await Person.find({villageId : objectVillageId, cardNo: newCardNo});
@@ -26,6 +26,7 @@ const addPerson = async (req, res) => {
     const newPerson = await new Person({
       date: date,
       cardNo: newCardNo,
+      pageNo: pageNo,
       personName: personName,
       amountTaken: amountTaken,
       weeks : zerosArray,
