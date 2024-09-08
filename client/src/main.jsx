@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Outlet, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { toast } from 'react-toastify';
 
@@ -14,18 +14,17 @@ import { Dashboard } from './components/Dashboard';
 import './main.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-const finbookContext = createContext();
+export const finbookContext = createContext();
 
 const Finbook = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [days, setDays] = useState([]);
   const [villages, setVillages] = useState([]);
   const [selectedDay, setSelectedDay] = useState([]);
   const [selectedVillage, setSelectedVillage] = useState([]);
-  const [persons, setPersons] = useState([])
+  const [persons, setPersons] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const token = window.localStorage.getItem("token");
   useEffect(() => {
@@ -48,10 +47,10 @@ const Finbook = () => {
       setUserData(jsonResponse.message);
       return;
     }
-    if (token) {
+    if (token && token.length !== 0) {
       verifyUser();
     }
-  }, [token]);
+  }, []);
 
   const getPersonsInVillage = async () => {
     setLoading(true);
@@ -96,35 +95,26 @@ const Finbook = () => {
     }
   }
 
-  return (<>
-
-    <ToastContainer />
+  return <BrowserRouter>
     <finbookContext.Provider value={{
-      navigate, location,
       userData, setUserData, loading, setLoading,
       days, setDays, villages, setVillages,
       selectedDay, setSelectedDay, selectedVillage, setSelectedVillage,
-      persons, setPersons, getPersonsInVillage, getAllDaysData
+      persons, setPersons, getPersonsInVillage, getAllDaysData,
+      token, currentPage, setCurrentPage
     }}>
+      <ToastContainer />
       <Header />
       <Routes>
         <Route path='/signin' element={<Sign />} />
-        <Route element={<ProtectedRoutes />}>
-          <Route path='/' element={<><Navbar /><Outlet /></>}>
-            <Route path='/:day/:village' element={userData.length === 0 ? <Navigate to="/" /> : <Table />} />
-          </Route>
-        </Route>
-        <Route path='/:user' element={days.length!==0 ? <Dashboard />: <Navigate to="/"/>} />
+        <Route path='/' element={<Navbar />} />
+        <Route path='/:day/:village' element={<><Navbar /><Table /></>} />
+        <Route path='/:user' element={<Dashboard />} />
         <Route path='*' element={<Navigate to="/" />} />
       </Routes>
     </finbookContext.Provider>
-  </>
-  );
+  </BrowserRouter>
+
 }
 
-export { finbookContext };
-
-const rootElement = document.getElementById('root');
-
-const root = createRoot(rootElement);
-root.render(<BrowserRouter><Finbook /></BrowserRouter>);
+ReactDOM.createRoot(document.getElementById("root")).render(<Finbook />);

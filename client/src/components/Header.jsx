@@ -9,7 +9,7 @@ export const Header = () => {
         <NavLink to="/" className="flex alignCenter"><img src="/assets/logo.svg" /><h1>FinBook</h1></NavLink>
         {userData.length!==0 && <div className="userOptions flex spaceBetween">
             <NavLink to={`/${userData.userName}`}>Dashboard</NavLink>
-            <NavLink to="/signin" onClick={() => window.localStorage.clear()}>SignOut</NavLink>
+            <NavLink onClick={() => window.localStorage.clear()} to="/signin">SignOut</NavLink>
         </div>}
     </header>
 }

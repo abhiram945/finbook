@@ -1,5 +1,15 @@
-import { Navigate, Outlet } from 'react-router-dom';
-export const ProtectedRoutes = () => {
-    const token = window.localStorage.getItem("token");
-        return (token) ? <Outlet/> : <Navigate to="/signin"/>
-}
+import { Outlet, Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { finbookContext } from "../main";
+const ProtectedRoutes = () => {
+  const {userData, token} = useContext(finbookContext)
+  if (!token) {
+    return <Navigate to="/signin" />;
+  }
+  if(userData.length===0){
+    return <Navigate to="/"/>
+  }
+  return <Outlet />;
+};
+
+export { ProtectedRoutes };

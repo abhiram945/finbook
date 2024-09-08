@@ -8,12 +8,10 @@ import { NoUsersFound } from "../utils/Select";
 import "../styles/Table.css"
 
 export const Table = () => {
-  const { selectedDay, selectedVillage, loading, setLoading, persons, setPersons, getPersonsInVillage } = useContext(finbookContext);
+  const { selectedDay, selectedVillage, loading, setLoading, persons, setPersons, getPersonsInVillage, currentPage,setCurrentPage } = useContext(finbookContext);
   const [personToBeEdited, setPersonToBeEdited] = useState();
   const [amount, setAmount] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
   const [totals, setTotals] = useState([]);
-  const [pages, setPages] = useState(1);
 
   useEffect(() => {
     const tempTotals = [];
@@ -30,9 +28,9 @@ export const Table = () => {
   }, [currentPage, persons]);
 
   const filteredPersons = persons.filter(person => {
-    if (currentPage === 1) return true;
     const start = (currentPage - 1) * 5;
     const end = start + 5;
+    return person.pageNo<=currentPage && person.balance!==0;
     return person.weeks.slice(start, end).length > 0 || person.balance !== 0;
   });
 
@@ -103,7 +101,7 @@ export const Table = () => {
       : persons.length === 0 ? <NoUsersFound day={selectedDay?.dayName} village={selectedVillage?.villageName} />
         : <>
           <div className="pageNumsContainer flex justifyLeft">
-            {[...Array(Math.ceil(selectedDay.dates.length / 5))].map((_, index) => (
+            {[...Array(Math.ceil(selectedDay?.dates?.length / 5))].map((_, index) => (
               <button key={index} onClick={() => setCurrentPage(index + 1)} className={currentPage===(index+1)?"active":""}>{index + 1}</button>
             ))}
           </div>
@@ -119,12 +117,12 @@ export const Table = () => {
                   <th>Paid</th>
                   <th>Balance</th>
                   <th>Action</th>
-                  {selectedDay?.dates.slice((currentPage - 1) * 5, ((currentPage - 1) * 5) + 5).map((date, index) => <th key={index}>{date?.split("T")[0]}</th>)}
+                  {selectedDay?.dates.slice((currentPage - 1) * 5, ((currentPage - 1) * 5) + 5).map((date, dateIndex) => <th key={dateIndex}>{date?.split("T")[0]}</th>)}
                 </tr>
               </thead>
               <tbody>
-                {filteredPersons?.map((person, index) => (
-                  <tr key={index + 1}>
+                {filteredPersons?.map((person, personIndex) => (
+                  <tr key={personIndex}>
                     <td> {person.date.split("T")[0]} </td>
                     <td>{person.cardNo}</td>
                     <td className="name"> {person.personName.charAt(0).toUpperCase() + person.personName.slice(1)} </td>
@@ -150,12 +148,12 @@ export const Table = () => {
                         />
                       )}
                     </td>
-                    {person.weeks.length !== 0 && person.weeks.slice((currentPage - 1) * 5, ((currentPage - 1) * 5) + 5).map((week, i) => <td key={i} className={`col${i + 1}`}>{week}</td>)}
+                    {person.weeks.length !== 0 && person.weeks.slice((currentPage-person.pageNo)*5,((currentPage-person.pageNo)+5)).map((week, i) => <td key={i} className={`col${i + 1}`}>{week}</td>)}
                   </tr>
                 ))}
                 <tr>
                   <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                  {totals.length !== 0 && totals.map((total, i) => <td key={i}>{total}</td>)}
+                  {totals.length !== 0 && totals.map((total, totalsIndex) => <td key={totalsIndex}>{total}</td>)}
                 </tr>
               </tbody>
             </table>
