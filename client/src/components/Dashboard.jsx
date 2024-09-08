@@ -1,13 +1,18 @@
 import '../styles/Dashboard.css';
 import { useContext, useEffect } from "react";
 import { Loader } from '../utils/Loader';
-import { finbookContext } from '../main';
+import { finbookContext } from '../App';
 
 export const Dashboard = () => {
-    const { userData, loading, days, getAllDaysData } = useContext(finbookContext);
+    const { userData, loading, days, setDays, getAllDaysData } = useContext(finbookContext);
     useEffect(() => {
-        getAllDaysData();
-    }, [])
+      if (userData.length !== 0) {
+        (async () => { 
+          const allDays = await getAllDaysData();
+          setDays(allDays);
+        })();
+      }
+    }, []);
     return <>
         <div className="dashboardContainer">
             <h2>Hello <span>{userData?.userName.toUpperCase()}</span>,<br />Explore everything you need right here on your dashboard</h2>

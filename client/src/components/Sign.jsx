@@ -1,18 +1,19 @@
 import React, { useState, useContext } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { Loader } from '../utils/Loader';
-import { finbookContext } from '../main';
+import { finbookContext } from '../App';
 import "../styles/Sign.css";
 
 export const Sign = () => {
     const navigate = useNavigate();
-    const { setUserData, loading, setLoading, token } = useContext(finbookContext);
+    const { setUserData } = useContext(finbookContext);
     const [formData, setFormData] = useState({
         gmail: 'abhi@gmail.com',
         password: 'finbook@123'
     });
+    const [signingIn, setSigningIn]=useState(false);
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -25,7 +26,7 @@ export const Sign = () => {
             return toast.error("Please enter password")
         }
         try {
-            setLoading(true);
+            setSigningIn(true);
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/users/registerOrLogin`, {
                 method: "POST",
                 headers: {
@@ -36,13 +37,13 @@ export const Sign = () => {
 
             const jsonResponse = await response.json();
             if (!jsonResponse.success) {
-                setLoading(false)
+                setSigningIn(false)
                 return toast.error(jsonResponse.message)
             }
             window.localStorage.setItem("token", jsonResponse.jwt)
             const data = { ...jsonResponse.message, isNew: jsonResponse.isNew };
             setUserData(data);
-            setLoading(false);
+            setSigningIn(false);
             navigate("/");
         } catch (error) {
             return toast.error("Failed to reach server, try again");
@@ -59,8 +60,8 @@ export const Sign = () => {
             <form className="signFormContainer flex flexColumn alignCenter spaceBetween" method="POST" onSubmit={handleCreateAccount}>
                 <input type="gmail" name='gmail' placeholder="Enter your GMail ID" onChange={handleChange} value={formData.gmail} />
                 <input type="password" name='password' placeholder="Enter password" onChange={handleChange} value={formData.password} />
-                <NavLink to="/reset-password">Forgot password?</NavLink>
-                {loading ? <Loader component="signIn" /> : <button type='submit'>Continue</button>}
+                <Link to="/reset-password">Forgot password?</Link>
+                {signingIn ? <Loader component="signIn" /> : <button type='submit'>Continue</button>}
             </form>
             <div className='author flex alignCenter'>
                 <p>Designed and Developed by <a href="https://abhiram945.vercel.app" target='_blank' rel="noreferrer">Abhi <span> &#8599;</span></a></p>

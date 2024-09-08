@@ -1,14 +1,17 @@
 import { useState, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 
-import { finbookContext } from "../main";
+import { finbookContext } from "../App";
 import { Loader } from "../utils/Loader";
 import { NoUsersFound } from "../utils/Select";
 
 import "../styles/Table.css"
 
 export const Table = () => {
-  const { selectedDay, selectedVillage, loading, setLoading, persons, setPersons, getPersonsInVillage, currentPage,setCurrentPage } = useContext(finbookContext);
+  const { selectedDay, selectedVillage, loading, setLoading, persons,setPersons,
+     currentPage, setCurrentPage,
+    getPersonsInVillage
+  } = useContext(finbookContext);
   const [personToBeEdited, setPersonToBeEdited] = useState();
   const [amount, setAmount] = useState("");
   const [totals, setTotals] = useState([]);
@@ -30,7 +33,7 @@ export const Table = () => {
   const filteredPersons = persons.filter(person => {
     const start = (currentPage - 1) * 5;
     const end = start + 5;
-    return person.pageNo<=currentPage && person.balance!==0;
+    return person.pageNo <= currentPage && person.balance!==0;
     return person.weeks.slice(start, end).length > 0 || person.balance !== 0;
   });
 
@@ -57,9 +60,10 @@ export const Table = () => {
         setLoading(false);
         return toast.error(jsonResponse.message);
       }
-      await getPersonsInVillage();
-      setLoading(false)
-      setPersonToBeEdited(null)
+      const personsInVillage = await getPersonsInVillage();
+      setPersons(personsInVillage);
+      setLoading(false);
+      setPersonToBeEdited(null);
       setAmount("");
       return toast.success(jsonResponse.message);
     } catch (error) {
@@ -82,6 +86,7 @@ export const Table = () => {
         }
       );
       const jsonResponse = await response.json();
+      console.log(jsonResponse)
       setLoading(false);
       if (!jsonResponse.success) {
         return toast.error(jsonResponse.message);
@@ -102,7 +107,7 @@ export const Table = () => {
         : <>
           <div className="pageNumsContainer flex justifyLeft">
             {[...Array(Math.ceil(selectedDay?.dates?.length / 5))].map((_, index) => (
-              <button key={index} onClick={() => setCurrentPage(index + 1)} className={currentPage===(index+1)?"active":""}>{index + 1}</button>
+              <button key={index} onClick={() => setCurrentPage(index + 1)} className={currentPage === (index + 1) ? "active" : ""}>{index + 1}</button>
             ))}
           </div>
 
@@ -148,7 +153,7 @@ export const Table = () => {
                         />
                       )}
                     </td>
-                    {person.weeks.length !== 0 && person.weeks.slice((currentPage-person.pageNo)*5,((currentPage-person.pageNo)+5)).map((week, i) => <td key={i} className={`col${i + 1}`}>{week}</td>)}
+                    {person.weeks.length !== 0 && person.weeks.slice((currentPage - person.pageNo) * 5, ((currentPage - person.pageNo) + 5)).map((week, i) => <td key={i} className={`col${i + 1}`}>{week}</td>)}
                   </tr>
                 ))}
                 <tr>
