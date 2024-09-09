@@ -55,7 +55,7 @@
 @media screen and (max-width:480px) {
 
     .selectDayContainer, .addVillageContainer, .selectVillageContainer {
-        height: 72vh;
+        height: 72svh;
         padding: 1rem;
         flex-direction: column;
     }

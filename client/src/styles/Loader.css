@@ -11,6 +11,9 @@
 .navbar, .table{
     margin: 0 auto;
 }
+.days{
+    margin:auto;
+}
 .dashboard{
     margin: 25vh auto 0;
 }

@@ -103,13 +103,14 @@ export const App = () => {
 
   useEffect(() => {
     const handleBackButton = (event) => {
-      if(location.pathname.split('/').length<2) return;
-      event.preventDefault();
-      setSelectedDay([]);
-      setSelectedVillage([]);
-      setVillages([])
-      setPersons([]);
-      navigate('/');
+      if(location.pathname.split('/').length>2){
+        event.preventDefault();
+        setSelectedDay([]);
+        setSelectedVillage([]);
+        setVillages([])
+        setPersons([]);
+        navigate('/');
+      }
     };
     window.addEventListener('popstate', handleBackButton);
     return () => {

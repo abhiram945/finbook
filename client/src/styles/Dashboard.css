@@ -59,7 +59,7 @@ h2 span {
 
 @media screen and (max-width:480px) {
     .dashboardContainer {
-        height: 92dvh;
+        height: 92svh;
     }
 
     .dashboardContainer h2 {

@@ -7,7 +7,7 @@ const ProtectedRoutes = () => {
   if (!token) {
     return <Navigate to="/signin" />;
   }
-  if(userData.length===0){
+  if(token && userData.length===0){
     return <Navigate to="/"/>
   }
   return <Outlet />;

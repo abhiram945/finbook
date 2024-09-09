@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
-
+import { useParams } from "react-router-dom";
 import { finbookContext } from "../App";
 import { Loader } from "../utils/Loader";
 import { NoUsersFound } from "../utils/Select";
@@ -12,6 +12,7 @@ export const Table = () => {
     currentPage, setCurrentPage,
     getPersonsInVillage
   } = useContext(finbookContext);
+  const {day, village}=useParams();
   const [personToBeEdited, setPersonToBeEdited] = useState();
   const [amount, setAmount] = useState("");
   const [totals, setTotals] = useState([]);
@@ -66,6 +67,7 @@ export const Table = () => {
       );
       const jsonResponse = await response.json();
       if (!jsonResponse.success) {
+        setPersonToBeEdited(null);
         return toast.error(jsonResponse.message);
       }
       const personIndex = persons.findIndex(person => {
@@ -88,6 +90,7 @@ export const Table = () => {
       setAmount("");
       return toast.success(jsonResponse.message);
     } catch (error) {
+      setPersonToBeEdited(null);
       return toast.error("Failed to Add amount, try Again.");
     }
   };
@@ -123,7 +126,7 @@ export const Table = () => {
 
   return <>
     {loading ? <div className="loaderContainer flex justifyCenter alignCenter"><Loader component="table" /></div>
-      : persons.length === 0 ? <NoUsersFound day={selectedDay?.dayName} village={selectedVillage?.villageName} />
+      : persons.length === 0 ? <NoUsersFound day={day} village={village} />
         : <>
           <div className="pageNumsContainer flex justifyLeft">
             {[...Array(Math.ceil(selectedDay?.dates?.length / 5))].map((_, index) => (
@@ -196,12 +199,12 @@ export const Table = () => {
                   <input type="number" onChange={(e) => setAmount(e.target.value)} value={amount} autoFocus required />
                 </div>
                 <div className="addCancelButtonsContainer flex spaceBetween">
-                  <button type="button" onClick={() => {
+                  {personToBeEdited ? <Loader/>:<><button type="button" onClick={() => {
                     setAmount("");
                     setPersonToBeEdited('');
                   }}
                   >Cancel</button>
-                  <button type="submit">Submit</button>
+                  <button type="submit">Submit</button></>}
                 </div>
               </form>
             )}

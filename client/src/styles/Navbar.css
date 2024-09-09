@@ -95,7 +95,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 @media(max-width:720px){
     nav{
-        height: 20dvh;
+        height: 20svh;
     }
     .daysContainer{
         justify-content: left !important;

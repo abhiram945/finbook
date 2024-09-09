@@ -80,10 +80,19 @@
 
 
 @media screen and (max-width:768px) {
+    .signPageContainer{
+        height: 92svh;
+    }
     .signCardContainer{
         min-width: 95vw;
+        height: 90%;
+    }
+    .signMessageContainer{
+        height: 50%;
     }
     .signFormContainer{
+        height: 40%;
         padding-bottom: 1rem;
+        padding-top: 1rem;
     }
 }
