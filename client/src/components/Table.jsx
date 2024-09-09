@@ -14,6 +14,7 @@ export const Table = () => {
   } = useContext(finbookContext);
   const {day, village}=useParams();
   const [personToBeEdited, setPersonToBeEdited] = useState();
+  const [addingAmount, setAddingAmount] = useState(false);
   const [amount, setAmount] = useState("");
   const [totals, setTotals] = useState([]);
 
@@ -51,6 +52,7 @@ export const Table = () => {
   const handleEditPerson = async (e) => {
     e.preventDefault();
     try {
+      setAddingAmount(true);
       const response = await fetch(
         `${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/persons/updatePerson`,
         {
@@ -68,6 +70,7 @@ export const Table = () => {
       const jsonResponse = await response.json();
       if (!jsonResponse.success) {
         setPersonToBeEdited(null);
+        setAddingAmount(false);
         return toast.error(jsonResponse.message);
       }
       const personIndex = persons.findIndex(person => {
@@ -87,6 +90,7 @@ export const Table = () => {
         setPersons(updatedPersons);
       }
       setPersonToBeEdited(null);
+      setAddingAmount(false);
       setAmount("");
       return toast.success(jsonResponse.message);
     } catch (error) {
@@ -199,7 +203,7 @@ export const Table = () => {
                   <input type="number" onChange={(e) => setAmount(e.target.value)} value={amount} autoFocus required />
                 </div>
                 <div className="addCancelButtonsContainer flex spaceBetween">
-                  {personToBeEdited ? <Loader/>:<><button type="button" onClick={() => {
+                  {addingAmount ? <Loader component="addAmount"/>:<><button type="button" onClick={() => {
                     setAmount("");
                     setPersonToBeEdited('');
                   }}

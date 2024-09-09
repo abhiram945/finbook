@@ -11,7 +11,7 @@
 .navbar, .table{
     margin: 0 auto;
 }
-.days{
+.days,.addAmount{
     margin:auto;
 }
 .dashboard{
