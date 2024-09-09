@@ -1,7 +1,8 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { finbookContext } from "../App";
-const ProtectedRoutes = () => {
+
+export const ProtectedRoutes = () => {
   const {userData, token} = useContext(finbookContext)
   if (!token) {
     return <Navigate to="/signin" />;
@@ -11,6 +12,4 @@ const ProtectedRoutes = () => {
   }
   return <Outlet />;
 };
-
-export { ProtectedRoutes };
  
