@@ -1,19 +1,21 @@
 import React, { useState, useEffect, createContext } from 'react'
-import { Routes, Route, useNavigate, NavLink } from "react-router-dom"
-import { ToastContainer,toast } from 'react-toastify';
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom"
+import { ToastContainer, toast } from 'react-toastify';
 
 import { Header } from "./components/Header"
 import { Sign } from './components/Sign';
 import { Navbar } from "./components/Navbar";
 import { Table } from './components/Table';
+import { Dashboard } from './components/Dashboard';
+import { ProtectedRoutes } from './utils/Protected';
 import "./styles/Sign.css";
 import 'react-toastify/dist/ReactToastify.css';
-import { Dashboard } from './components/Dashboard';
 
 export const finbookContext = createContext();
 
 export const App = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const token = window.localStorage.getItem("token");
   const [userData, setUserData] = useState([])
   const [loading, setLoading] = useState(false);
@@ -100,12 +102,13 @@ export const App = () => {
 
   useEffect(() => {
     const handleBackButton = (event) => {
-      event.preventDefault(); 
-      navigate('/');
+      if(location.pathname.split('/').length<2) return;
+      event.preventDefault();
       setSelectedDay([]);
       setSelectedVillage([]);
       setVillages([])
       setPersons([]);
+      navigate('/');
     };
     window.addEventListener('popstate', handleBackButton);
     return () => {
@@ -125,10 +128,12 @@ export const App = () => {
       <ToastContainer />
       <Header />
       <Routes>
-        <Route path="/" element={<Navbar />}></Route>
         <Route path="/signin" element={<Sign />}></Route>
-        <Route path='/:day/:village' element={(userData.length===0 ||selectedDay.length===0||selectedVillage.length===0) ? <NavLink to="/"/>:<><Navbar /><Table /></>} />
-        <Route path="/:user" element={userData.length===0 ?<NavLink to="/"/>:<Dashboard />}></Route>
+        <Route path='/' element={<ProtectedRoutes />}>
+          <Route path="/" element={<Navbar />}></Route>
+          <Route path='/:day/:village' element={<><Navbar /><Table /></>} />
+          <Route path="/:user" element={<Dashboard />}></Route>
+        </Route>
       </Routes>
     </finbookContext.Provider>
   )

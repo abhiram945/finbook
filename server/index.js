@@ -30,7 +30,7 @@ app.use("/api/v1/villages", villageRouter);
 app.use("/api/v1/persons", personRouter);
 app.use("/api/v1/days", dayRouter);
 
-
+console.clear();
 connectDb()
   .then(() => {
     app.listen(8000, () =>

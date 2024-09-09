@@ -158,12 +158,12 @@ export const Navbar = () => {
     <nav className="flex flexColumn">
       <div className="daysContainer flex spaceEvenly">
         {(gettingDays && days.length === 0) ? <Loader /> : days.map((day, index) => <button key={index} onClick={() => {
-          setSelectedDay(day);
+          setSelectedDay(day); setPersons([]);
         }} className={selectedDay.dayName === day.dayName ? "active" : ""}>{day.dayName}</button>)}
       </div>
 
       <div className="villagesContainer flex justifyLeft">
-        {(gettingVillages || addingVillage) ? <Loader component="navbar" /> : villages.map((village, index) => <NavLink key={index} to={`/${selectedDay.dayName}/${village.villageName}`}
+        {(gettingVillages || addingVillage) ? <Loader component="navbar" /> : villages.length!==0 && villages.map((village, index) => <NavLink key={index} to={`/${selectedDay.dayName}/${village.villageName}`}
           onClick={() => { setSelectedVillage(village) }}
           className={selectedVillage._id === village._id ? "active" : ""}>{village.villageName}</NavLink>)}
       </div>

@@ -83,4 +83,7 @@
     .signCardContainer{
         min-width: 95vw;
     }
+    .signFormContainer{
+        padding-bottom: 1rem;
+    }
 }

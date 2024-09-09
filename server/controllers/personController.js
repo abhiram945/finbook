@@ -7,7 +7,7 @@ const addPerson = async (req, res) => {
   const { dayId, villageId, newCardNo, date, pageNo, personName, amountTaken } = req.body;
   const objectVillageId = new mongoose.Types.ObjectId(villageId);
   try {
-    const existingCardNo = await Person.find({villageId : objectVillageId, cardNo: newCardNo});
+    const existingCardNo = await Person.find({ villageId: objectVillageId, cardNo: newCardNo });
     if (existingCardNo.length !== 0) {
       return res.json({
         success: false,
@@ -16,22 +16,49 @@ const addPerson = async (req, res) => {
     }
 
     const personDay = await Day.findById(dayId)
-    let zerosArray=[]
-    personDay.dates.map(d=>{
-      if(d <= new Date(date)){
+    const dayDates = personDay.dates;
+    let zerosArray = [];
+    let index = -1;
+    for (let i = (pageNo - 1) * 5; i < pageNo * 5; i++) {
+      index = i;
+      if (dayDates[i].toISOString().split("T")[0] <= String(date)) {
         zerosArray.push(0);
       }
-    });
-
+    }
+    if (index === dayDates.length-1) {
+      function generateDatesOf10Weeks(startDate) {
+        const dates = [];
+        const start = new Date(startDate);
+        for (let i = 0; i < 10; i++) {
+          const weekStartDate = new Date(start);
+          weekStartDate.setDate(start.getDate() + (i * 7));
+          dates.push(new Date(weekStartDate.toISOString().split("T")[0]));
+        }
+        return dates;
+      }
+      const next10WeeksDates = generateDatesOf10Weeks(dayDates[index]);
+      const addingNewDates = await Day.findByIdAndUpdate(
+        {_id:dayId},
+        [
+          {
+            $addFields: {
+              dates: { $concatArrays: ["$dates", next10WeeksDates] }
+            }
+          }
+        ],
+        {new:true, runValidators:true}
+      );
+      console.log(addingNewDates)
+    }
     const newPerson = await new Person({
       date: date,
       cardNo: newCardNo,
       pageNo: pageNo,
       personName: personName,
       amountTaken: amountTaken,
-      weeks : zerosArray,
+      weeks: zerosArray,
       villageId: villageId,
-    }).save(); 
+    }).save();
 
     const updateTotalReturnOnDay = await Day.findByIdAndUpdate(
       { _id: dayId },
@@ -39,7 +66,7 @@ const addPerson = async (req, res) => {
         {
           $set: {
             totalReturn: { $add: ["$totalReturn", Number(amountTaken)] },
-            balance : {$subtract: [ { $add: ["$totalReturn", Number(amountTaken)] }, "$totalCollected"] }
+            balance: { $subtract: [{ $add: ["$totalReturn", Number(amountTaken)] }, "$totalCollected"] }
           },
         },
       ],
@@ -58,19 +85,19 @@ const addPerson = async (req, res) => {
 };
 
 
-const getPersonsInVillage=async(req,res)=>{
-  const {villageId} = req.body;
+const getPersonsInVillage = async (req, res) => {
+  const { villageId } = req.body;
   try {
-      const personsInVillage = await Person.find({villageId:villageId});
-      return res.json({
-          success:true,
-          message:personsInVillage
-      })
+    const personsInVillage = await Person.find({ villageId: villageId });
+    return res.json({
+      success: true,
+      message: personsInVillage
+    })
   } catch (error) {
-      res.json({
-          success : false,
-          message:"getPersonsInVillage"
-      })
+    res.json({
+      success: false,
+      message: "getPersonsInVillage"
+    })
   }
 }
 
@@ -96,14 +123,14 @@ const updatePerson = async (req, res) => {
       ],
       { new: true, runValidators: true }
     );
-    
+
     const updateTotalCollected = await Day.findByIdAndUpdate(
       { _id: dayId },
       [
         {
           $set: {
             totalCollected: { $add: ["$totalCollected", amount] },
-            balance : {$subtract: [ "$totalReturn", { $add: ["$totalCollected", amount] }] }
+            balance: { $subtract: ["$totalReturn", { $add: ["$totalCollected", amount] }] }
           },
         },
       ],
@@ -111,7 +138,6 @@ const updatePerson = async (req, res) => {
     );
     return res.json({ success: true, message: `${amount} added` });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

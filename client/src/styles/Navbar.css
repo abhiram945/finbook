@@ -97,6 +97,9 @@ input[type=number]::-webkit-outer-spin-button {
     nav{
         height: 20dvh;
     }
+    .daysContainer{
+        justify-content: left !important;
+    }
     .daysContainer, .villagesContainer{
         overflow-x: scroll;
         &::-webkit-scrollbar{

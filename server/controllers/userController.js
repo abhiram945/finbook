@@ -57,10 +57,10 @@ const registerOrLogin = async (req, res) => {
       }
       const datesOf7Days = generateDatesOf7Days();
 
-      function generateDatesOf5Weeks(startDate) {
+      function generateDatesOf10Weeks(startDate) {
         const dates = [];
         const start = new Date(startDate);
-        for (let i = 1; i <= 30; i++) {
+        for (let i = 0; i < 10; i++) {
           const weekStartDate = new Date(start);
           weekStartDate.setDate(start.getDate() + (i * 7));
           dates.push(weekStartDate.toISOString().split("T")[0]);
@@ -72,7 +72,7 @@ const registerOrLogin = async (req, res) => {
         new Day({
           dayName: day,
           date: datesOf7Days[index],
-          dates: generateDatesOf5Weeks(datesOf7Days[index]),
+          dates: generateDatesOf10Weeks(datesOf7Days[index]),
           dayNumber: index + 1,
           user: newUser._id,
         }).save()

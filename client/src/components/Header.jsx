@@ -3,13 +3,19 @@ import {useContext} from "react"
 import { finbookContext } from '../App';
 import "../styles/Header.css";
 export const Header = () => {
-    const {userData} = useContext(finbookContext);
+    const {userData, setUserData, setSelectedDay, setSelectedVillage, setDays, setVillages, setPersons} = useContext(finbookContext);
     
     return <header className="flex spaceBetween alignCenter">
         <NavLink to="/" className="flex alignCenter"><img src="/assets/logo.svg" /><h1>FinBook</h1></NavLink>
         {userData.length!==0 && <div className="userOptions flex spaceBetween">
             <NavLink to={`/${userData.userName}`}>Dashboard</NavLink>
-            <NavLink onClick={() => window.localStorage.clear()} to="/signin">SignOut</NavLink>
+            <NavLink onClick={() => {
+                window.localStorage.clear(); setUserData([]);
+                setPersons([]);
+                setSelectedVillage([]);
+                setSelectedDay([]);
+                setVillages([]); setDays([]);
+                }} to="/signin">SignOut</NavLink>
         </div>}
     </header>
 }

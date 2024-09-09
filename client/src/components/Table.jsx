@@ -8,8 +8,8 @@ import { NoUsersFound } from "../utils/Select";
 import "../styles/Table.css"
 
 export const Table = () => {
-  const { selectedDay, selectedVillage, loading, setLoading, persons,setPersons,
-     currentPage, setCurrentPage,
+  const { selectedDay, selectedVillage, loading, setLoading, persons, setPersons,
+    currentPage, setCurrentPage,
     getPersonsInVillage
   } = useContext(finbookContext);
   const [personToBeEdited, setPersonToBeEdited] = useState();
@@ -31,15 +31,24 @@ export const Table = () => {
   }, [currentPage, persons]);
 
   const filteredPersons = persons.filter(person => {
-    const start = (currentPage - 1) * 5;
-    const end = start + 5;
-    return person.pageNo <= currentPage && person.balance!==0;
-    return person.weeks.slice(start, end).length > 0 || person.balance !== 0;
-  });
+    const weeksLength = person.weeks.length;
+    const basePageNo = person.pageNo;
+    const pagesForWeeks = Math.ceil(weeksLength / 5); 
+    if (person.pageNo > currentPage) {
+        return false;
+    }
+    if (person.balance !== 0) {
+        return true;
+    }    
+    const endPage = basePageNo + pagesForWeeks - 1;
+    return currentPage >= basePageNo && currentPage <= endPage;
+});
+
+
+  const filterDates = selectedDay.dates.slice((currentPage - 1) * 5, ((currentPage - 1) * 5) + 5);
 
   const handleEditPerson = async (e) => {
     e.preventDefault();
-    setLoading(personToBeEdited._id);
     try {
       const response = await fetch(
         `${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/persons/updatePerson`,
@@ -57,17 +66,28 @@ export const Table = () => {
       );
       const jsonResponse = await response.json();
       if (!jsonResponse.success) {
-        setLoading(false);
         return toast.error(jsonResponse.message);
       }
-      const personsInVillage = await getPersonsInVillage();
-      setPersons(personsInVillage);
-      setLoading(false);
+      const personIndex = persons.findIndex(person => {
+        return person._id === personToBeEdited._id;
+      });
+      if (personIndex !== -1) {
+        const updatedPersons = [
+          ...persons.slice(0, personIndex),
+          {
+            ...persons[personIndex],
+            weeks: [...persons[personIndex].weeks, Number(amount)],
+            paid: persons[personIndex].paid + Number(amount),
+            balance: persons[personIndex].balance - Number(amount)
+          },
+          ...persons.slice(personIndex + 1)
+        ];
+        setPersons(updatedPersons);
+      }
       setPersonToBeEdited(null);
       setAmount("");
       return toast.success(jsonResponse.message);
     } catch (error) {
-      setLoading(false);
       return toast.error("Failed to Add amount, try Again.");
     }
   };
@@ -86,12 +106,12 @@ export const Table = () => {
         }
       );
       const jsonResponse = await response.json();
-      console.log(jsonResponse)
       setLoading(false);
       if (!jsonResponse.success) {
         return toast.error(jsonResponse.message);
       }
-      await getPersonsInVillage();
+      const personsInVillage = await getPersonsInVillage();
+      setPersons(personsInVillage);
       toast.success(jsonResponse.message);
       return;
     } catch (error) {
@@ -122,7 +142,7 @@ export const Table = () => {
                   <th>Paid</th>
                   <th>Balance</th>
                   <th>Action</th>
-                  {selectedDay?.dates.slice((currentPage - 1) * 5, ((currentPage - 1) * 5) + 5).map((date, dateIndex) => <th key={dateIndex}>{date?.split("T")[0]}</th>)}
+                  {filterDates.map((date, dateIndex) => <th key={dateIndex}>{date?.split("T")[0]}</th>)}
                 </tr>
               </thead>
               <tbody>
@@ -153,7 +173,7 @@ export const Table = () => {
                         />
                       )}
                     </td>
-                    {person.weeks.length !== 0 && person.weeks.slice((currentPage - person.pageNo) * 5, ((currentPage - person.pageNo) + 5)).map((week, i) => <td key={i} className={`col${i + 1}`}>{week}</td>)}
+                    {person.weeks.length !== 0 && person.weeks.slice((currentPage - person.pageNo) * 5, (((currentPage - person.pageNo) * 5) + 5)).map((week, i) => <td key={i} className={`col${i + 1}`}>{week}</td>)}
                   </tr>
                 ))}
                 <tr>
