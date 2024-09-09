@@ -7,7 +7,7 @@ import { Sign } from './components/Sign';
 import { Navbar } from "./components/Navbar";
 import { Table } from './components/Table';
 import { Dashboard } from './components/Dashboard';
-import { ProtectedRoutes } from "./utils/Protected";
+import ProtectedRoutes from "./utils/ProtectedRoutes";
 
 import "./styles/Sign.css";
 import 'react-toastify/dist/ReactToastify.css';
