@@ -14,6 +14,8 @@ export const Navbar = () => {
     days, setDays, setPersons, villages, setVillages, currentPage,
   } = useContext(finbookContext);
   const { day, village } = useParams();
+  const locatio = useLocation();
+  const navigate = useNavigate();
   const [isAddVillageClicked, setIsAddVillageClicked] = useState(false);
   const [isAddPersonClicked, setIsAddPersonClicked] = useState(false);
   const [addVillage, setAddVillage] = useState("");
@@ -32,24 +34,29 @@ export const Navbar = () => {
   const handleAddVillageFunction = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true)
       const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/villages/addVillage`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ dayId: selectedDay._id, newVillageName: addVillage })
+        body: JSON.stringify({ dayId: selectedDay[0]._id, newVillageName: addVillage })
       });
       const jsonResponse = await response.json();
       setIsAddVillageClicked(false);
       if (!jsonResponse.success) {
+        setLoading(false)
         return toast.error(jsonResponse.message);
       }
       toast.success(`${addVillage} added`);
-      const { success, message } = await getVillagesInDay(selectedDay[0]._id);
-      if (!success) {
-        toast.error(message);
+      setLoading(false)
+      setGettingVillages(true);
+      const { villagesSuccess, villagesMessage } = await getVillagesInDay(selectedDay[0]._id);
+      setGettingVillages(false);
+      if (!villagesSuccess) {
+        toast.error(villagesMessage);
       } else {
-        setVillages(message);
+        setVillages(villagesMessage);
       }
     } catch (error) {
       return toast.error("Failed to reach server, try again");
@@ -67,8 +74,8 @@ export const Navbar = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          dayId: selectedDay._id,
-          villageId: selectedVillage._id,
+          dayId: selectedDay[0]._id,
+          villageId: selectedVillage[0]._id,
           newCardNo: personFormData.cardNo,
           pageNo: currentPage,
           date: personFormData.date,
@@ -84,12 +91,13 @@ export const Navbar = () => {
       setIsAddPersonClicked(!isAddPersonClicked);
       toast.success(jsonResponse.message);
       setPersonFormData({ cardNo: "", personName: "", amountTaken: "", date: "" });
-      const { success, message } = await getPersonsInVillage();
-        if (!success) {
-          toast.error(message);
+      const { personsSuccess, personsMessage } = await getPersonsInVillage(selectedVillage[0]._id);
+        if (!personsSuccess) {
+          toast.error(personsMessage);
         } else {
-          setPersons(message);
+          setPersons(personsMessage);
         }
+        setLoading(false)
     } catch (error) {
       setLoading(false);
       return toast.error("Failed to reach server, try again.");
@@ -159,7 +167,7 @@ export const Navbar = () => {
 
       <div className="daysContainer flex spaceEvenly">
         {(loading && days.length === 0) ? <Loader component="days" /> : days.map((day, index) => <button key={index} onClick={() => {
-          setSelectedDay([day]); setDayChanged(true);
+          setSelectedDay([day]); setDayChanged(true); setPersons([]);
         }} className={selectedDay[0]?._id === day._id ? "active" : ""}>{day.dayName}</button>)}
       </div>
 
@@ -175,7 +183,7 @@ export const Navbar = () => {
 
       {isAddVillageClicked && (
         <form className='addVillageForm flex flexColumn' onSubmit={handleAddVillageFunction}>
-          <h3>Add new Village into {selectedDay?.dayName.toUpperCase()}</h3>
+          <h3>Add new Village into {selectedDay[0].dayName.toUpperCase()}</h3>
           <input type='text' placeholder='Enter new village name' required onChange={(e) => setAddVillage(e.target.value)} autoFocus />
           <div className='addCancelButtonsContainer flex spaceEvenly'>
             {loading ? <Loader component="" /> : <>
@@ -188,7 +196,7 @@ export const Navbar = () => {
 
       {isAddPersonClicked && selectedDay.length !== 0 && selectedVillage.length !== 0 && (
         <form className='addPersonForm flex flexColumn' onSubmit={handleAddPersonFunction}>
-          <h3>Add new Person into<br /> {selectedDay?.dayName.toUpperCase()} - {selectedVillage?.villageName.toUpperCase()} - {currentPage}</h3>
+          <h3>Add new Person into<br /> {selectedDay[0].dayName.toUpperCase()} - {selectedVillage[0].villageName.toUpperCase()} - {currentPage}</h3>
           <input type='number' name='cardNo' placeholder='Card no' required onChange={handleChange} value={personFormData.cardNo} autoFocus />
           <input type='text' name='personName' placeholder='Enter name' required onChange={handleChange} value={personFormData.personName} />
           <input type='number' name='amountTaken' placeholder='Enter total amount' required onChange={handleChange} value={personFormData.amount} />

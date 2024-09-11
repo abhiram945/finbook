@@ -45,7 +45,7 @@ export const Table = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            dayId: selectedDay?._id,
+            dayId: selectedDay[0]._id,
             personId: personToBeEdited._id,
             amount: Number(amount),
           }),
@@ -152,7 +152,7 @@ export const Table = () => {
   return <>
     {
       loading ? <div className="loaderContainer flex justifyCenter alignCenter"><Loader component="table" /></div>
-        : (persons.length === 0 ? <NoUsersFound day={selectedDay[0].dayName} village={selectedVillage[0].villageName} />
+        : (persons.length === 0 ? (selectedDay[0]._id===selectedVillage[0].dayId ? <NoUsersFound day={selectedDay[0].dayName} village={selectedVillage[0].villageName} />: (villages.length!==0 && <SelectVillage/>))
           : <>
             <div className="pageNumsContainer flex justifyLeft">
               {[...Array(Math.ceil(selectedDay[0]?.dates?.length / 5))].map((_, index) => (
