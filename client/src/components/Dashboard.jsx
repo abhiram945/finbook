@@ -2,14 +2,23 @@ import '../styles/Dashboard.css';
 import { useContext, useEffect } from "react";
 import { Loader } from '../utils/Loader';
 import { finbookContext } from '../App';
+import { getAllDaysData } from '../functions/helpers.js';
+import { toast } from 'react-toastify';
 
 export const Dashboard = () => {
-    const { userData, loading, days, setDays, getAllDaysData } = useContext(finbookContext);
+    const { userData, loading, days, setDays, setLoading } = useContext(finbookContext);
     useEffect(() => {
+      console.log(userData)
       if (userData.length !== 0) {
         (async () => { 
-          const allDays = await getAllDaysData();
-          setDays(allDays);
+          setLoading(true)
+          const {daysSuccess, daysMessage} = await getAllDaysData(userData._id);
+          setLoading(false)
+          if(!daysSuccess){
+            toast.error(daysMessage);
+          }else{
+            setDays(daysMessage);
+          }
         })();
       }
     }, []);

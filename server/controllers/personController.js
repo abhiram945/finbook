@@ -144,20 +144,4 @@ const updatePerson = async (req, res) => {
 
 
 
-const deletePerson = async (req, res) => {
-  const { person } = req.body;
-  try {
-    const deletedPerson = await Person.findByIdAndDelete(person._id);
-    return res.json({
-      success: true,
-      message: `${person.personName} deleted`,
-    });
-  } catch (error) {
-    return res.json({
-      success: false,
-      message: `Failed to delete ${person.personName}`,
-    });
-  }
-};
-
-export { addPerson, getPersonsInVillage, updatePerson, deletePerson };
+export { addPerson, getPersonsInVillage, updatePerson };

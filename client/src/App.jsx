@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext } from 'react'
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom"
+import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom"
 import { ToastContainer, toast } from 'react-toastify';
 
 import { Header } from "./components/Header"
@@ -15,65 +15,16 @@ import 'react-toastify/dist/ReactToastify.css';
 export const finbookContext = createContext();
 
 export const App = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const token = window.localStorage.getItem("token");
+  const location = useLocation();
   const [userData, setUserData] = useState([])
   const [loading, setLoading] = useState(false);
   const [selectedDay, setSelectedDay] = useState([]);
   const [selectedVillage, setSelectedVillage] = useState([]);
-  const [days, setDays] = useState([]);
+  const [days, setDays] = useState( JSON.parse(window.localStorage.getItem("daysData")) ||[]);
   const [currentPage, setCurrentPage] = useState(1);
   const [persons, setPersons] = useState([]);
-  const [villages, setVillages] = useState([]);
-
-  const getPersonsInVillage = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/persons/getPersonsInVillage`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ villageId: selectedVillage._id })
-      });
-      const jsonResponse = await response.json();
-      setLoading(false);
-      if (!jsonResponse.success) {
-        toast.error(jsonResponse.message);
-        return [];
-      }
-      return jsonResponse.message;
-    } catch (error) {
-      setLoading(false);
-      toast.error("Failed to reach server, try again");
-      return [];
-    }
-  }
-
-  const getAllDaysData = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/days/getAllDaysData`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: userData?._id })
-      });
-      const jsonResponse = await response.json();
-      setLoading(false);
-      if (!jsonResponse.success) {
-        toast.error(jsonResponse.message);
-        return [];
-      }
-      return jsonResponse.message;
-    } catch (error) {
-      setLoading(false);
-      toast.error("Failed to reach server, try again");
-      return [];
-    }
-  }
+  const [villages, setVillages] = useState([]);  
 
   useEffect(() => {
     const verifyUser = async () => {
@@ -93,7 +44,6 @@ export const App = () => {
         return toast.error(jsonResponse.message);
       }
       setUserData(jsonResponse.message);
-      navigate("/");
       return;
     }
     if (token && token.length !== 0) {
@@ -101,22 +51,15 @@ export const App = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const handleBackButton = (event) => {
-      if(location.pathname.split('/').length>2){
-        event.preventDefault();
-        setSelectedDay([]);
-        setSelectedVillage([]);
-        setVillages([])
-        setPersons([]);
-        navigate('/');
-      }
-    };
-    window.addEventListener('popstate', handleBackButton);
-    return () => {
-      window.removeEventListener('popstate', handleBackButton);
-    };
-  }, [selectedVillage]);
+  useEffect(()=>{
+    if(location.pathname==='/'){
+      setPersons([]);
+      setSelectedVillage([]);
+      setVillages([]);
+      setSelectedDay([]);
+    }
+  },[location.pathname])
+
 
 
   return (
@@ -125,16 +68,15 @@ export const App = () => {
       selectedDay, setSelectedDay, selectedVillage, setSelectedVillage,
       days, setDays, token, currentPage, setCurrentPage,
       persons, setPersons, villages, setVillages,
-      getPersonsInVillage, getAllDaysData
     }}>
       <ToastContainer />
       <Header />
       <Routes>
-        <Route path="/signin" element={<Sign />}></Route>
-        <Route path='/' element={<ProtectedRoutes />}>
+        <Route path="/signin" element={token ? <Navigate to="/"/>:<Sign />}></Route>
+        <Route path='/' element={(token && userData!==0) ? <Outlet/> : <ProtectedRoutes />}>
           <Route path="/" element={<Navbar />}></Route>
-          <Route path='/:day/:village' element={<><Navbar /><Table /></>} />
-          <Route path="/:user" element={<Dashboard />}></Route>
+          <Route path='/:day/:village' element={(userData.length===0||selectedDay.length===0||selectedVillage.length===0)?<Navigate to="/"/>:<><Navbar /><Table /></>} />
+          <Route path="/:user" element={(days.length===0||userData.length===0)?<Navigate to="/"/>:<Dashboard />}></Route>
         </Route>
       </Routes>
     </finbookContext.Provider>

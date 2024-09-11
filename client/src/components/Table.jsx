@@ -1,53 +1,37 @@
 import { useState, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { finbookContext } from "../App";
 import { Loader } from "../utils/Loader";
-import { NoUsersFound } from "../utils/Select";
+import { NoUsersFound, SelectDay, SelectVillage } from "../utils/Select";
+import { getPersonsInVillage, getVillagesInDay } from "../functions/helpers.js";
 
 import "../styles/Table.css"
 
 export const Table = () => {
-  const { selectedDay, selectedVillage, loading, setLoading, persons, setPersons,
-    currentPage, setCurrentPage,
-    getPersonsInVillage
+  const { selectedDay, setSelectedDay, selectedVillage, setSelectedVillage, loading, setLoading, persons, setPersons,
+    currentPage, setCurrentPage, days, villages, setVillages,
   } = useContext(finbookContext);
-  const {day, village}=useParams();
+  const { day, village } = useParams();
+  const navigate = useNavigate("/");
   const [personToBeEdited, setPersonToBeEdited] = useState();
   const [addingAmount, setAddingAmount] = useState(false);
   const [amount, setAmount] = useState("");
   const [totals, setTotals] = useState([]);
 
-  useEffect(() => {
-    const tempTotals = [];
-    if (persons.length === 0) return;
-    for (let i = 1; i <= 5; i++) {
-      const elements = Array.from(document.querySelectorAll(`.col${i}`));
-      const sum = elements.reduce((prev, element) => {
-        const value = parseInt(element.textContent) || 0;
-        return prev + value;
-      }, 0);
-      tempTotals.push(sum);
-    }
-    setTotals(tempTotals);
-  }, [currentPage, persons]);
-
   const filteredPersons = persons.filter(person => {
     const weeksLength = person.weeks.length;
     const basePageNo = person.pageNo;
-    const pagesForWeeks = Math.ceil(weeksLength / 5); 
+    const pagesForWeeks = Math.ceil(weeksLength / 5);
     if (person.pageNo > currentPage) {
-        return false;
+      return false;
     }
     if (person.balance !== 0) {
-        return true;
-    }    
+      return true;
+    }
     const endPage = basePageNo + pagesForWeeks - 1;
     return currentPage >= basePageNo && currentPage <= endPage;
-});
-
-
-  const filterDates = selectedDay.dates.slice((currentPage - 1) * 5, ((currentPage - 1) * 5) + 5);
+  });
 
   const handleEditPerson = async (e) => {
     e.preventDefault();
@@ -99,120 +83,158 @@ export const Table = () => {
     }
   };
 
-  const handleDeletePerson = async (person) => {
-    setLoading(person._id);
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/persons/deletePerson`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ person: person }),
-        }
-      );
-      const jsonResponse = await response.json();
-      setLoading(false);
-      if (!jsonResponse.success) {
-        return toast.error(jsonResponse.message);
-      }
-      const personsInVillage = await getPersonsInVillage();
-      setPersons(personsInVillage);
-      toast.success(jsonResponse.message);
-      return;
-    } catch (error) {
-      setLoading(false);
-      return toast.error("Failed to reach server, try again.");
+  useEffect(() => {
+    const tempTotals = [];
+    if (persons.length === 0) return;
+    for (let i = 1; i <= 5; i++) {
+      const elements = Array.from(document.querySelectorAll(`.col${i}`));
+      const sum = elements.reduce((prev, element) => {
+        const value = parseInt(element.textContent) || 0;
+        return prev + value;
+      }, 0);
+      tempTotals.push(sum);
     }
-  };
+    setTotals(tempTotals);
+  }, [currentPage, persons]);
 
+
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      try {
+        setLoading(true);        
+        const dayInUrl = days.find(d => d._id === day);
+        if (!dayInUrl) {
+          toast.error("Day not found");
+          setLoading(false);
+          console.log(dayInUrl,"returning1")
+          return navigate("/");
+        }
+        setSelectedDay([dayInUrl]);
+        const {  villagesSuccess, villagesMessage } = await getVillagesInDay(dayInUrl._id);
+        if (!villagesSuccess) {
+          toast.error(villagesMessage);
+          setLoading(false);
+          console.log(villagesSuccess,"returning2")
+          return navigate("/");
+        }
+        setVillages(villagesMessage);
+        const villageInUrl = villagesMessage.find(v => v._id === village);
+        if (!villageInUrl) {
+          toast.error("Village not found");
+          setLoading(false);
+          console.log(villageInUrl,"returning3")
+          return navigate("/");
+        }
+        setSelectedVillage([villageInUrl]);  
+        const { personsSuccess, personsMessage } = await getPersonsInVillage(villageInUrl._id);
+        if (!personsSuccess) {
+          toast.error(personsMessage);
+          setLoading(false);
+          console.log(personsSuccess,"returning4")
+          return navigate("/");
+        }  
+        setPersons(personsMessage);
+      } catch (error) {
+        toast.error("An unexpected error occurred");
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, [day, village]);
+  
 
   return <>
-    {loading ? <div className="loaderContainer flex justifyCenter alignCenter"><Loader component="table" /></div>
-      : persons.length === 0 ? <NoUsersFound day={day} village={village} />
-        : <>
-          <div className="pageNumsContainer flex justifyLeft">
-            {[...Array(Math.ceil(selectedDay?.dates?.length / 5))].map((_, index) => (
-              <button key={index} onClick={() => setCurrentPage(index + 1)} className={currentPage === (index + 1) ? "active" : ""}>{index + 1}</button>
-            ))}
-          </div>
-
-          <div className="tableContainer">
-            <table>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Card no</th>
-                  <th className="name">Name</th>
-                  <th>Tot Amount</th>
-                  <th>Paid</th>
-                  <th>Balance</th>
-                  <th>Action</th>
-                  {filterDates.map((date, dateIndex) => <th key={dateIndex}>{date?.split("T")[0]}</th>)}
-                </tr>
-              </thead>
-              <tbody>
-                {filteredPersons?.map((person, personIndex) => (
-                  <tr key={personIndex}>
-                    <td> {person.date.split("T")[0]} </td>
-                    <td>{person.cardNo}</td>
-                    <td className="name"> {person.personName.charAt(0).toUpperCase() + person.personName.slice(1)} </td>
-                    <td className="villageAmount">{person.amountTaken}</td>
-                    <td className="villagePaid">{person.paid}</td>
-                    <td className="villageBalance">{person.balance}</td>
-                    <td className="editTd">
-                      {person.paid >= person.amountTaken ? (
-                        loading === person._id ? (
+    {
+      loading ? <div className="loaderContainer flex justifyCenter alignCenter"><Loader component="table" /></div>
+        : (persons.length === 0 ? <NoUsersFound day={selectedDay[0].dayName} village={selectedVillage[0].villageName} />
+          : <>
+            <div className="pageNumsContainer flex justifyLeft">
+              {[...Array(Math.ceil(selectedDay[0]?.dates?.length / 5))].map((_, index) => (
+                <button key={index} onClick={() => setCurrentPage(index + 1)} className={currentPage === (index + 1) ? "active" : ""}>{index + 1}</button>
+              ))}
+            </div>
+            <div className="tableContainer">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Card no</th>
+                    <th className="name">Name</th>
+                    <th>Tot Amount</th>
+                    <th>Paid</th>
+                    <th>Balance</th>
+                    <th>Action</th>
+                    {selectedDay[0].dates.slice((currentPage - 1) * 5, ((currentPage - 1) * 5) + 5).map((date, dateIndex) => <th key={dateIndex}>{date?.split("T")[0]}</th>)}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredPersons?.map((person, personIndex) => (
+                    <tr key={personIndex}>
+                      <td> {person.date.split("T")[0]} </td>
+                      <td>{person.cardNo}</td>
+                      <td className="name"> {person.personName.charAt(0).toUpperCase() + person.personName.slice(1)} </td>
+                      <td className="villageAmount">{person.amountTaken}</td>
+                      <td className="villagePaid">{person.paid}</td>
+                      <td className="villageBalance">{person.balance}</td>
+                      <td className="editTd">
+                        {person.paid >= person.amountTaken ? (
+                          loading === person._id ? (
+                            <Loader component="table" />
+                          ) : (
+                            <img src="/assets/delete.svg" alt="delete" />
+                          )
+                        ) : loading === person._id ? (
                           <Loader component="table" />
                         ) : (
-                          <img src="/assets/delete.svg" alt="delete" onClick={() => handleDeletePerson(person)} />
-                        )
-                      ) : loading === person._id ? (
-                        <Loader component="table" />
-                      ) : (
-                        <img
-                          src="/assets/edit.svg"
-                          alt="edit"
-                          onClick={() => {
-                            setPersonToBeEdited(person);
-                          }}
-                        />
-                      )}
-                    </td>
-                    {person.weeks.length !== 0 && person.weeks.slice((currentPage - person.pageNo) * 5, (((currentPage - person.pageNo) * 5) + 5)).map((week, i) => <td key={i} className={`col${i + 1}`}>{week}</td>)}
+                          <img
+                            src="/assets/edit.svg"
+                            alt="edit"
+                            onClick={() => {
+                              setPersonToBeEdited(person);
+                            }}
+                          />
+                        )}
+                      </td>
+                      {person.weeks.length !== 0 && person.weeks.slice((currentPage - person.pageNo) * 5, (((currentPage - person.pageNo) * 5) + 5)).map((week, i) => <td key={i} className={`col${i + 1}`}>{week}</td>)}
+                    </tr>
+                  ))}
+                  <tr>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    {totals.length !== 0 && totals.map((total, totalsIndex) => <td key={totalsIndex}>{total}</td>)}
                   </tr>
-                ))}
-                <tr>
-                  <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                  {totals.length !== 0 && totals.map((total, totalsIndex) => <td key={totalsIndex}>{total}</td>)}
-                </tr>
-              </tbody>
-            </table>
-            {personToBeEdited && (
-              <form className="editContainer" onSubmit={handleEditPerson}>
-                <div className="flex spaceBetween">
-                  <p>Card no: {personToBeEdited.cardNo}</p>
-                  <p>
-                    {personToBeEdited.personName.charAt(0).toUpperCase() +
-                      personToBeEdited.personName.slice(1)}
-                  </p>
-                </div>
-                <div className="weeksInputContainer flex alignCenter">
-                  <label>Add amount</label>
-                  <input type="number" onChange={(e) => setAmount(e.target.value)} value={amount} autoFocus required />
-                </div>
-                <div className="addCancelButtonsContainer flex spaceBetween">
-                  {addingAmount ? <Loader component="addAmount"/>:<><button type="button" onClick={() => {
-                    setAmount("");
-                    setPersonToBeEdited('');
-                  }}
-                  >Cancel</button>
-                  <button type="submit">Submit</button></>}
-                </div>
-              </form>
-            )}
-          </div>
-        </>}
+                </tbody>
+              </table>
+              {personToBeEdited && (
+                <form className="editContainer" onSubmit={handleEditPerson}>
+                  <div className="flex spaceBetween">
+                    <p>Card no: {personToBeEdited.cardNo}</p>
+                    <p>
+                      {personToBeEdited.personName.charAt(0).toUpperCase() +
+                        personToBeEdited.personName.slice(1)}
+                    </p>
+                  </div>
+                  <div className="weeksInputContainer flex alignCenter">
+                    <label>Add amount</label>
+                    <input type="number" onChange={(e) => setAmount(e.target.value)} value={amount} autoFocus required />
+                  </div>
+                  <div className="addCancelButtonsContainer flex spaceBetween">
+                    {addingAmount ? <Loader component="addAmount" /> : <><button type="button" onClick={() => {
+                      setAmount("");
+                      setPersonToBeEdited('');
+                    }}
+                    >Cancel</button>
+                      <button type="submit">Submit</button></>}
+                  </div>
+                </form>
+              )}
+            </div>
+          </>)
+    }
   </>
 }
