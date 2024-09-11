@@ -69,7 +69,7 @@ export const App = () => {
       days, setDays, token, currentPage, setCurrentPage,
       persons, setPersons, villages, setVillages,
     }}>
-      <ToastContainer />
+      <ToastContainer autoClose={2000} />
       <Header />
       <Routes>
         <Route path="/signin" element={token ? <Navigate to="/"/>:<Sign />}></Route>

@@ -178,7 +178,7 @@ export const Navbar = () => {
 
       <div className="addBtnsContainer flex justifyCenter">
         {selectedDay.length===1 && <button onClick={() => { setIsAddPersonClicked(false); setIsAddVillageClicked(true) }}>Add Village</button>}
-        {selectedVillage.length === 1 && <button onClick={() => { setIsAddVillageClicked(false); setIsAddPersonClicked(true) }}>Add Person</button>}
+        {selectedVillage.length===1 && selectedDay[0]._id===selectedVillage[0].dayId  && <button onClick={() => { setIsAddVillageClicked(false); setIsAddPersonClicked(true) }}>Add Person</button>}
       </div>
 
       {isAddVillageClicked && (
