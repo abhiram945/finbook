@@ -13,6 +13,7 @@ export const Dashboard = () => {
         (async () => { 
           setLoading(true)
           const {daysSuccess, daysMessage} = await getAllDaysData(userData._id);
+          window.localStorage.setItem("daysData",JSON.stringify(daysMessage));
           setLoading(false)
           if(!daysSuccess){
             toast.error(daysMessage);

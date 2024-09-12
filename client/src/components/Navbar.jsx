@@ -10,8 +10,8 @@ import { getVillagesInDay, getPersonsInVillage, getAllDaysData } from "../functi
 import "../styles/Navbar.css";
 
 export const Navbar = () => {
-  const { userData, loading, setLoading, selectedDay, setSelectedDay, selectedVillage, setSelectedVillage,
-    days, setDays, setPersons, villages, setVillages, currentPage,
+  const { userData, setUserData, loading, setLoading, selectedDay, setSelectedDay, selectedVillage, setSelectedVillage,
+    days, setDays, setPersons, villages, setVillages, currentPage, setCurrentPage
   } = useContext(finbookContext);
   const { day, village } = useParams();
   const locatio = useLocation();
@@ -92,12 +92,23 @@ export const Navbar = () => {
       toast.success(jsonResponse.message);
       setPersonFormData({ cardNo: "", personName: "", amountTaken: "", date: "" });
       const { personsSuccess, personsMessage } = await getPersonsInVillage(selectedVillage[0]._id);
-        if (!personsSuccess) {
-          toast.error(personsMessage);
-        } else {
-          setPersons(personsMessage);
+      if (!personsSuccess) {
+        toast.error(personsMessage);
+      } else {
+        setPersons(personsMessage);
+      }
+      setLoading(false);
+      console.log(jsonResponse);
+      if(jsonResponse.updatingDates){
+        const {daysSuccess, daysMessage} = await getAllDaysData(userData._id);
+        console.log(daysMessage)
+        if(daysSuccess){
+          setDays(daysMessage);
+          const newSelectedDay = daysMessage.find(d=>d._id===selectedDay[0]._id);
+          setSelectedDay([newSelectedDay])
+          window.localStorage.setItem("daysData", JSON.stringify(daysMessage));
         }
-        setLoading(false)
+      }
     } catch (error) {
       setLoading(false);
       return toast.error("Failed to reach server, try again.");
@@ -111,10 +122,10 @@ export const Navbar = () => {
   useEffect(() => {
     if (userData.length !== 0 && days.length === 0) {
       (async () => {
-        const {daysSuccess, daysMessage}= await getAllDaysData(userData._id);
-        if(!daysSuccess){
+        const { daysSuccess, daysMessage } = await getAllDaysData(userData._id);
+        if (!daysSuccess) {
           toast.error(daysMessage);
-        }else{
+        } else {
           window.localStorage.setItem("daysData", JSON.stringify(daysMessage))
           setDays(daysMessage);
         }
@@ -131,10 +142,10 @@ export const Navbar = () => {
           toast.error(villagesMessage);
         } else {
           setVillages(villagesMessage);
-          const villageInUrl = villagesMessage.find(v=>v._id===village);
-          if(villageInUrl!==undefined && selectedVillage.length===0){
+          const villageInUrl = villagesMessage.find(v => v._id === village);
+          if (villageInUrl !== undefined && selectedVillage.length === 0) {
             setSelectedVillage([villageInUrl])
-          }else if(villageInUrl!==undefined && selectedVillage.length!==0 && selectedVillage[0]._id!==villageInUrl._id){
+          } else if (villageInUrl !== undefined && selectedVillage.length !== 0 && selectedVillage[0]._id !== villageInUrl._id) {
             setSelectedVillage([villageInUrl])
           }
         }
@@ -173,12 +184,12 @@ export const Navbar = () => {
 
       <div className="villagesContainer flex justifyLeft">
         {gettingVillages ? <Loader component="days" /> : villages.length !== 0 && villages.map((v, index) => <NavLink key={index} to={`/${selectedDay[0]._id}/${v._id}`}
-        onClick={()=>{setSelectedVillage([v]); setVillageChanged(true)}} className={village === v._id ? "active" : ""}>{v.villageName}</NavLink>)}
+          onClick={() => { setSelectedVillage([v]); setVillageChanged(true); setCurrentPage(1) }} className={village === v._id ? "active" : ""}>{v.villageName}</NavLink>)}
       </div>
 
       <div className="addBtnsContainer flex justifyCenter">
-        {selectedDay.length===1 && <button onClick={() => { setIsAddPersonClicked(false); setIsAddVillageClicked(true) }}>Add Village</button>}
-        {selectedVillage.length===1 && selectedDay[0]._id===selectedVillage[0].dayId  && <button onClick={() => { setIsAddVillageClicked(false); setIsAddPersonClicked(true) }}>Add Person</button>}
+        {selectedDay.length === 1 && <button onClick={() => { setIsAddPersonClicked(false); setIsAddVillageClicked(true) }}>Add Village</button>}
+        {selectedVillage.length === 1 && selectedDay[0]._id === selectedVillage[0].dayId && <button onClick={() => { setIsAddVillageClicked(false); setIsAddPersonClicked(true) }}>Add Person</button>}
       </div>
 
       {isAddVillageClicked && (
@@ -210,10 +221,10 @@ export const Navbar = () => {
         </form>
       )}
     </nav>
-    
+
     {selectedDay.length === 0 && <SelectDay />}
     {selectedDay.length !== 0 && villages.length === 0 && <AddVillage dayName={selectedDay[0].dayName} />}
-    {selectedDay.length !== 0 && villages.length!==0 && selectedVillage.length === 0 && <SelectVillage />}
+    {selectedDay.length !== 0 && villages.length !== 0 && selectedVillage.length === 0 && <SelectVillage />}
   </>
   )
 }

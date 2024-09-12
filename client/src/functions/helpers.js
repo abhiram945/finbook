@@ -41,7 +41,6 @@ export const getPersonsInVillage = async (villageId) => {
         body: JSON.stringify({ villageId: villageId })
       });
       const jsonResponse = await response.json();
-      console.log(jsonResponse.message)
       return {personsSuccess:jsonResponse.success, personsMessage : jsonResponse.message}
     } catch (error) {
       return {personsSuccess:false, personsMessage:"Failed to reach server"}

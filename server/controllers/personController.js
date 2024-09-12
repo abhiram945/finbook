@@ -25,7 +25,8 @@ const addPerson = async (req, res) => {
         zerosArray.push(0);
       }
     }
-    if (index === dayDates.length-1) {
+    let updatingDates = false;
+    if (index === dayDates.length - 1) {
       function generateDatesOf10Weeks(startDate) {
         const dates = [];
         const start = new Date(startDate);
@@ -36,9 +37,10 @@ const addPerson = async (req, res) => {
         }
         return dates;
       }
+      updatingDates = true;
       const next10WeeksDates = generateDatesOf10Weeks(dayDates[index]);
       const addingNewDates = await Day.findByIdAndUpdate(
-        {_id:dayId},
+        { _id: dayId },
         [
           {
             $addFields: {
@@ -46,9 +48,8 @@ const addPerson = async (req, res) => {
             }
           }
         ],
-        {new:true, runValidators:true}
+        { new: true, runValidators: true }
       );
-      console.log(addingNewDates)
     }
     const newPerson = await new Person({
       date: date,
@@ -75,11 +76,13 @@ const addPerson = async (req, res) => {
     res.json({
       success: true,
       message: `${personName} added`,
+      updatingDates: updatingDates,
     });
   } catch (error) {
     return res.status(401).json({
       success: false,
       message: `Failed to add ${personName}`,
+      updatingDates: false,
     });
   }
 };
@@ -100,6 +103,8 @@ const getPersonsInVillage = async (req, res) => {
     })
   }
 }
+
+
 
 
 const updatePerson = async (req, res) => {
@@ -130,13 +135,13 @@ const updatePerson = async (req, res) => {
         {
           $set: {
             totalCollected: { $add: ["$totalCollected", amount] },
-            balance: { $subtract: ["$totalReturn", { $add: ["$totalCollected", amount] }] }
+            balance: { $subtract: ["$totalReturn", { $add: ["$totalCollected", amount] }] },
           },
         },
       ],
       { new: true, runValidators: true }
     );
-    return res.json({ success: true, message: `${amount} added` });
+    return res.json({ success: true, message: `${amount} added`, updatedDay: updateTotalCollected });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
