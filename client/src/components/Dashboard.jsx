@@ -8,7 +8,6 @@ import { toast } from 'react-toastify';
 export const Dashboard = () => {
     const { userData, loading, days, setDays, setLoading } = useContext(finbookContext);
     useEffect(() => {
-      console.log(userData)
       if (userData.length !== 0) {
         (async () => { 
           setLoading(true)

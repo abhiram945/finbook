@@ -11,6 +11,7 @@ import ProtectedRoutes from "./utils/ProtectedRoutes";
 
 import "./styles/Sign.css";
 import 'react-toastify/dist/ReactToastify.css';
+import Days from './components/Days';
 
 export const finbookContext = createContext();
 
@@ -52,13 +53,11 @@ export const App = () => {
   }, []);
 
   useEffect(()=>{
-    if(location.pathname==='/'){
-      setPersons([]);
+    if(location.pathname.includes('days') && selectedVillage.length!==0){
       setSelectedVillage([]);
-      setVillages([]);
-      setSelectedDay([]);
     }
   },[location.pathname])
+
 
 
 
@@ -69,15 +68,19 @@ export const App = () => {
       days, setDays, token, currentPage, setCurrentPage,
       persons, setPersons, villages, setVillages,
     }}>
-      <ToastContainer autoClose={2000} />
+      <ToastContainer autoClose={1500} />
       <Header />
       <Routes>
         <Route path="/signin" element={token ? <Navigate to="/"/>:<Sign />}></Route>
-        <Route path='/' element={(token && userData!==0) ? <Outlet/> : <ProtectedRoutes />}>
-          <Route path="/" element={<Navbar />}></Route>
-          <Route path='/:day/:village' element={(userData.length===0||selectedDay.length===0||selectedVillage.length===0)?<Navigate to="/"/>:<><Navbar /><Table /></>} />
-          <Route path="/:user" element={(days.length===0||userData.length===0)?<Navigate to="/"/>:<Dashboard />}></Route>
+
+        <Route path='/' element={ <ProtectedRoutes />}>
+          <Route exact path="/" element={<Days />}></Route>
+          <Route path="/days/:dayId" element={selectedDay.length===0 ?<Navigate to="/"/> :<Navbar />}></Route>
+          <Route path='/:dayId/:villageId' element={(selectedDay.length===0 || selectedVillage.length===0) ? <Navigate to="/"/> :<><Navbar /><Table /></>} />
+          <Route path="/dashboard/:user" element={<Dashboard />}></Route>
+          <Route path="*" element={<Navigate to="/"/>}></Route>
         </Route>
+
       </Routes>
     </finbookContext.Provider>
   )

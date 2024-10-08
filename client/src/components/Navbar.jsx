@@ -13,14 +13,12 @@ export const Navbar = () => {
   const { userData, setUserData, loading, setLoading, selectedDay, setSelectedDay, selectedVillage, setSelectedVillage,
     days, setDays, setPersons, villages, setVillages, currentPage, setCurrentPage
   } = useContext(finbookContext);
-  const { day, village } = useParams();
-  const locatio = useLocation();
+  const { dayId, villageId } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const [isAddVillageClicked, setIsAddVillageClicked] = useState(false);
   const [isAddPersonClicked, setIsAddPersonClicked] = useState(false);
   const [addVillage, setAddVillage] = useState("");
-  const [dayChanged, setDayChanged] = useState(false);
-  const [villageChanged, setVillageChanged] = useState(false);
   const [gettingVillages, setGettingVillages] = useState(false);
   const [personFormData, setPersonFormData] = useState({
     cardNo: "",
@@ -98,13 +96,13 @@ export const Navbar = () => {
         setPersons(personsMessage);
       }
       setLoading(false);
-      console.log(jsonResponse);
-      if(jsonResponse.updatingDates){
-        const {daysSuccess, daysMessage} = await getAllDaysData(userData._id);
+
+      if (jsonResponse.updatingDates) {
+        const { daysSuccess, daysMessage } = await getAllDaysData(userData._id);
         console.log(daysMessage)
-        if(daysSuccess){
+        if (daysSuccess) {
           setDays(daysMessage);
-          const newSelectedDay = daysMessage.find(d=>d._id===selectedDay[0]._id);
+          const newSelectedDay = daysMessage.find(d => d._id === selectedDay[0]._id);
           setSelectedDay([newSelectedDay])
           window.localStorage.setItem("daysData", JSON.stringify(daysMessage));
         }
@@ -119,72 +117,29 @@ export const Navbar = () => {
     setPersonFormData({ ...personFormData, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {
-    if (userData.length !== 0 && days.length === 0) {
-      (async () => {
-        const { daysSuccess, daysMessage } = await getAllDaysData(userData._id);
-        if (!daysSuccess) {
-          toast.error(daysMessage);
-        } else {
-          window.localStorage.setItem("daysData", JSON.stringify(daysMessage))
-          setDays(daysMessage);
-        }
-      })();
-    }
-  }, [userData]);
-
-  useEffect(() => {
-    if (dayChanged && selectedDay.length !== 0) {
-      (async () => {
-        setGettingVillages(true);
-        const { villagesSuccess, villagesMessage } = await getVillagesInDay(selectedDay[0]._id);
-        if (!villagesSuccess) {
-          toast.error(villagesMessage);
-        } else {
-          setVillages(villagesMessage);
-          const villageInUrl = villagesMessage.find(v => v._id === village);
-          if (villageInUrl !== undefined && selectedVillage.length === 0) {
-            setSelectedVillage([villageInUrl])
-          } else if (villageInUrl !== undefined && selectedVillage.length !== 0 && selectedVillage[0]._id !== villageInUrl._id) {
-            setSelectedVillage([villageInUrl])
-          }
-        }
-        setGettingVillages(false);
-        setDayChanged(false);
-      })()
-    }
-  }, [dayChanged]);
-
-
-  useEffect(() => {
-    if (villageChanged && selectedVillage.length !== 0) {
-      (async () => {
-        setLoading(true)
-        const { personsSuccess, personsMessage } = await getPersonsInVillage(selectedVillage[0]._id);
-        if (!personsSuccess) {
-          toast.error(personsMessage);
-        } else {
-          setPersons(personsMessage);
-        }
-        setLoading(false);
-        setVillageChanged(false)
-      })()
-    }
-  }, [villageChanged]);
+  useEffect(()=>{
+    setGettingVillages(true);
+    (async()=>{
+      const {villagesSuccess, villagesMessage}=await getVillagesInDay(selectedDay[0]._id);
+      setGettingVillages(false)
+      if(!villagesSuccess){
+        toast.error(villagesMessage);
+        return;
+      }
+      setVillages(villagesMessage);
+    })();
+  },[dayId])
 
 
   return (<>
     <nav className="flex flexColumn">
-
-      <div className="daysContainer flex spaceEvenly">
-        {(loading && days.length === 0) ? <Loader component="days" /> : days.map((day, index) => <button key={index} onClick={() => {
-          setSelectedDay([day]); setDayChanged(true); setPersons([]);
-        }} className={selectedDay[0]?._id === day._id ? "active" : ""}>{day.dayName}</button>)}
+      <div className="dayNameContainer">
+        <h2>{selectedDay[0].dayName.toUpperCase()} logs</h2>
       </div>
 
       <div className="villagesContainer flex justifyLeft">
         {gettingVillages ? <Loader component="days" /> : villages.length !== 0 && villages.map((v, index) => <NavLink key={index} to={`/${selectedDay[0]._id}/${v._id}`}
-          onClick={() => { setSelectedVillage([v]); setVillageChanged(true); setCurrentPage(1) }} className={village === v._id ? "active" : ""}>{v.villageName}</NavLink>)}
+          onClick={() => { setSelectedVillage([v]); setCurrentPage(1) }} className={villageId === v._id ? "active" : ""}>{v.villageName}</NavLink>)}
       </div>
 
       <div className="addBtnsContainer flex justifyCenter">

@@ -12,7 +12,7 @@ export const Table = () => {
   const { selectedDay, setSelectedDay, selectedVillage, setSelectedVillage, loading, setLoading, persons, setPersons,
     currentPage, setCurrentPage, days, villages, setVillages,
   } = useContext(finbookContext);
-  const { day, village } = useParams();
+  const { dayId, villageId } = useParams();
   const navigate = useNavigate("/");
   const [personToBeEdited, setPersonToBeEdited] = useState();
   const [addingAmount, setAddingAmount] = useState(false);
@@ -102,39 +102,37 @@ export const Table = () => {
     let isMounted = true;
     (async () => {
       try {
-        setLoading(true);        
-        const dayInUrl = days.find(d => d._id === day);
+        setLoading(true);
+        const dayInUrl = days.find(d => d._id === dayId);
         if (!dayInUrl) {
           toast.error("Day not found");
           setLoading(false);
-          console.log(dayInUrl,"returning1")
           return navigate("/");
         }
         setSelectedDay([dayInUrl]);
-        const {  villagesSuccess, villagesMessage } = await getVillagesInDay(dayInUrl._id);
+        const { villagesSuccess, villagesMessage } = await getVillagesInDay(dayInUrl._id);
         if (!villagesSuccess) {
           toast.error(villagesMessage);
           setLoading(false);
-          console.log(villagesSuccess,"returning2")
           return navigate("/");
         }
         setVillages(villagesMessage);
-        const villageInUrl = villagesMessage.find(v => v._id === village);
+        const villageInUrl = villagesMessage.find(v => v._id === villageId);
         if (!villageInUrl) {
           toast.error("Village not found");
           setLoading(false);
-          console.log(villageInUrl,"returning3")
           return navigate("/");
         }
-        setSelectedVillage([villageInUrl]);  
+        setSelectedVillage([villageInUrl]);
         const { personsSuccess, personsMessage } = await getPersonsInVillage(villageInUrl._id);
         if (!personsSuccess) {
           toast.error(personsMessage);
           setLoading(false);
-          console.log(personsSuccess,"returning4")
+          console.log(personsSuccess, "returning4")
           return navigate("/");
-        }  
+        }
         setPersons(personsMessage);
+        setLoading(false)
       } catch (error) {
         toast.error("An unexpected error occurred");
       } finally {
@@ -146,13 +144,13 @@ export const Table = () => {
     return () => {
       isMounted = false;
     };
-  }, [day, village]);
-  
+  }, [dayId, villageId]);
+
 
   return <>
     {
       loading ? <div className="loaderContainer flex justifyCenter alignCenter"><Loader component="table" /></div>
-        : (persons.length === 0 ? (selectedDay[0]._id===selectedVillage[0].dayId ? <NoUsersFound day={selectedDay[0].dayName} village={selectedVillage[0].villageName} />: (villages.length!==0 && <SelectVillage/>))
+        : (persons.length === 0 ? (selectedDay[0]._id === selectedVillage[0].dayId && <NoUsersFound day={selectedDay[0].dayName} village={selectedVillage[0].villageName} />)
           : <>
             <div className="pageNumsContainer flex justifyLeft">
               {[...Array(Math.ceil(selectedDay[0]?.dates?.length / 5))].map((_, index) => (
@@ -187,7 +185,7 @@ export const Table = () => {
                           loading === person._id ? (
                             <Loader component="table" />
                           ) : (
-                            <img src="/assets/delete.svg" alt="delete" />
+                            <img src="/assets/paid.svg" alt="paid" />
                           )
                         ) : loading === person._id ? (
                           <Loader component="table" />
@@ -204,12 +202,14 @@ export const Table = () => {
                       {person.weeks.length !== 0 && person.weeks.slice((currentPage - person.pageNo) * 5, (((currentPage - person.pageNo) * 5) + 5)).map((week, i) => <td key={i} className={`col${i + 1}`}>{week}</td>)}
                     </tr>
                   ))}
-                  <tr>
+                  <tr className="totalsContainer">
                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                     {totals.length !== 0 && totals.map((total, totalsIndex) => <td key={totalsIndex}>{total}</td>)}
                   </tr>
                 </tbody>
               </table>
+
+              
               {personToBeEdited && (
                 <form className="editContainer" onSubmit={handleEditPerson}>
                   <div className="flex spaceBetween">
@@ -234,7 +234,8 @@ export const Table = () => {
                 </form>
               )}
             </div>
-          </>)
+          </>
+        )
     }
   </>
 }

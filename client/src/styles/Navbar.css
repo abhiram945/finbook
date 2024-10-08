@@ -4,24 +4,19 @@ nav{
     background-color: var(--backgroundColor);
     gap:2.5vh;
 }
-.daysContainer, .villagesContainer, .addBtnsContainer{
+
+.dayNameContainer, .villagesContainer, .addBtnsContainer{
     height: 5vh;
     padding: 0 0.5rem;
 }
-.daysContainer button, .villagesContainer a{
+.dayNameContainer h2{
+    text-align: center;
+    color: var(--primaryColor);
+}
+.villagesContainer a{
     border: none;
     border-radius: 0.25rem;
     outline:none;
-}
-.daysContainer button{
-    padding: 0 0.75rem;
-    background-color: var(--primaryLightColor);
-    color: var(--primaryColor);
-    cursor: pointer;
-}
-.daysContainer .active{
-    background-color: var(--primaryColor);
-    color: var(--white);
 }
 .villagesContainer a{
     margin:auto 0;
@@ -96,17 +91,12 @@ input[type=number]::-webkit-outer-spin-button {
 @media(max-width:720px){
     nav{
         height: 20svh;
-    }
-    .daysContainer{
-        justify-content: left !important;
-    }
-    .daysContainer, .villagesContainer{
+    }.villagesContainer{
         overflow-x: scroll;
         &::-webkit-scrollbar{
             display: none;
         }
-    }
-    .daysContainer button, .villagesContainer a{
+    }.villagesContainer a{
         margin-right: 0.5rem;
         margin-left: 0.5rem;
     }

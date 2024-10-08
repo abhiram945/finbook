@@ -68,6 +68,10 @@
 .tableContainer table tbody tr .editTd {
     cursor: pointer;
 }
+.totalsContainer{
+    background-color: var(--btnsColor);
+    color: var(--white);
+}
 
 .editContainer {
     position: fixed;

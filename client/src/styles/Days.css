@@ -1,0 +1,24 @@
+.daysContainer{
+    height: 90vh;
+    padding: 10vh 30vw;
+}
+.daysContainer a{
+    border: none;
+    border-radius: 0.5rem;
+    outline:none;
+    padding: 1rem;
+    background-color: var(--primaryLightColor);
+    color: var(--primaryColor);
+    cursor: pointer;
+    text-align: center;
+}
+.daysContainer a:hover{
+    background-color: var(--primaryColor);
+    color: var(--white);
+}
+
+@media(max-width:720px){
+    .daysContainer{
+        padding: 10vh 15vw;
+    }
+}

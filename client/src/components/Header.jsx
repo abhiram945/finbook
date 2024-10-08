@@ -8,7 +8,7 @@ export const Header = () => {
     return <header className="flex spaceBetween alignCenter">
         <NavLink to="/" className="flex alignCenter"><img src="/assets/logo.svg" /><h1>FinBook</h1></NavLink>
         {userData.length!==0 && <div className="userOptions flex spaceBetween">
-            <NavLink to={`/${userData.userName}`}>Dashboard</NavLink>
+            <NavLink to={`/dashboard/${userData.userName}`}>Dashboard</NavLink>
             <NavLink onClick={() => {
                 window.localStorage.clear(); setUserData([]);
                 setPersons([]);
