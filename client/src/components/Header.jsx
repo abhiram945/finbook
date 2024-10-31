@@ -16,6 +16,7 @@ export const Header = () => {
                 setSelectedDay([]);
                 setVillages([]); setDays([]);
                 }} to="/signin">SignOut</NavLink>
+                {userData.gmail==="admin@gmail.com"&&<NavLink to="/admin" className="admin">Admin</NavLink>}
         </div>}
     </header>
 }

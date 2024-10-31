@@ -14,19 +14,23 @@ a h1{
     background-color: var(--accentColor);
     padding: 0.5rem 0.75rem;
     border-radius: 0.35rem;
+    margin:0 0.5rem;
 }
 .userOptions a:first-child{
-    margin-right: 0.5rem;
     color: var(--primaryColor);
     background-color: var(--primaryLightColor);
 }
-.userOptions a:last-child{
+.userOptions a:nth-child(2){
     color: var(--accentColor);
     background-color: var(--accentLightColor);
 }
-.userOptions a:last-child:hover{
+.userOptions a:nth-child(2):hover{
     color: var(--white);
     background-color: var(--accentColor);
+}
+.admin{
+    color: var(--white);
+    background-color: var(--primaryColor) !important;
 }
 
 @media(max-width:480px){
@@ -39,6 +43,12 @@ a h1{
     }
     a h1{
         font-size: 1.5rem;
+    }
+    .userOptions{
+        overflow-x: scroll;
+        &::-webkit-scrollbar{
+            display: none;
+        }
     }
     .userOptions a{
         padding: 0.35rem 0.5rem;

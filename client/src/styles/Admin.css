@@ -1,0 +1,42 @@
+.adminContainer{
+    height: 90vh;
+    width: 100%;
+    padding: 1rem;
+    flex-wrap: wrap;
+    overflow-y: auto;
+
+}
+.userContainer{
+    background-color: var(--backgroundColor);
+    border-radius: 0.5rem;
+    margin: 1rem;
+    padding:0.75rem 1rem;
+    box-shadow: rgba(149, 157, 165, 0.15) 0px 8px 24px;
+}
+.userContainer:hover{
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    cursor: default;
+}
+.deleteBtn{
+    display: block;
+    margin: 0.75rem auto 0.5rem;
+    color: var(--accentColor);
+    background-color: var(--accentLightColor);
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+.deleteBtn:hover{
+    color: var(--white);
+    background-color: var(--accentColor);
+}
+
+@media screen and (max-width:720px)  {
+    .adminContainer{
+        padding: 1rem 0.25rem;
+    }
+    h2, h3{
+        font-size: 1rem;
+    }
+}

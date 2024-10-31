@@ -7,7 +7,6 @@ import mongoose from "mongoose";
 const getAllDaysData = async (req, res) => {
   const { userId } = req.body;
   try {
-    const objectUserId = new mongoose.Types.ObjectId(userId);
     const allDaysData = await Day.find({ user: userId }).sort({ dayNumber: 1 });
     return res.json({
       success: true,

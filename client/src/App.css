@@ -4,6 +4,7 @@
   box-sizing: border-box;
   font-family: Helvetica;
   text-decoration: none;
+  transition: all ease 0.25s;
 }
 :root {
   --primaryColor: #3167f3;

@@ -1,8 +1,12 @@
 import { User } from "../models/userModel.js";
 import { Day } from "../models/dayModel.js";
+import { Village } from "../models/villageModel.js";
+import {Person} from "../models/personModel.js";
+
 import bcrypt from "bcryptjs";
 import generateToekn from "../utils/generateToken.js";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 const registerOrLogin = async (req, res) => {
   const { gmail, password } = req.body;
@@ -57,10 +61,10 @@ const registerOrLogin = async (req, res) => {
       }
       const datesOf7Days = generateDatesOf7Days();
 
-      function generateDatesOf10Weeks(startDate) {
+      function generateDatesOf5Weeks(startDate) {
         const dates = [];
         const start = new Date(startDate);
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 5; i++) {
           const weekStartDate = new Date(start);
           weekStartDate.setDate(start.getDate() + (i * 7));
           dates.push(weekStartDate.toISOString().split("T")[0]);
@@ -72,7 +76,7 @@ const registerOrLogin = async (req, res) => {
         new Day({
           dayName: day,
           date: datesOf7Days[index],
-          dates: generateDatesOf10Weeks(datesOf7Days[index]),
+          dates: generateDatesOf5Weeks(datesOf7Days[index]),
           dayNumber: index + 1,
           user: newUser._id,
         }).save()
@@ -113,4 +117,64 @@ const verifyUser = async(req,res)=>{
   return;
 }
 
-export { registerOrLogin, verifyUser };
+const getAllUsers = async(req,res)=>{
+  try{
+    const allUsers = await User.find().sort({userName:1});
+    return res.json({success:true, message:allUsers});
+  }catch(e){
+    return res.json({success:false, message:"Internal server error"});
+  }
+}
+
+const deleteUserAccount = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  const { userId } = req.body;
+  try {
+    const user = await User.findById(userId).session(session);
+    if (!user) {
+      res.json({success:false, message:"User not found"});
+      await session.abortTransaction();
+      session.endSession();
+      return;
+    }
+    const days = await Day.find({ user: userId }).session(session);
+    const dayIds = days.map(day => day._id);
+    
+    const villages = await Village.find({ dayId: { $in: dayIds } }).session(session);
+    const villageIds = villages.map(village => village._id);
+
+    const batchDelete = async (Model, filter, batchSize = 100, session) => {
+  let documents;
+  
+  do {
+    documents = await Model.find(filter).limit(batchSize).select('_id').session(session);
+    const ids = documents.map(doc => doc._id);
+
+    if (ids.length > 0) {
+      await Model.deleteMany({ _id: { $in: ids } }).session(session);
+    }
+
+  } while (documents.length > 0);
+};
+
+    
+    await batchDelete(Person, { villageId: { $in: villageIds } }, 100, session);
+    await batchDelete(Village, { dayId: { $in: dayIds } }, 100, session);
+    await batchDelete(Day, { user: userId }, 100, session);
+
+    await User.findByIdAndDelete(userId).session(session);
+    
+    await session.commitTransaction();
+    session.endSession();
+    return res.json({ success: true, message: "Deleted successfully" });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    console.error("Error deleting user account:", error);
+    return res.json({ success: false, message: "Internal error, try again" });
+  }
+};
+
+
+export { registerOrLogin, verifyUser, getAllUsers, deleteUserAccount };

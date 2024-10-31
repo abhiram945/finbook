@@ -10,12 +10,12 @@ export const Sign = () => {
     const navigate = useNavigate();
     const { setUserData } = useContext(finbookContext);
     const [formData, setFormData] = useState({
-        gmail: '',
-        password: ''
+        gmail: 'admin@gmail.com',
+        password: 'admin'
     });
     const [signingIn, setSigningIn]=useState(false);
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setFormData({ ...formData, [e.target.name]: e.target.value.toLowerCase() });
     };
     const handleCreateAccount = async (e) => {
         e.preventDefault();
@@ -24,6 +24,9 @@ export const Sign = () => {
         }
         if (!formData.password) {
             return toast.error("Please enter password")
+        }
+        if(formData.password.length<5){
+            return toast.error("Enter 5 letters password atleast");
         }
         try {
             setSigningIn(true);
@@ -46,6 +49,7 @@ export const Sign = () => {
             setSigningIn(false);
             navigate("/");
         } catch (error) {
+            setSigningIn(false);
             return toast.error("Failed to reach server, try again");
         }
     };

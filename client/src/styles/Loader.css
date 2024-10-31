@@ -8,7 +8,7 @@
     border-top: 0.45rem solid var(--primaryColor);
 }
 
-.navbar, .table{
+.navbar, .table, .adminDelete{
     margin: 0 auto;
 }
 .days,.addAmount{

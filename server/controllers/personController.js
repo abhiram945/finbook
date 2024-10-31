@@ -14,7 +14,6 @@ const addPerson = async (req, res) => {
         message: `cardNo ${newCardNo} exists`,
       });
     }
-
     const personDay = await Day.findById(dayId)
     const dayDates = personDay.dates;
     let zerosArray = [];
@@ -25,32 +24,6 @@ const addPerson = async (req, res) => {
         zerosArray.push(0);
       }
     }
-    let updatingDates = false;
-    if (index === dayDates.length - 1) {
-      function generateDatesOf10Weeks(startDate) {
-        const dates = [];
-        const start = new Date(startDate);
-        for (let i = 0; i < 10; i++) {
-          const weekStartDate = new Date(start);
-          weekStartDate.setDate(start.getDate() + (i * 7));
-          dates.push(new Date(weekStartDate.toISOString().split("T")[0]));
-        }
-        return dates;
-      }
-      updatingDates = true;
-      const next10WeeksDates = generateDatesOf10Weeks(dayDates[index]);
-      const addingNewDates = await Day.findByIdAndUpdate(
-        { _id: dayId },
-        [
-          {
-            $addFields: {
-              dates: { $concatArrays: ["$dates", next10WeeksDates] }
-            }
-          }
-        ],
-        { new: true, runValidators: true }
-      );
-    }
     const newPerson = await new Person({
       date: date,
       cardNo: newCardNo,
@@ -60,6 +33,8 @@ const addPerson = async (req, res) => {
       weeks: zerosArray,
       villageId: villageId,
     }).save();
+
+    console.log(newPerson)
 
     const updateTotalReturnOnDay = await Day.findByIdAndUpdate(
       { _id: dayId },
@@ -76,13 +51,11 @@ const addPerson = async (req, res) => {
     res.json({
       success: true,
       message: `${personName} added`,
-      updatingDates: updatingDates,
     });
   } catch (error) {
     return res.status(401).json({
       success: false,
       message: `Failed to add ${personName}`,
-      updatingDates: false,
     });
   }
 };
@@ -105,10 +78,8 @@ const getPersonsInVillage = async (req, res) => {
 }
 
 
-
-
 const updatePerson = async (req, res) => {
-  const { dayId, personId, amount } = req.body;
+  const { dayId, personId, amount, pageNo } = req.body;
   try {
     const updatedPerson = await Person.findByIdAndUpdate(
       { _id: personId },
@@ -129,11 +100,23 @@ const updatePerson = async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    const updateTotalCollected = await Day.findByIdAndUpdate(
+    const dayDetails = await Day.findById(dayId);
+    const next5WeeksDates = [];
+    if (dayDetails.dates.length === pageNo * 5) {
+      const start = new Date(dayDetails.dates[dayDetails.dates.length - 1]);
+      for (let i = 1; i <=5; i++) {
+        const weekStartDate = new Date(start);
+        weekStartDate.setDate(start.getDate() + (i * 7));
+        next5WeeksDates.push(weekStartDate.toISOString().split("T")[0]);
+      }
+    }
+
+    const updateDay = await Day.findByIdAndUpdate(
       { _id: dayId },
       [
         {
           $set: {
+            dates: { $concatArrays: ["$dates", next5WeeksDates] },
             totalCollected: { $add: ["$totalCollected", amount] },
             balance: { $subtract: ["$totalReturn", { $add: ["$totalCollected", amount] }] },
           },
@@ -141,7 +124,8 @@ const updatePerson = async (req, res) => {
       ],
       { new: true, runValidators: true }
     );
-    return res.json({ success: true, message: `${amount} added`, updatedDay: updateTotalCollected });
+
+    return res.json({ success: true, message: `${amount} added`, updatingDates:next5WeeksDates.length!==0 });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
   }

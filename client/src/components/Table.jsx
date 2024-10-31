@@ -4,13 +4,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { finbookContext } from "../App";
 import { Loader } from "../utils/Loader";
 import { NoUsersFound, SelectDay, SelectVillage } from "../utils/Select";
-import { getPersonsInVillage, getVillagesInDay } from "../functions/helpers.js";
+import { getPersonsInVillage, getVillagesInDay, getAllDaysData } from "../functions/helpers.js";
 
 import "../styles/Table.css"
 
 export const Table = () => {
-  const { selectedDay, setSelectedDay, selectedVillage, setSelectedVillage, loading, setLoading, persons, setPersons,
-    currentPage, setCurrentPage, days, villages, setVillages,
+  const { userData, selectedDay, setSelectedDay, selectedVillage, setSelectedVillage, loading, setLoading, persons, setPersons,
+    currentPage, setCurrentPage, days, villages, setVillages, setDays
   } = useContext(finbookContext);
   const { dayId, villageId } = useParams();
   const navigate = useNavigate("/");
@@ -48,6 +48,7 @@ export const Table = () => {
             dayId: selectedDay[0]._id,
             personId: personToBeEdited._id,
             amount: Number(amount),
+            pageNo: Number(currentPage),
           }),
         }
       );
@@ -76,7 +77,17 @@ export const Table = () => {
       setPersonToBeEdited(null);
       setAddingAmount(false);
       setAmount("");
-      return toast.success(jsonResponse.message);
+      toast.success(jsonResponse.message);
+      if (jsonResponse.updatingDates) {
+        const {daysSuccess, daysMessage} = await getAllDaysData(userData._id);
+        if (daysSuccess) {
+          const newSelectedDay = daysMessage.find(d => d._id === selectedDay[0]._id);
+          setDays(daysMessage);
+          setSelectedDay([newSelectedDay])
+          window.localStorage.setItem("daysData", JSON.stringify(daysMessage));
+        }
+      }
+      return;
     } catch (error) {
       setPersonToBeEdited(null);
       return toast.error("Failed to Add amount, try Again.");
@@ -128,7 +139,6 @@ export const Table = () => {
         if (!personsSuccess) {
           toast.error(personsMessage);
           setLoading(false);
-          console.log(personsSuccess, "returning4")
           return navigate("/");
         }
         setPersons(personsMessage);

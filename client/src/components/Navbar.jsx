@@ -97,16 +97,7 @@ export const Navbar = () => {
       }
       setLoading(false);
 
-      if (jsonResponse.updatingDates) {
-        const { daysSuccess, daysMessage } = await getAllDaysData(userData._id);
-        console.log(daysMessage)
-        if (daysSuccess) {
-          setDays(daysMessage);
-          const newSelectedDay = daysMessage.find(d => d._id === selectedDay[0]._id);
-          setSelectedDay([newSelectedDay])
-          window.localStorage.setItem("daysData", JSON.stringify(daysMessage));
-        }
-      }
+      
     } catch (error) {
       setLoading(false);
       return toast.error("Failed to reach server, try again.");
@@ -177,7 +168,6 @@ export const Navbar = () => {
       )}
     </nav>
 
-    {selectedDay.length === 0 && <SelectDay />}
     {selectedDay.length !== 0 && villages.length === 0 && <AddVillage dayName={selectedDay[0].dayName} />}
     {selectedDay.length !== 0 && villages.length !== 0 && selectedVillage.length === 0 && <SelectVillage />}
   </>

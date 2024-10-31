@@ -7,11 +7,12 @@ import { Sign } from './components/Sign';
 import { Navbar } from "./components/Navbar";
 import { Table } from './components/Table';
 import { Dashboard } from './components/Dashboard';
+import { Days } from "./components/Days";
+import { Admin } from './components/Admin';
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 
 import "./styles/Sign.css";
 import 'react-toastify/dist/ReactToastify.css';
-import Days from './components/Days';
 
 export const finbookContext = createContext();
 
@@ -22,10 +23,10 @@ export const App = () => {
   const [loading, setLoading] = useState(false);
   const [selectedDay, setSelectedDay] = useState([]);
   const [selectedVillage, setSelectedVillage] = useState([]);
-  const [days, setDays] = useState( JSON.parse(window.localStorage.getItem("daysData")) ||[]);
+  const [days, setDays] = useState(JSON.parse(window.localStorage.getItem("daysData")) || []);
   const [currentPage, setCurrentPage] = useState(1);
   const [persons, setPersons] = useState([]);
-  const [villages, setVillages] = useState([]);  
+  const [villages, setVillages] = useState([]);
 
   useEffect(() => {
     const verifyUser = async () => {
@@ -52,11 +53,11 @@ export const App = () => {
     }
   }, []);
 
-  useEffect(()=>{
-    if(location.pathname.includes('days') && selectedVillage.length!==0){
+  useEffect(() => {
+    if (location.pathname.includes('days') && selectedVillage.length !== 0) {
       setSelectedVillage([]);
     }
-  },[location.pathname])
+  }, [location.pathname])
 
 
 
@@ -71,16 +72,16 @@ export const App = () => {
       <ToastContainer autoClose={1500} />
       <Header />
       <Routes>
-        <Route path="/signin" element={token ? <Navigate to="/"/>:<Sign />}></Route>
+        <Route path="/signin" element={token ? <Navigate to="/" /> : <Sign />}></Route>
 
-        <Route path='/' element={ <ProtectedRoutes />}>
+        <Route path='/' element={<ProtectedRoutes />}>
           <Route exact path="/" element={<Days />}></Route>
-          <Route path="/days/:dayId" element={selectedDay.length===0 ?<Navigate to="/"/> :<Navbar />}></Route>
-          <Route path='/:dayId/:villageId' element={(selectedDay.length===0 || selectedVillage.length===0) ? <Navigate to="/"/> :<><Navbar /><Table /></>} />
+          <Route path="/days/:dayId" element={selectedDay.length === 0 ? <Navigate to="/" /> : <Navbar />}></Route>
+          <Route path='/:dayId/:villageId' element={(selectedDay.length === 0 || selectedVillage.length === 0) ? <Navigate to="/" /> : <><Navbar /><Table /></>} />
           <Route path="/dashboard/:user" element={<Dashboard />}></Route>
-          <Route path="*" element={<Navigate to="/"/>}></Route>
+          <Route path="/admin" element={userData!==null && userData.gmail==="admin@gmail.com" ? <Admin /> : <Navigate to="/"/>}/>
+          <Route path="*" element={<Navigate to="/" />}></Route>
         </Route>
-
       </Routes>
     </finbookContext.Provider>
   )

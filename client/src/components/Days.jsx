@@ -5,7 +5,7 @@ import { finbookContext } from '../App';
 import "../styles/Days.css"
 import { Loader } from '../utils/Loader';
 import { getAllDaysData } from '../functions/helpers';
-const Days = () => {
+export const Days = () => {
     const { days,setDays, loading,setLoading, setSelectedDay, userData } = useContext(finbookContext);
 
     useEffect(() => {
@@ -33,4 +33,3 @@ const Days = () => {
     )
 }
 
-export default Days
