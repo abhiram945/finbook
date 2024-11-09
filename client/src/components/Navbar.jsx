@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { NavLink, useParams, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { Loader } from "../utils/Loader";
@@ -10,16 +10,13 @@ import { getVillagesInDay } from "../functions/helpers.js";
 import "../styles/Navbar.css";
 
 export const Navbar = () => {
-  const { userData, setUserData, loading, setLoading, selectedDay, setSelectedDay, selectedVillage, setSelectedVillage,
-    days, setDays, setPersons, villages, setVillages, currentPage, setCurrentPage
-  } = useContext(finbookContext);
+  const { loading, setLoading, selectedDay, selectedVillage, setSelectedVillage,
+  setPersons, villages, setVillages, currentPage, setCurrentPage } = useContext(finbookContext);
   const { dayId, villageId } = useParams();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [isAddVillageClicked, setIsAddVillageClicked] = useState(false);
-  const [isAddPersonClicked, setIsAddPersonClicked] = useState(false);
-  const [addVillage, setAddVillage] = useState("");
   const [gettingVillages, setGettingVillages] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [add, setAdd]=useState("");
+  const [addVillage, setAddVillage] = useState("");
   const [personFormData, setPersonFormData] = useState({
     cardNo: "",
     personName: "",
@@ -32,7 +29,7 @@ export const Navbar = () => {
   const handleAddVillageFunction = async (e) => {
     e.preventDefault();
     try {
-      setGettingVillages(true);
+      setAdding(true)
       const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/villages/addVillage`, {
         method: "POST",
         headers: {
@@ -41,14 +38,15 @@ export const Navbar = () => {
         body: JSON.stringify({ dayId: selectedDay[0]._id, newVillageName: addVillage })
       });
       const jsonResponse = await response.json();
-      setIsAddVillageClicked(false);
+      setAdding(false);
+      setAdd("");
       if (!jsonResponse.success) {
         return toast.error(jsonResponse.message);
       }
       toast.success(`${addVillage} added`);
       setVillages(prev=>[...prev,jsonResponse.message]);
-      setGettingVillages(false)
     } catch (error) {
+      setAdding(false)
       return toast.error("Failed to reach server, try again");
     }
   }
@@ -56,8 +54,8 @@ export const Navbar = () => {
 
   const handleAddPersonFunction = async (e) => {
     e.preventDefault();
-    setLoading(true);
     try {
+      setAdding(true)
       const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/persons/addPerson`, {
         method: "POST",
         headers: {
@@ -74,17 +72,16 @@ export const Navbar = () => {
         })
       });
       const jsonResponse = await response.json();
+      setAdding(false);
+      setAdd("")
       if (!jsonResponse.success) {
-        setLoading(false);
         return toast.error(jsonResponse.message);
       }
-      setIsAddPersonClicked(!isAddPersonClicked);
-      toast.success(jsonResponse.message.personName+" added");
-      setPersonFormData({ cardNo: "", personName: "", amountTaken: "", date: "" });
+      toast.success(`${personFormData.personName} added`);
       setPersons(prev=>[...prev,jsonResponse.message])
-      setLoading(false);
+      setPersonFormData({ cardNo: "", personName: "", amountTaken: "", date: "" });
     } catch (error) {
-      setLoading(false);
+      setAdding(false)
       return toast.error("Failed to reach server, try again.");
     }
   }
@@ -94,8 +91,8 @@ export const Navbar = () => {
   };
 
   useEffect(()=>{
-    setGettingVillages(true);
     (async()=>{
+      setGettingVillages(true);
       const {villagesSuccess, villagesMessage}=await getVillagesInDay(selectedDay[0]._id);
       setGettingVillages(false)
       if(!villagesSuccess){
@@ -119,24 +116,24 @@ export const Navbar = () => {
       </div>
 
       <div className="addBtnsContainer flex justifyCenter">
-        {selectedDay.length === 1 && <button onClick={() => { setIsAddPersonClicked(false); setIsAddVillageClicked(true) }}>Add Village</button>}
-        {selectedVillage.length === 1 && selectedDay[0]._id === selectedVillage[0].dayId && <button onClick={() => { setIsAddVillageClicked(false); setIsAddPersonClicked(true) }}>Add Person</button>}
+        {selectedDay.length === 1 && <button onClick={() => { setAdd("village") }}>Add Village</button>}
+        {selectedVillage.length === 1 && selectedDay[0]._id === selectedVillage[0].dayId && <button onClick={() => { setAdd("person") }}>Add Person</button>}
       </div>
 
-      {isAddVillageClicked && (
+      {add==="village" && (
         <form className='addVillageForm flex flexColumn' onSubmit={handleAddVillageFunction}>
           <h3>Add new Village into {selectedDay[0].dayName.toUpperCase()}</h3>
           <input type='text' placeholder='Enter new village name' required onChange={(e) => setAddVillage(e.target.value)} autoFocus />
           <div className='addCancelButtonsContainer flex spaceEvenly'>
-            {loading ? <Loader component="" /> : <>
-              <button type='button' onClick={() => { setIsAddVillageClicked(false) }}>Cancel</button>
+            {adding && add!=="" ? <Loader component="" /> : <>
+              <button type='button' onClick={() => { setAdd("") }}>Cancel</button>
               <button type='submit'>Add</button>
             </>}
           </div>
         </form>
       )}
 
-      {isAddPersonClicked && selectedDay.length !== 0 && selectedVillage.length !== 0 && (
+      {add==="person" && selectedDay.length !== 0 && selectedVillage.length !== 0 && (
         <form className='addPersonForm flex flexColumn' onSubmit={handleAddPersonFunction}>
           <h3>Add new Person into<br /> {selectedDay[0].dayName.toUpperCase()} - {selectedVillage[0].villageName.toUpperCase()} - {currentPage}</h3>
           <input type='number' name='cardNo' placeholder='Card no' required onChange={handleChange} value={personFormData.cardNo} autoFocus />
@@ -144,8 +141,8 @@ export const Navbar = () => {
           <input type='number' name='amountTaken' placeholder='Enter total amount' required onChange={handleChange} value={personFormData.amount} />
           <input type='date' name='date' required onChange={handleChange} value={personFormData.date} />
           <div className='addCancelButtonsContainer flex spaceEvenly'>
-            {loading ? <Loader component="" /> :
-              <><button type='button' onClick={() => setIsAddPersonClicked(false)}>Cancel</button>
+            {adding && add!=="" ? <Loader component="" /> :
+              <><button type='button' onClick={() => setAdd("")}>Cancel</button>
                 <button type='submit'>Add</button></>
             }
           </div>
