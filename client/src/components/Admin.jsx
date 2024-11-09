@@ -47,7 +47,7 @@ export const Admin = () => {
         {allUsers.length!==0 ? allUsers.map((user,index)=><div className='flex flexColumn spaceEvenly userContainer' key={user._id}>
             <p>id : {user._id}</p>
             <h2>Username : {user.userName}</h2>
-            <h3>Gamil : {user.gmail}</h3>
+            <h3>Gmail : {user.gmail}</h3>
             {deleting===user._id ?<Loader component="adminDelete"/> :<button className='deleteBtn' onClick={()=>{setDeleting(user._id);deleteUserAccount(user._id)}}>Delete</button>}
         </div>):
         <Loader component="dashboard" />}

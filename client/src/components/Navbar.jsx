@@ -4,8 +4,8 @@ import { toast } from "react-toastify";
 
 import { Loader } from "../utils/Loader";
 import { finbookContext } from "../App";
-import { SelectDay, SelectVillage, AddVillage } from "../utils/Select"
-import { getVillagesInDay, getPersonsInVillage, getAllDaysData } from "../functions/helpers.js";
+import { SelectVillage, AddVillage } from "../utils/Select"
+import { getVillagesInDay } from "../functions/helpers.js";
 
 import "../styles/Navbar.css";
 
@@ -32,7 +32,7 @@ export const Navbar = () => {
   const handleAddVillageFunction = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true)
+      setGettingVillages(true);
       const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/villages/addVillage`, {
         method: "POST",
         headers: {
@@ -43,19 +43,11 @@ export const Navbar = () => {
       const jsonResponse = await response.json();
       setIsAddVillageClicked(false);
       if (!jsonResponse.success) {
-        setLoading(false)
         return toast.error(jsonResponse.message);
       }
       toast.success(`${addVillage} added`);
-      setLoading(false)
-      setGettingVillages(true);
-      const { villagesSuccess, villagesMessage } = await getVillagesInDay(selectedDay[0]._id);
-      setGettingVillages(false);
-      if (!villagesSuccess) {
-        toast.error(villagesMessage);
-      } else {
-        setVillages(villagesMessage);
-      }
+      setVillages(prev=>[...prev,jsonResponse.message]);
+      setGettingVillages(false)
     } catch (error) {
       return toast.error("Failed to reach server, try again");
     }
@@ -87,17 +79,10 @@ export const Navbar = () => {
         return toast.error(jsonResponse.message);
       }
       setIsAddPersonClicked(!isAddPersonClicked);
-      toast.success(jsonResponse.message);
+      toast.success(jsonResponse.message.personName+" added");
       setPersonFormData({ cardNo: "", personName: "", amountTaken: "", date: "" });
-      const { personsSuccess, personsMessage } = await getPersonsInVillage(selectedVillage[0]._id);
-      if (!personsSuccess) {
-        toast.error(personsMessage);
-      } else {
-        setPersons(personsMessage);
-      }
+      setPersons(prev=>[...prev,jsonResponse.message])
       setLoading(false);
-
-      
     } catch (error) {
       setLoading(false);
       return toast.error("Failed to reach server, try again.");
@@ -125,7 +110,7 @@ export const Navbar = () => {
   return (<>
     <nav className="flex flexColumn">
       <div className="dayNameContainer">
-        <h2>{selectedDay[0].dayName.toUpperCase()} logs</h2>
+        <h2>{selectedDay[0].dayName.toUpperCase()}</h2>
       </div>
 
       <div className="villagesContainer flex justifyLeft">
@@ -168,8 +153,7 @@ export const Navbar = () => {
       )}
     </nav>
 
-    {selectedDay.length !== 0 && villages.length === 0 && <AddVillage dayName={selectedDay[0].dayName} />}
-    {selectedDay.length !== 0 && villages.length !== 0 && selectedVillage.length === 0 && <SelectVillage />}
+    {selectedDay.length !== 0 && villages.length === 0 ? <AddVillage dayName={selectedDay[0].dayName} /> : selectedVillage.length === 0 && <SelectVillage />}
   </>
   )
 }

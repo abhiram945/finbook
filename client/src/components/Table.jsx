@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import { finbookContext } from "../App";
 import { Loader } from "../utils/Loader";
-import { NoUsersFound, SelectDay, SelectVillage } from "../utils/Select";
+import { NoUsersFound } from "../utils/Select";
 import { getPersonsInVillage, getVillagesInDay, getAllDaysData } from "../functions/helpers.js";
 
 import "../styles/Table.css"
@@ -13,7 +13,7 @@ export const Table = () => {
     currentPage, setCurrentPage, days, villages, setVillages, setDays
   } = useContext(finbookContext);
   const { dayId, villageId } = useParams();
-  const navigate = useNavigate("/");
+  const navigate = useNavigate();
   const [personToBeEdited, setPersonToBeEdited] = useState();
   const [addingAmount, setAddingAmount] = useState(false);
   const [amount, setAmount] = useState("");
@@ -26,7 +26,7 @@ export const Table = () => {
     if (person.pageNo > currentPage) {
       return false;
     }
-    if (person.balance !== 0) {
+    if (person.balance > 0) {
       return true;
     }
     const endPage = basePageNo + pagesForWeeks - 1;
@@ -79,7 +79,7 @@ export const Table = () => {
       setAmount("");
       toast.success(jsonResponse.message);
       if (jsonResponse.updatingDates) {
-        const {daysSuccess, daysMessage} = await getAllDaysData(userData._id);
+        const { daysSuccess, daysMessage } = await getAllDaysData(userData._id);
         if (daysSuccess) {
           const newSelectedDay = daysMessage.find(d => d._id === selectedDay[0]._id);
           setDays(daysMessage);
@@ -90,7 +90,7 @@ export const Table = () => {
       return;
     } catch (error) {
       setPersonToBeEdited(null);
-      return toast.error("Failed to Add amount, try Again.");
+      return toast.error("Slow internet");
     }
   };
 
@@ -116,7 +116,6 @@ export const Table = () => {
         setLoading(true);
         const dayInUrl = days.find(d => d._id === dayId);
         if (!dayInUrl) {
-          toast.error("Day not found");
           setLoading(false);
           return navigate("/");
         }
@@ -183,7 +182,7 @@ export const Table = () => {
                 </thead>
                 <tbody>
                   {filteredPersons?.map((person, personIndex) => (
-                    <tr key={personIndex}>
+                    <tr key={personIndex} className={person.balance<=0 ? "paid":""}>
                       <td> {person.date.split("T")[0]} </td>
                       <td>{person.cardNo}</td>
                       <td className="name"> {person.personName.charAt(0).toUpperCase() + person.personName.slice(1)} </td>
@@ -219,7 +218,7 @@ export const Table = () => {
                 </tbody>
               </table>
 
-              
+
               {personToBeEdited && (
                 <form className="editContainer" onSubmit={handleEditPerson}>
                   <div className="flex spaceBetween">

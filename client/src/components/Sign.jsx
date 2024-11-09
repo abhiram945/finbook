@@ -17,6 +17,7 @@ export const Sign = () => {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value.toLowerCase() });
     };
+    
     const handleCreateAccount = async (e) => {
         e.preventDefault();
         if (!formData.gmail || !formData.gmail.includes('@gmail.com')) {
@@ -44,7 +45,7 @@ export const Sign = () => {
                 return toast.error(jsonResponse.message)
             }
             window.localStorage.setItem("token", jsonResponse.jwt)
-            const data = { ...jsonResponse.message, isNew: jsonResponse.isNew };
+            const data = { ...jsonResponse.message };
             setUserData(data);
             setSigningIn(false);
             navigate("/");
@@ -53,6 +54,8 @@ export const Sign = () => {
             return toast.error("Failed to reach server, try again");
         }
     };
+
+
     return <div className="signPageContainer flex alignCenter justifyCenter">
         <div className='signCardContainer flex flexColumn spaceBetween'>
             <div className="signMessageContainer flex flexColumn alignCenter justifyCenter">

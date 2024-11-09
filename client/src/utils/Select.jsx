@@ -1,13 +1,6 @@
 import React from 'react'
 import "../styles/Select.css";
-const SelectDay = () => {
-    return <div className='flex justifyCenter alignCenter selectDayContainer'>
-        <p>Please <strong>select a day</strong> to <strong>add new Villages</strong>.</p>
-        <div className='selectImageContainer'>
-            <img src='/assets/welcome.svg' alt='welcomeImage' />
-        </div>
-    </div>
-}
+
 const AddVillage = ({ dayName }) => {
     return <div className='flex justifyCenter alignCenter addVillageContainer'>
         <p>click on <strong>Add Village</strong> button to add a new village in <strong>{dayName}</strong>.</p>
@@ -34,4 +27,4 @@ const NoUsersFound = ({day, village}) => {
     </div>
 }
 
-export { SelectDay, AddVillage, SelectVillage, NoUsersFound };
+export { AddVillage, SelectVillage, NoUsersFound };

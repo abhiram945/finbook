@@ -4,11 +4,16 @@ import { Person } from "../models/personModel.js";
 import { Day } from "../models/dayModel.js";
 
 const addPerson = async (req, res) => {
+  
   const { dayId, villageId, newCardNo, date, pageNo, personName, amountTaken } = req.body;
   const objectVillageId = new mongoose.Types.ObjectId(villageId);
   try {
+    const session = await mongoose.startSession();
+    session.startTransaction();
     const existingCardNo = await Person.find({ villageId: objectVillageId, cardNo: newCardNo });
     if (existingCardNo.length !== 0) {
+      await session.abortTransaction();
+      session.endSession();
       return res.json({
         success: false,
         message: `cardNo ${newCardNo} exists`,
@@ -34,7 +39,6 @@ const addPerson = async (req, res) => {
       villageId: villageId,
     }).save();
 
-    console.log(newPerson)
 
     const updateTotalReturnOnDay = await Day.findByIdAndUpdate(
       { _id: dayId },
@@ -48,11 +52,16 @@ const addPerson = async (req, res) => {
       ],
       { new: true, runValidators: true }
     );
-    res.json({
+
+    await session.commitTransaction();
+    session.endSession();
+    return res.json({
       success: true,
-      message: `${personName} added`,
+      message: newPerson,
     });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     return res.status(401).json({
       success: false,
       message: `Failed to add ${personName}`,
@@ -72,7 +81,7 @@ const getPersonsInVillage = async (req, res) => {
   } catch (error) {
     res.json({
       success: false,
-      message: "getPersonsInVillage"
+      message: "Unable to get Persons from server"
     })
   }
 }

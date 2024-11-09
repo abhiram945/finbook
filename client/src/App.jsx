@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext } from 'react'
-import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom"
+import { Routes, Route, useLocation, Navigate, Outlet, useNavigate } from "react-router-dom"
 import { ToastContainer, toast } from 'react-toastify';
 
 import { Header } from "./components/Header"
@@ -19,6 +19,7 @@ export const finbookContext = createContext();
 export const App = () => {
   const token = window.localStorage.getItem("token");
   const location = useLocation();
+  const navigate = useNavigate();
   const [userData, setUserData] = useState([])
   const [loading, setLoading] = useState(false);
   const [selectedDay, setSelectedDay] = useState([]);
@@ -43,6 +44,7 @@ export const App = () => {
       const jsonResponse = await response.json();
       setLoading(false);
       if (!jsonResponse.success) {
+        navigate("/signin");
         return toast.error(jsonResponse.message);
       }
       setUserData(jsonResponse.message);
@@ -79,7 +81,7 @@ export const App = () => {
           <Route path="/days/:dayId" element={selectedDay.length === 0 ? <Navigate to="/" /> : <Navbar />}></Route>
           <Route path='/:dayId/:villageId' element={(selectedDay.length === 0 || selectedVillage.length === 0) ? <Navigate to="/" /> : <><Navbar /><Table /></>} />
           <Route path="/dashboard/:user" element={<Dashboard />}></Route>
-          <Route path="/admin" element={userData!==null && userData.gmail==="admin@gmail.com" ? <Admin /> : <Navigate to="/"/>}/>
+          <Route path="/admin" element={userData!==null && userData.gmail===import.meta.env.VITE_ADMIN ? <Admin /> : <Navigate to="/"/>}/>
           <Route path="*" element={<Navigate to="/" />}></Route>
         </Route>
       </Routes>

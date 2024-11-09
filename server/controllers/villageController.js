@@ -7,7 +7,6 @@ const addVillage=async(req,res)=>{
     const {dayId, newVillageName} = req.body;
     const objectDayId = new mongoose.Types.ObjectId(dayId)
     try {
-
         const existingVillage = await Village.find({dayId:objectDayId, villageName:newVillageName});
         if(existingVillage.length!==0){
             return res.json({
@@ -19,10 +18,10 @@ const addVillage=async(req,res)=>{
             villageName:newVillageName,
             dayId: objectDayId
         }).save();
-    
+
         return res.status(200).json({
             success:true,
-            message : `${newVillageName} added`
+            message : newVillage
         });
     } catch (error) {
         return res.json({

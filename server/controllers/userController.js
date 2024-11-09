@@ -14,7 +14,6 @@ const registerOrLogin = async (req, res) => {
   existingUser = existingUser[0];
   if (existingUser) {
     try {
-
       const isPasswordValid = await bcrypt.compare(password, existingUser.password);
       if (!isPasswordValid) {
         return res.json({
@@ -25,7 +24,6 @@ const registerOrLogin = async (req, res) => {
         const token =await generateToekn(existingUser, res);
         return res.status(200).json({
           success: true,
-          isNew: false,
           jwt : token,
           message: existingUser,
         });
@@ -38,13 +36,6 @@ const registerOrLogin = async (req, res) => {
     }
   } else {
     try {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = await new User({
-        userName: gmail.split("@")[0],
-        gmail: gmail,
-        password: hashedPassword,
-      }).save();
-
       function generateDatesOf7Days() {
         const dates = [];
         const today = new Date();
@@ -72,6 +63,13 @@ const registerOrLogin = async (req, res) => {
         return dates;
       }
 
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const newUser = await new User({
+        userName: gmail.split("@")[0],
+        gmail: gmail,
+        password: hashedPassword,
+      }).save();
+
       const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, index) =>
         new Day({
           dayName: day,
@@ -86,14 +84,13 @@ const registerOrLogin = async (req, res) => {
       const token =await generateToekn(newUser, res);
       return res.status(201).json({
         success: true,
-        isNew: true,
         jwt : token,
         message: newUser,
       });
     } catch (error) {
       return res.json({
         success: false,
-        message: "Please contact Finbook admin"
+        message: "Please contact Finbook"
       })
     }
   }
@@ -105,13 +102,19 @@ const verifyUser = async(req,res)=>{
   const {token} = req.body;
   try {
     const verIfyJwt = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.find({gmail:verIfyJwt.gmail});
-    res.json({success:true,
-      message:user[0]})
+    const user = await User.findById(verIfyJwt._id);
+    if(user){
+      return res.json({success:true,
+        message:user})
+      }
+      else{
+        return res.json({
+          success:false
+        })
+      }
   } catch (error) {
     res.json({
-      success:false,
-      message:"Please login again"
+      success:false
     })
   }
   return;
@@ -171,7 +174,6 @@ const deleteUserAccount = async (req, res) => {
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    console.error("Error deleting user account:", error);
     return res.json({ success: false, message: "Internal error, try again" });
   }
 };

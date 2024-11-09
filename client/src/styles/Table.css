@@ -64,7 +64,9 @@
 .tableContainer table {
     text-align: center;
 }
-
+.paid{
+    background-color: var(--primaryLightColor);
+}
 .tableContainer table tbody tr .editTd {
     cursor: pointer;
 }
