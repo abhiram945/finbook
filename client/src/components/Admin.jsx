@@ -1,16 +1,28 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
 import { toast } from 'react-toastify';
 import { Loader } from '../utils/Loader';
+import { finbookContext } from '../App';
 
 import "../styles/Admin.css"
 
 export const Admin = () => {
     const [allUsers, setAllUsers]=useState([]);
     const [deleting, setDeleting] = useState(false);
+    const {userData} =  useContext(finbookContext);
+
     const getAllUsers=async()=>{
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/users/getAllUsers`);
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/users/getAllUsers`,{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json",
+                },
+                body:JSON.stringify({userData})
+            });
             const jsonResponse = await response.json();
+            if(!jsonResponse.success){
+                return toast.error(jsonResponse.message);
+            }
             setAllUsers(jsonResponse.message)
             return;
         } catch (error) {

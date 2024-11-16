@@ -16,7 +16,7 @@ const addPerson = async (req, res) => {
       session.endSession();
       return res.json({
         success: false,
-        message: `cardNo ${newCardNo} exists`,
+        message: `cardNo ${newCardNo} already added`,
       });
     }
     const personDay = await Day.findById(dayId)
@@ -81,14 +81,14 @@ const getPersonsInVillage = async (req, res) => {
   } catch (error) {
     res.json({
       success: false,
-      message: "Unable to get Persons from server"
+      message: "Unable to get Persons"
     })
   }
 }
 
 
 const updatePerson = async (req, res) => {
-  const { dayId, personId, amount, pageNo } = req.body;
+  const { dayId, personId, amount, pageNo, dayDates } = req.body;
   try {
     const updatedPerson = await Person.findByIdAndUpdate(
       { _id: personId },
@@ -109,10 +109,9 @@ const updatePerson = async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    const dayDetails = await Day.findById(dayId);
     const next5WeeksDates = [];
-    if (dayDetails.dates.length === pageNo * 5) {
-      const start = new Date(dayDetails.dates[dayDetails.dates.length - 1]);
+    if (dayDates.length === pageNo * 5) {
+      const start = new Date(dayDates[dayDates.length - 1]);
       for (let i = 1; i <=5; i++) {
         const weekStartDate = new Date(start);
         weekStartDate.setDate(start.getDate() + (i * 7));

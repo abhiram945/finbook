@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { Loader } from '../utils/Loader';
@@ -7,13 +7,11 @@ import { finbookContext } from '../App';
 import "../styles/Sign.css";
 
 export const Sign = () => {
-    const navigate = useNavigate();
-    const { setUserData } = useContext(finbookContext);
+    const { setUserData, navigate, loading, setLoading } = useContext(finbookContext);
     const [formData, setFormData] = useState({
         gmail: '',
         password: ''
     });
-    const [signingIn, setSigningIn]=useState(false);
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value.toLowerCase() });
     };
@@ -30,7 +28,7 @@ export const Sign = () => {
             return toast.error("Enter 5 letters password atleast");
         }
         try {
-            setSigningIn(true);
+            setLoading(true);
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/users/registerOrLogin`, {
                 method: "POST",
                 headers: {
@@ -40,18 +38,16 @@ export const Sign = () => {
             });
 
             const jsonResponse = await response.json();
+            setLoading(false);
             if (!jsonResponse.success) {
-                setSigningIn(false)
                 return toast.error(jsonResponse.message)
             }
             window.localStorage.setItem("token", jsonResponse.jwt)
-            const data = { ...jsonResponse.message };
-            setUserData(data);
-            setSigningIn(false);
-            navigate("/");
+            setUserData(...jsonResponse.message);
+            navigate("/days");
         } catch (error) {
-            setSigningIn(false);
-            return toast.error("Failed to reach server, try again");
+            setLoading(false);
+            return toast.error("Slow internet, try again");
         }
     };
 
@@ -68,7 +64,7 @@ export const Sign = () => {
                 <input type="gmail" name='gmail' placeholder="Enter your GMail ID" onChange={handleChange} value={formData.gmail} />
                 <input type="password" name='password' placeholder="Enter password" onChange={handleChange} value={formData.password} />
                 <Link to="/reset-password">Forgot password?</Link>
-                {signingIn ? <Loader component="signIn" /> : <button type='submit'>Continue</button>}
+                {loading ? <Loader component="signIn" /> : <button type='submit'>Continue</button>}
             </form>
             <div className='author flex alignCenter'>
                 <p>Designed and Developed by <a href="https://abhiram945.vercel.app" target='_blank' rel="noreferrer">Abhi <span> &#8599;</span></a></p>

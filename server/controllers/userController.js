@@ -1,7 +1,7 @@
 import { User } from "../models/userModel.js";
 import { Day } from "../models/dayModel.js";
 import { Village } from "../models/villageModel.js";
-import {Person} from "../models/personModel.js";
+import { Person } from "../models/personModel.js";
 
 import bcrypt from "bcryptjs";
 import generateToekn from "../utils/generateToken.js";
@@ -11,20 +11,19 @@ import mongoose from "mongoose";
 const registerOrLogin = async (req, res) => {
   const { gmail, password } = req.body;
   let existingUser = await User.find({ gmail: gmail });
-  existingUser = existingUser[0];
-  if (existingUser) {
+  if (existingUser.length!==0) {
     try {
-      const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+      const isPasswordValid = await bcrypt.compare(password, existingUser[0].password);
       if (!isPasswordValid) {
         return res.json({
           success: false,
           message: "Invalid password",
         });
       } else {
-        const token =await generateToekn(existingUser, res);
+        const token = await generateToekn(existingUser[0]);
         return res.status(200).json({
           success: true,
-          jwt : token,
+          jwt: token,
           message: existingUser,
         });
       }
@@ -81,10 +80,10 @@ const registerOrLogin = async (req, res) => {
       )
       await Promise.all(days);
 
-      const token =await generateToekn(newUser, res);
+      const token = await generateToekn(newUser);
       return res.status(201).json({
         success: true,
-        jwt : token,
+        jwt: token,
         message: newUser,
       });
     } catch (error) {
@@ -98,34 +97,36 @@ const registerOrLogin = async (req, res) => {
 
 
 
-const verifyUser = async(req,res)=>{
-  const {token} = req.body;
+const verifyUser = async (req, res) => {
+  const { token } = req.body;
   try {
     const verIfyJwt = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(verIfyJwt._id);
-    if(user){
-      return res.json({success:true,
-        message:user})
-      }
-      else{
-        return res.json({
-          success:false
-        })
-      }
+    if (user) {
+      return res.json({
+        success: true,
+        message: user
+      })
+    }
+    else {
+      return res.json({
+        success: false
+      })
+    }
   } catch (error) {
     res.json({
-      success:false
+      success: false
     })
   }
   return;
 }
 
-const getAllUsers = async(req,res)=>{
-  try{
-    const allUsers = await User.find().sort({userName:1});
-    return res.json({success:true, message:allUsers});
-  }catch(e){
-    return res.json({success:false, message:"Internal server error"});
+const getAllUsers = async (req, res) => {
+  try {
+    const allUsers = await User.find().sort({ userName: 1 });
+    return res.json({ success: true, message: allUsers });
+  } catch (e) {
+    return res.json({ success: false, message: "Internal server error" });
   }
 }
 
@@ -136,38 +137,38 @@ const deleteUserAccount = async (req, res) => {
   try {
     const user = await User.findById(userId).session(session);
     if (!user) {
-      res.json({success:false, message:"User not found"});
+      res.json({ success: false, message: "User not found" });
       await session.abortTransaction();
       session.endSession();
       return;
     }
     const days = await Day.find({ user: userId }).session(session);
     const dayIds = days.map(day => day._id);
-    
+
     const villages = await Village.find({ dayId: { $in: dayIds } }).session(session);
     const villageIds = villages.map(village => village._id);
 
     const batchDelete = async (Model, filter, batchSize = 100, session) => {
-  let documents;
-  
-  do {
-    documents = await Model.find(filter).limit(batchSize).select('_id').session(session);
-    const ids = documents.map(doc => doc._id);
+      let documents;
 
-    if (ids.length > 0) {
-      await Model.deleteMany({ _id: { $in: ids } }).session(session);
-    }
+      do {
+        documents = await Model.find(filter).limit(batchSize).select('_id').session(session);
+        const ids = documents.map(doc => doc._id);
 
-  } while (documents.length > 0);
-};
+        if (ids.length > 0) {
+          await Model.deleteMany({ _id: { $in: ids } }).session(session);
+        }
 
-    
+      } while (documents.length > 0);
+    };
+
+
     await batchDelete(Person, { villageId: { $in: villageIds } }, 100, session);
     await batchDelete(Village, { dayId: { $in: dayIds } }, 100, session);
     await batchDelete(Day, { user: userId }, 100, session);
 
     await User.findByIdAndDelete(userId).session(session);
-    
+
     await session.commitTransaction();
     session.endSession();
     return res.json({ success: true, message: "Deleted successfully" });

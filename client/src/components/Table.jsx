@@ -49,6 +49,7 @@ export const Table = () => {
             personId: personToBeEdited._id,
             amount: Number(amount),
             pageNo: Number(currentPage),
+            dayDates: selectedDay[0].dates,
           }),
         }
       );

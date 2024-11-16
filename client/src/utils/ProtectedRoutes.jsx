@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { finbookContext } from "../App";
 
 const ProtectedRoutes = () => {
-  const { token} = useContext(finbookContext)
+  const { token, location} = useContext(finbookContext)
   if (!token) {
     return <Navigate to="/signin" />;
   }

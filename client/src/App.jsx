@@ -69,7 +69,7 @@ export const App = () => {
       userData, setUserData, loading, setLoading,
       selectedDay, setSelectedDay, selectedVillage, setSelectedVillage,
       days, setDays, token, currentPage, setCurrentPage,
-      persons, setPersons, villages, setVillages,
+      persons, setPersons, villages, setVillages, navigate, location
     }}>
       <ToastContainer autoClose={1500} />
       <Header />
@@ -77,12 +77,12 @@ export const App = () => {
         <Route path="/signin" element={token ? <Navigate to="/" /> : <Sign />}></Route>
 
         <Route path='/' element={<ProtectedRoutes />}>
-          <Route exact path="/" element={<Days />}></Route>
+          <Route path="/" element={<Days />}></Route>
           <Route path="/days/:dayId" element={selectedDay.length === 0 ? <Navigate to="/" /> : <Navbar />}></Route>
           <Route path='/:dayId/:villageId' element={(selectedDay.length === 0 || selectedVillage.length === 0) ? <Navigate to="/" /> : <><Navbar /><Table /></>} />
-          <Route path="/dashboard/:user" element={<Dashboard />}></Route>
+          <Route path="/dashboard/:user" element={userData.length!==0 ?<Dashboard /> : <Navigate to="/signin"/>}></Route>
           <Route path="/admin" element={userData!==null && userData.gmail===import.meta.env.VITE_ADMIN ? <Admin /> : <Navigate to="/"/>}/>
-          <Route path="*" element={<Navigate to="/" />}></Route>
+          <Route path="*" element={<Navigate to="/signin" />}></Route>
         </Route>
       </Routes>
     </finbookContext.Provider>
