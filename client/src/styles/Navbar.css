@@ -1,103 +1,135 @@
-nav{
-    height: 20vh;
+nav {
+    height: 7.5vh;
     width: 100%;
-    background-color: var(--backgroundColor);
-    gap:2.5vh;
+    background-color: var(--bg);
+    padding: 0 2.5rem;
 }
 
-.dayNameContainer, .villagesContainer, .addBtnsContainer{
-    height: 5vh;
-    padding: 0 0.5rem;
+nav h2 {
+    color: var(--headingBlack);
+    max-width: max-content;
+    margin-right: 0.35rem;
 }
-.dayNameContainer h2{
-    text-align: center;
-    color: var(--primaryColor);
+
+.villagesContainer {
+    max-width: 80vw;
+    overflow-x: auto;
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
-.villagesContainer a{
-    border: none;
+
+.villagesContainer a {
+    margin: auto 0.25rem;
     border-radius: 0.25rem;
-    outline:none;
+    padding: 0.25rem 0.5rem;
+    background-color: var(--dangerRedLight);
+    color: var(--dangerRed);
 }
-.villagesContainer a{
-    margin:auto 0;
-    margin-right: 0.5rem;
-    padding:0.25rem 0.5rem;
-    background-color: var(--accentLightColor);
-    color: var(--accentColor);
-}
-.villagesContainer .active{
-    background-color: var(--accentColor);
+
+.villagesContainer .active {
+    background-color: var(--dangerRed);
     color: var(--white);
 }
-.addBtnsContainer button{
+
+.addIconsContainer {
+    width: 10vw;
+}
+
+.addIconsContainer img {
     cursor: pointer;
-    border-radius: 0.25rem;
-    margin: 0 0.5rem;
-    padding: 0 0.5rem;
-    border: none;
-    outline: none;
-    background-color: var(--dashboardBg);
-    color: var(--white);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    background-color: var(--white);
+    box-shadow: var(--boxShadow);
 }
 
-.addVillageForm, .addPersonForm{
+.addVillageForm,
+.addPersonForm {
     width: max-content;
-    gap:1rem;
-    padding:1rem 2rem;
-    box-shadow:var(--boxShadow);
-    background-color: var(--backgroundColor);
+    min-height: 25vh;
+    padding: 1.5rem 2rem;
+    box-shadow: var(--boxShadow);
+    background-color: var(--white);
     position: fixed;
-    top:50%;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     z-index: 9;
 }
-.addVillageForm h3, .addPersonForm h3{
-    color: var(--bgBlackColor);
+.addPersonForm{
+    min-height: 50vh;
 }
-.addVillageForm input, .addPersonForm input{
-    padding:0.5rem;
-    border: none;
-    border-bottom: solid 0.1rem var(--borderColor);
+
+.addVillageForm h3,
+.addPersonForm h3 {
+    color: var(--headingBlack);
 }
+
+.addVillageForm input,
+.addPersonForm input {
+    border:var(--border);
+    padding: 0.5rem;
+}
+
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
 }
-.addCancelButtonsContainer button{
+
+.addCancelButtonsContainer button {
     border: none;
-    padding:0.5rem 1rem;
+    padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    &:first-child{
-        background-color: var(--accentLightColor);
-        color: var(--accentColor);
-        &:hover{
-            background-color: var(--accentColor);
+
+    &:first-child {
+        background-color: var(--dangerRedLight);
+        color: var(--dangerRed);
+
+        &:hover {
+            background-color: var(--dangerRed);
             color: var(--white);
         }
     }
-    &:last-child{
-        background-color: var(--primaryLightColor);
-        color:var(--primaryColor);
-        &:hover{
-            background-color: var(--primaryColor);
+
+    &:last-child {
+        background-color: var(--greenLight);
+        color: var(--green);
+
+        &:hover {
+            background-color: var(--green);
             color: var(--white);
         }
-        
+
     }
 }
 
-@media(max-width:720px){
-    nav{
-        height: 20svh;
-    }.villagesContainer{
-        overflow-x: scroll;
-        &::-webkit-scrollbar{
-            display: none;
+@media(max-width:768px) {
+    nav {
+        height: 10svh;
+        padding: 0 0.5rem;
+        flex-wrap: wrap;
+    }
+    .villagesContainer{
+        order: 2;
+        flex: 0 0 100%;
+        max-width: 95vw;
+    }
+    .addIconsContainer {
+        width: 25vw;
+    }
+    .addIconsContainer img{
+        padding: 0.25rem;
+    }
+    .addCancelButtonsContainer button{
+        &:first-child{
+            background-color: var(--dangerRed);
+            color: var(--white);
         }
-    }.villagesContainer a{
-        margin-right: 0.5rem;
-        margin-left: 0.5rem;
+        &:last-child{
+            background-color: var(--green);
+            color: var(--white);
+        }
     }
 }

@@ -3,7 +3,7 @@ import "../styles/Select.css";
 
 const AddVillage = ({ dayName }) => {
     return <div className='flex justifyCenter alignCenter addVillageContainer'>
-        <p>click on <strong>Add Village</strong> button to add a new village in <strong>{dayName}</strong>.</p>
+        <p>Add a new village in <strong>{dayName}</strong>.</p>
         <div className='selectImageContainer'>
             <img src='/assets/welcome.svg' alt='welcomeImage' />
         </div>
@@ -11,7 +11,7 @@ const AddVillage = ({ dayName }) => {
 }
 
 const SelectVillage = () => {
-    return <div className='flex justifyCenter alignCenter selectVillageContainer'>
+    return <div className='flex alignCenter selectVillageContainer'>
         <p><strong>Select a village</strong> to <br/> <strong>Add new Persons</strong>.</p>
         <div className='selectImageContainer'>
             <img src='/assets/welcome.svg' alt='welcomeImage' />
@@ -22,7 +22,7 @@ const SelectVillage = () => {
 const NoUsersFound = ({day, village}) => {
     return <div className="noUsersFoundContainer flex flexColumn alignCenter">
         <p><strong>No users found on {day.toUpperCase()} in {village.toUpperCase()}</strong></p>
-        <p>Click on <strong>Add Person</strong> button on the top to add a new person in <strong>{village.toUpperCase()}</strong></p>
+        <p>Add a new Person in <strong>{village.toUpperCase()}</strong></p>
         <img src="/assets/noUsersFound.jpg" alt="noUsersFound" className="noUsersFoundImage" />
     </div>
 }

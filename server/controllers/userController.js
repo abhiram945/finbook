@@ -10,17 +10,18 @@ import mongoose from "mongoose";
 
 const registerOrLogin = async (req, res) => {
   const { gmail, password } = req.body;
-  let existingUser = await User.find({ gmail: gmail });
-  if (existingUser.length!==0) {
+  let existingUser = await User.findOne({ gmail: gmail });
+  
+  if (existingUser!==null) {
     try {
-      const isPasswordValid = await bcrypt.compare(password, existingUser[0].password);
+      const isPasswordValid = await bcrypt.compare(password, existingUser.password);
       if (!isPasswordValid) {
         return res.json({
           success: false,
           message: "Invalid password",
         });
       } else {
-        const token = await generateToekn(existingUser[0]);
+        const token = await generateToekn(existingUser);        
         return res.status(200).json({
           success: true,
           jwt: token,

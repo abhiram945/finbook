@@ -4,18 +4,22 @@
     width: 1.75rem;
     height: 1.75rem;
     animation: spin 1s linear infinite;
-    border: 0.45rem solid var(--primaryLightColor);
-    border-top: 0.45rem solid var(--primaryColor);
+    border: 0.5rem solid var(--primaryLight);
+    border-top: 0.5rem solid var(--primary);
 }
 
 .navbar, .table, .adminDelete{
     margin: 0 auto;
 }
+.table{
+    width: 2.5rem;
+    height: 2.5rem;
+}
 .days,.addAmount{
     margin:auto;
 }
 .dashboard{
-    margin: 25vh auto 0;
+    margin: 35vh auto 0;
 }
 
 

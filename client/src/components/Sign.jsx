@@ -18,16 +18,13 @@ export const Sign = () => {
     
     const handleCreateAccount = async (e) => {
         e.preventDefault();
-        if (!formData.gmail || !formData.gmail.includes('@gmail.com')) {
-            return toast.error('Invalid GMail');
-        }
-        if (!formData.password) {
-            return toast.error("Please enter password")
-        }
-        if(formData.password.length<5){
-            return toast.error("Enter 5 letters password atleast");
-        }
         try {
+            if (!formData.gmail || !formData.gmail.includes('@gmail.com')) {
+                throw new Error('Invalid GMail');
+            }
+            if (!formData.password || formData.password.length<5) {
+                throw new Error("Enter 5 letters password atleast")
+            }
             setLoading(true);
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/users/registerOrLogin`, {
                 method: "POST",
@@ -40,19 +37,19 @@ export const Sign = () => {
             const jsonResponse = await response.json();
             setLoading(false);
             if (!jsonResponse.success) {
-                return toast.error(jsonResponse.message)
+                throw new Error(jsonResponse.message);
             }
-            window.localStorage.setItem("token", jsonResponse.jwt)
-            setUserData(...jsonResponse.message);
-            navigate("/days");
+            window.localStorage.setItem("token", jsonResponse.jwt)            
+            setUserData(jsonResponse.message);
+            navigate("/");
         } catch (error) {
             setLoading(false);
-            return toast.error("Slow internet, try again");
+            return toast.error(error.message);
         }
     };
 
 
-    return <div className="signPageContainer flex alignCenter justifyCenter">
+    return <div className="signPageContainer flex justifyCenter alignCenter">
         <div className='signCardContainer flex flexColumn spaceBetween'>
             <div className="signMessageContainer flex flexColumn alignCenter justifyCenter">
                 <img src='/assets/logo.svg' alt='logo' />

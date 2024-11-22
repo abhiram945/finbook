@@ -57,7 +57,7 @@ export const Table = () => {
       if (!jsonResponse.success) {
         setPersonToBeEdited(null);
         setAddingAmount(false);
-        return toast.error(jsonResponse.message);
+        throw new Error(jsonResponse.message);
       }
       const personIndex = persons.findIndex(person => {
         return person._id === personToBeEdited._id;
@@ -91,7 +91,7 @@ export const Table = () => {
       return;
     } catch (error) {
       setPersonToBeEdited(null);
-      return toast.error("Slow internet");
+      return toast.error(error.message || "Slow internet");
     }
   };
 
@@ -162,12 +162,12 @@ export const Table = () => {
       loading ? <div className="loaderContainer flex justifyCenter alignCenter"><Loader component="table" /></div>
         : (persons.length === 0 ? (selectedDay[0]._id === selectedVillage[0].dayId && <NoUsersFound day={selectedDay[0].dayName} village={selectedVillage[0].villageName} />)
           : <>
-            <div className="pageNumsContainer flex justifyLeft">
-              {[...Array(Math.ceil(selectedDay[0]?.dates?.length / 5))].map((_, index) => (
-                <button key={index} onClick={() => setCurrentPage(index + 1)} className={currentPage === (index + 1) ? "active" : ""}>{index + 1}</button>
-              ))}
-            </div>
-            <div className="tableContainer">
+            <div className="tableContainer flex flexColumn">
+              <div className="pageNumsContainer flex justifyLeft">
+                {[...Array(Math.ceil(selectedDay[0]?.dates?.length / 5))].map((_, index) => (
+                  <button key={index} onClick={() => setCurrentPage(index + 1)} className={currentPage === (index + 1) ? "active" : ""}>{index + 1}</button>
+                ))}
+              </div>
               <table>
                 <thead>
                   <tr>
@@ -183,7 +183,7 @@ export const Table = () => {
                 </thead>
                 <tbody>
                   {filteredPersons?.map((person, personIndex) => (
-                    <tr key={personIndex} className={person.balance<=0 ? "paid":""}>
+                    <tr key={personIndex} className={person.balance <= 0 ? "paid" : ""}>
                       <td> {person.date.split("T")[0]} </td>
                       <td>{person.cardNo}</td>
                       <td className="name"> {person.personName.charAt(0).toUpperCase() + person.personName.slice(1)} </td>
@@ -192,11 +192,7 @@ export const Table = () => {
                       <td className="villageBalance">{person.balance}</td>
                       <td className="editTd">
                         {person.paid >= person.amountTaken ? (
-                          loading === person._id ? (
-                            <Loader component="table" />
-                          ) : (
-                            <img src="/assets/paid.svg" alt="paid" />
-                          )
+                          <img src="/assets/paid.svg" alt="paid" />
                         ) : loading === person._id ? (
                           <Loader component="table" />
                         ) : (
@@ -239,7 +235,7 @@ export const Table = () => {
                       setPersonToBeEdited('');
                     }}
                     >Cancel</button>
-                      <button type="submit">Submit</button></>}
+                      <button type="submit">Add</button></>}
                   </div>
                 </form>
               )}

@@ -1,22 +1,23 @@
 .signPageContainer {
     height: 90vh;
     width: 100%;
-    background-color: var(--backgroundColor);
+    background-color: var(--bg);
 }
 .signCardContainer{
-    height: 97.5%;
+    height: 95%;
     min-width: 27.5rem;
-    box-shadow: var(--boxShadow);
+    box-shadow: var(--signInBoxShadow);
     border-radius: 0.5rem;
     overflow: hidden;
     background-color: var(--white);
+    margin-bottom: 1rem;
 }
 .signMessageContainer{
     height: 45%;
     width: 100%;
     padding:1rem 0;
     gap:0.5rem;
-    background-color: #000000;
+    background-color: var(--black);
 }
 .signMessageContainer img{
     width: 10rem;
@@ -25,30 +26,32 @@
 .signMessageContainer h3, .signMessageContainer h2{
     color: var(--white);
 }
-.signCardContainer p{
-    color: var(--textColor);
+.signMessageContainer p{
+    color: var(--placeholderText);
 }
 
 .signFormContainer{
     height: 45%;
     width: 100%;
     padding: 2.5rem;
+    padding-bottom: 0.5rem;
 }
 
 .signFormContainer input {
     width: 100%;
     outline: none;
     padding: 0.75rem 1rem;
-    font-family: sans-serif;
-    font-weight:700;
+    font-weight:600;
     background-color: var(--white);
-    border-radius: 0.75rem;
-    border: solid 0.1rem var(--borderColor);
-    color:#25282d;
+    border-radius: 0.5rem;
+    border: var(--border);
+    &::placeholder{
+        color: var(--placeholderText);
+    }
 }
 .signFormContainer a{
     margin-left: auto;
-    color: var(--textColor);
+    color: var(--placeholderText);
 }
 .signPageContainer .signFormContainer button {
     width: 50%;
@@ -56,7 +59,7 @@
     margin: 0 auto;
     border: none;
     border-radius: 0.5rem;
-    background-color: var(--primaryColor);
+    background-color: var(--primary);
     color: var(--white);
     cursor: pointer;
 }
@@ -66,18 +69,20 @@
 .author p{
     display: block;
     margin: auto;
-    color: var(--textColor);
+    color: var(--placeholderText);
     text-align: center;
 }
 .author p  a{
-    color: var(--accentColor);
+    color: var(--dangerRed);
     cursor: pointer;
-    text-decoration: underline;
+    background-color: var(--dangerRedLight);
+    padding:0.1rem 0.25rem;
+    border-radius: 0.3rem;
 }
-.author p > a span{
-    color: var(--accentColor);
+.author p a:hover{
+    color: var(--white);
+    background-color: var(--dangerRed);
 }
-
 
 @media screen and (max-width:768px) {
     .signPageContainer{
@@ -86,13 +91,13 @@
     .signCardContainer{
         min-width: 95vw;
         height: 90%;
+        margin-bottom: 2rem;
     }
     .signMessageContainer{
         height: 50%;
     }
     .signFormContainer{
         height: 40%;
-        padding-bottom: 1rem;
-        padding-top: 1rem;
+        padding: 1.5rem;
     }
 }

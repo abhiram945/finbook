@@ -44,6 +44,7 @@ export const App = () => {
       const jsonResponse = await response.json();
       setLoading(false);
       if (!jsonResponse.success) {
+        localStorage.clear();
         navigate("/signin");
         return toast.error(jsonResponse.message);
       }
@@ -71,17 +72,17 @@ export const App = () => {
       days, setDays, token, currentPage, setCurrentPage,
       persons, setPersons, villages, setVillages, navigate, location
     }}>
-      <ToastContainer autoClose={1500} />
+      <ToastContainer autoClose={1000} />
       <Header />
       <Routes>
         <Route path="/signin" element={token ? <Navigate to="/" /> : <Sign />}></Route>
 
         <Route path='/' element={<ProtectedRoutes />}>
           <Route path="/" element={<Days />}></Route>
-          <Route path="/days/:dayId" element={selectedDay.length === 0 ? <Navigate to="/" /> : <Navbar />}></Route>
-          <Route path='/:dayId/:villageId' element={(selectedDay.length === 0 || selectedVillage.length === 0) ? <Navigate to="/" /> : <><Navbar /><Table /></>} />
-          <Route path="/dashboard/:user" element={userData.length!==0 ?<Dashboard /> : <Navigate to="/signin"/>}></Route>
-          <Route path="/admin" element={userData!==null && userData.gmail===import.meta.env.VITE_ADMIN ? <Admin /> : <Navigate to="/"/>}/>
+          <Route path="days/:dayId" element={selectedDay.length === 0 ? <Navigate to="/" /> : <Navbar />}></Route>
+          <Route path=':dayId/:villageId' element={(selectedDay.length === 0 || selectedVillage.length === 0) ? <Navigate to="/" /> : <><Navbar /><Table /></>} />
+          <Route path="dashboard/:user" element={userData.length!==0 ?<Dashboard /> : <Navigate to="/signin"/>}></Route>
+          <Route path="admin" element={userData!==null && userData.gmail===import.meta.env.VITE_ADMIN ? <Admin /> : <Navigate to="/"/>}/>
           <Route path="*" element={<Navigate to="/signin" />}></Route>
         </Route>
       </Routes>

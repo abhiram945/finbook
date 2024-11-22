@@ -1,24 +1,43 @@
 .daysContainer{
     height: 90vh;
-    padding: 10vh 30vw;
+    width: 100%;
+    background-color: var(--bg);
 }
-.daysContainer a{
-    border: none;
+.linksContainer{
+    height: 90%;
+    min-width: 27.5rem;
+    padding:1.5rem 2.5rem;
+    border-radius: 1rem;
+    background-color: var(--white);
+    box-shadow: var(--boxShadow);
+}
+.linksContainer a{
     border-radius: 0.5rem;
     outline:none;
     padding: 1rem;
-    background-color: var(--primaryLightColor);
-    color: var(--primaryColor);
+    color: var(--black);
+    background-color: var(--btnBg);
     cursor: pointer;
     text-align: center;
 }
-.daysContainer a:hover{
-    background-color: var(--primaryColor);
-    color: var(--white);
+.linksContainer a:hover{
+    background-color: var(--btnHoverBg);
 }
 
-@media(max-width:720px){
+@media screen and (max-width:720px){
     .daysContainer{
-        padding: 10vh 15vw;
+        height: 92svh;
+    }
+    .linksContainer{
+        min-width: 95vw;
+        padding: 1.5rem 15vw;
+    }
+    .linksContainer a{
+        background-color: var(--btnHoverBg);
+    }
+}
+@media screen and (max-width:480px){
+    .linksContainer{
+        padding: 1rem;
     }
 }

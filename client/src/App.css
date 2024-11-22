@@ -2,25 +2,32 @@
   margin: 0;
   padding:0;
   box-sizing: border-box;
-  font-family: Helvetica;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
   text-decoration: none;
   transition: all ease 0.25s;
 }
 :root {
-  --primaryColor: #3167f3;
-  --primaryLightColor:#3167f326;
-  --accentColor: #EE3E60;
-  --accentLightColor:#ef346326;
-  --backgroundColor: #F9FBFD;
-  --tableHeadBg:#F9FAFC;
-  --textColor: #96a0b5;
+  --primary: #3167f3;
+  --primaryLight:#3167f326;
+  --bg: #F9FBFD;
+  --dangerRed: #EE3E60;
+  --dangerRedLight:#ef346326;
+  --green:#0DA684;
+  --greenLight:#E6F6F2;
+  --border:1px solid #edf2f9;
+  --btnBg:#f4f6f9;
+  --btnHoverBg:#cfd1d4;
+  --placeholderText:#96A0B5;
+  --signInBoxShadow:0 2px 2px rgba(61, 71, 81, 0.05);
+  --boxShadow:0 0 0.75rem rgba(61, 71, 81, 0.05);
+  --tableBoxShadow:0 0.5rem 0.75rem rgba(0, 0, 0, 0.075);
   --white:#FFFFFF;
-  --borderColor: #edf2f9;
-  --btnsColor:#424d65;
-  --boxShadow:0 0 0.5rem rgba(20, 24, 36,0.5);
-  --tableHeadText:#9EA5AF;
-  --dashboardBg:#0F111A;
-  --paid:#12E43A;
+  --black:#0F111A;
+  --headingBlack:#25282D;
+  --tableHeadBg:var(--btnBg);
+  --tableBg:var(--white);
+  --tableText:var(--headingBlack);
+  --tableEvenRowBg:var(--bg)
 }
 
 .flex{
