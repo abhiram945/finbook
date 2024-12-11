@@ -10,8 +10,10 @@ import mongoose from "mongoose";
 
 const registerOrLogin = async (req, res) => {
   const { gmail, password } = req.body;
+  if(!gmail.contains("@gmail.com")||!password.trim()){
+    return res.json({success: false,message: "GMail or Password is not valid"})
+  }
   let existingUser = await User.findOne({ gmail: gmail });
-
   if (existingUser !== null) {
     try {
       const isPasswordValid = await bcrypt.compare(password, existingUser.password);
@@ -98,7 +100,9 @@ const registerOrLogin = async (req, res) => {
 
 const googleSignIn = async (req, res) => {
   const { gmail } = req.body;
+  console.log("Received gamil: ",gmail)
   let existingUser = await User.findOne({ gmail: gmail });
+  console.log("Existing user: ",existingUser)
   if (existingUser !== null) {
     try {
       const token = await generateToekn(existingUser);
@@ -114,6 +118,7 @@ const googleSignIn = async (req, res) => {
       })
     }
   } else {
+    console.log("Creating new account")
     try {
       function generateDatesOf7Days() {
         const dates = [];
@@ -141,12 +146,13 @@ const googleSignIn = async (req, res) => {
         }
         return dates;
       }
+      console.log("Done functions")
       const newUser = await new User({
         userName: gmail.split("@")[0],
         gmail: gmail,
         password: "",
       }).save();
-
+      console.log("New user: ", newUser)
       const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, index) =>
         new Day({
           dayName: day,
