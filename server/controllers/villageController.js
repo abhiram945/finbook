@@ -1,7 +1,6 @@
 import { Village } from "../models/villageModel.js";
-import {Person} from "../models/personModel.js";
-import { Day } from "../models/dayModel.js";
-import mongoose, { mongo } from "mongoose";
+
+import mongoose from "mongoose";
 
 const addVillage=async(req,res)=>{
     const {dayId, newVillageName} = req.body;
