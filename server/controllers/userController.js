@@ -258,4 +258,4 @@ const deleteUserAccount = async (req, res) => {
 };
 
 
-export { registerOrLogin, verifyUser, getAllUsers, deleteUserAccount };
+export { registerOrLogin, googleSignIn, verifyUser, getAllUsers, deleteUserAccount };
