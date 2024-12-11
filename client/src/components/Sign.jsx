@@ -35,6 +35,7 @@ export const Sign = () => {
             });
 
             const jsonResponse = await response.json();
+            console.log(jsonResponse)
             setLoading(false);
             if (!jsonResponse.success) {
                 throw new Error(jsonResponse.message);

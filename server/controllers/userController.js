@@ -10,8 +10,8 @@ import mongoose from "mongoose";
 
 const registerOrLogin = async (req, res) => {
   const { gmail, password } = req.body;
-  if(!gmail.contains("@gmail.com")||!password.trim()){
-    return res.json({success: false,message: "GMail or Password is not valid"})
+  if(!gmail.includes("@gmail.com")||password.trim().length<5){
+    return res.json({success: false,message: "Gmail/Password is not valid"})
   }
   let existingUser = await User.findOne({ gmail: gmail });
   if (existingUser !== null) {
