@@ -99,8 +99,8 @@ const registerOrLogin = async (req, res) => {
 }
 
 const googleSignIn = async (req, res) => {
-  const { gmail } = req.body;
-  let existingUser = await User.findOne({ gmail: gmail });
+  const { data } = req.body;
+  let existingUser = await User.findOne({ gmail: data.user.email });
   if (existingUser !== null) {
     try {
       const token = await generateToekn(existingUser);
@@ -144,9 +144,10 @@ const googleSignIn = async (req, res) => {
         return dates;
       }
       const newUser = await new User({
-        userName: gmail.split("@")[0],
-        gmail: gmail,
+        userName: data.user.name,
+        gmail: data.user.email,
         password: "",
+        photo:data.user.photo
       }).save();
       const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, index) =>
         new Day({

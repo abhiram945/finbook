@@ -14,7 +14,16 @@ const userSchema = new mongoose.Schema({
         index:true
     },
     password: {
+        required:true,
         type: String,
+    },
+    photo:{
+        type:String,
+        default:"",
+    },
+    isAdmin:{
+        type:Boolean,
+        default:false,
     }
 });
 

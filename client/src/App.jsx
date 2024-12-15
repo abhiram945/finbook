@@ -82,7 +82,7 @@ export const App = () => {
           <Route path="days/:dayId" element={selectedDay.length === 0 ? <Navigate to="/" /> : <Navbar />}></Route>
           <Route path=':dayId/:villageId' element={(selectedDay.length === 0 || selectedVillage.length === 0) ? <Navigate to="/" /> : <><Navbar /><Table /></>} />
           <Route path="dashboard/:user" element={userData.length!==0 ?<Dashboard /> : <Navigate to="/signin"/>}></Route>
-          <Route path="admin" element={userData!==null && userData.gmail===import.meta.env.VITE_ADMIN ? <Admin /> : <Navigate to="/"/>}/>
+          <Route path="admin" element={userData!==null && userData.isAdmin ? <Admin /> : <Navigate to="/"/>}/>
           <Route path="*" element={<Navigate to="/signin" />}></Route>
         </Route>
       </Routes>

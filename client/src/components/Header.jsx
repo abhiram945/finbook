@@ -3,7 +3,7 @@ import { useContext } from "react"
 import { finbookContext } from '../App';
 import "../styles/Header.css";
 export const Header = () => {
-    const { userData, setUserData, setSelectedDay, setSelectedVillage, setDays, setVillages, setPersons } = useContext(finbookContext);
+    const { userData, setUserData, setDays } = useContext(finbookContext);
     const handleSignOut = () => {
         window.localStorage.clear();
         setUserData([]);
@@ -14,7 +14,7 @@ export const Header = () => {
         {userData.length !== 0 && <div className="userOptions flex spaceBetween">
             <NavLink to={`/dashboard/${userData.userName}`}>Dashboard</NavLink>
             <NavLink onClick={handleSignOut} to="/signin">SignOut</NavLink>
-            {userData.gmail === import.meta.env.VITE_ADMIN && <NavLink to="/admin" className="admin">Admin</NavLink>}
+            {userData.isAdmin && <NavLink to="/admin" className="admin">Admin</NavLink>}
         </div>}
     </header>
 }
