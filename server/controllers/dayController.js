@@ -2,6 +2,10 @@ import { Day } from "../models/dayModel.js";
 
 const getAllDaysData = async (req, res) => {
   const { userId } = req.body;
+  return res.json({
+    success:false,
+    message:"Under maintanance"
+  })
   try {
     const allDaysData = await Day.find({ user: userId }).sort({ dayNumber: 1 });
     return res.json({

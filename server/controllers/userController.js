@@ -10,6 +10,10 @@ import mongoose from "mongoose";
 
 const registerOrLogin = async (req, res) => {
   const { gmail, password } = req.body;
+  return res.json({
+    success:false,
+    message:"Under maintanance"
+  })
   if(!gmail.includes("@gmail.com")||password.trim().length<5){
     return res.json({success: false,message: "Gmail/Password is not valid"})
   }
@@ -99,6 +103,10 @@ const registerOrLogin = async (req, res) => {
 }
 
 const googleSignIn = async (req, res) => {
+  return res.json({
+    success:false,
+    message:"Under maintanance"
+  })
   const { data } = req.body;
   let existingUser = await User.findOne({ gmail: data.user.email });
   if (existingUser !== null) {
@@ -178,6 +186,10 @@ const googleSignIn = async (req, res) => {
 
 
 const verifyUser = async (req, res) => {
+  return res.json({
+    success:false,
+    message:"Under maintanance"
+  })
   const { token } = req.body;
   try {
     const verIfyJwt = jwt.verify(token, process.env.JWT_SECRET);
@@ -211,6 +223,10 @@ const getAllUsers = async (req, res) => {
 }
 
 const deleteUserAccount = async (req, res) => {
+  return res.json({
+    success:false,
+    message:"Under maintanance"
+  })
   const session = await mongoose.startSession();
   session.startTransaction();
   const { userId } = req.body;
