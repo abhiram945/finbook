@@ -5,15 +5,13 @@ import { toast } from "react-toastify";
 import { Loader } from "../utils/Loader";
 import { finbookContext } from "../App";
 import { SelectVillage, AddVillage } from "../utils/Select"
-import { getVillagesInDay } from "../functions/helpers.js";
 
 import "../styles/Navbar.css";
 
 export const Navbar = () => {
-  const { selectedDay, selectedVillage, setSelectedVillage,
+  const { userData,selectedDay,setSelectedDay, selectedVillage, setSelectedVillage,
     setPersons, villages, setVillages, currentPage, setCurrentPage } = useContext(finbookContext);
   const { dayId, villageId } = useParams();
-  const [gettingVillages, setGettingVillages] = useState(false);
   const [adding, setAdding] = useState(false);
   const [add, setAdd] = useState("");
   const [addVillage, setAddVillage] = useState("");
@@ -30,24 +28,26 @@ export const Navbar = () => {
     e.preventDefault();
     try {
       setAdding(true)
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/villages/addVillage`, {
+      const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/days/addVillage`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ dayId: selectedDay[0]._id, newVillageName: addVillage })
+        body: JSON.stringify({ user: userData._id, dayName:selectedDay[0].name, villageName: addVillage })
       });
       const jsonResponse = await response.json();
-      setAdding(false);
-      setAdd("");
       if (!jsonResponse.success) {
-        return toast.error(jsonResponse.message);
+        throw new Error(jsonResponse.message);
       }
-      toast.success(`${addVillage} added`);
-      setVillages(prev => [...prev, jsonResponse.message]);
+      console.log(jsonResponse)
+      toast.success(jsonResponse.message);
+      selectedDay[0].villages.push(addVillage)
     } catch (error) {
+      return toast.error(error.message);
+    }finally{
+      setAdd("");
       setAdding(false)
-      return toast.error("Slow internet");
+      setAddVillage("")
     }
   }
 
@@ -62,13 +62,14 @@ export const Navbar = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+          user:userData._id,
           dayId: selectedDay[0]._id,
-          villageId: selectedVillage[0]._id,
-          newCardNo: personFormData.cardNo,
-          pageNo: currentPage,
+          village: selectedVillage,
+          name: personFormData.personName,
+          cardNumber: personFormData.cardNo,
+          pageNumber: currentPage,
           date: personFormData.date,
-          personName: personFormData.personName,
-          amountTaken: personFormData.amountTaken,
+          amountOwed: personFormData.amountTaken,
         })
       });
       const jsonResponse = await response.json();
@@ -89,31 +90,14 @@ export const Navbar = () => {
     setPersonFormData({ ...personFormData, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setGettingVillages(true);
-        const { villagesSuccess, villagesMessage } = await getVillagesInDay(selectedDay[0]._id);
-        setGettingVillages(false)
-        if (!villagesSuccess) {
-          throw new Error(villagesMessage);
-        }
-        setVillages(villagesMessage);
-      } catch (error) {
-        return toast.error(error.message);
-      }
-
-    })();
-  }, [dayId])
-
 
   return (<>
     <nav className="flex spaceBetween alignCenter">
-      <h2>{selectedDay[0].dayName}</h2>
+      <h2>{selectedDay[0].name?.toUpperCase()}</h2>
 
       <div className="villagesContainer flex alignCenter">
-        {gettingVillages ? <Loader component="days" /> : villages.length !== 0 && villages.map((v, index) => <NavLink key={index} to={`/${selectedDay[0]._id}/${v._id}`}
-          onClick={() => { setSelectedVillage([v]); setCurrentPage(1) }} className={villageId === v._id ? "active" : ""}>{v.villageName}</NavLink>)}
+        {selectedDay[0].villages.length===0 ? <p>No villages added</p>:selectedDay[0].villages.map((v, index) => <NavLink key={index} to={`/${selectedDay[0]._id}/${v}`}
+          onClick={() => { setSelectedVillage(v); setCurrentPage(1) }} className={villageId === v._id ? "active" : ""}>{v}</NavLink>)}
       </div>
 
       <div className="addIconsContainer flex alignCenter spaceEvenly">
@@ -125,7 +109,7 @@ export const Navbar = () => {
 
       {add === "village" && (
         <form className='addVillageForm flex flexColumn spaceBetween' onSubmit={handleAddVillageFunction}>
-          <h3>Add new Village into {selectedDay[0].dayName.toUpperCase()}</h3>
+          <h3>Add new Village into {selectedDay[0].name.toUpperCase()}</h3>
           <input type='text' placeholder='Enter new village name' required onChange={(e) => setAddVillage(e.target.value)} autoFocus />
           <div className='addCancelButtonsContainer flex spaceEvenly'>
             {adding && add !== "" ? <Loader component="" /> : <>
@@ -138,7 +122,7 @@ export const Navbar = () => {
 
       {add === "person" && selectedDay.length !== 0 && selectedVillage.length !== 0 && (
         <form className='addPersonForm flex flexColumn spaceBetween' onSubmit={handleAddPersonFunction}>
-          <h3>Add new Person into<br /> {selectedDay[0].dayName.toUpperCase()} - {selectedVillage[0].villageName.toUpperCase()} - {currentPage}</h3>
+          <h3>Add new Person into<br /> {selectedDay[0].name.toUpperCase()} - {selectedVillage[0].villageName.toUpperCase()} - {currentPage}</h3>
           <input type='number' name='cardNo' placeholder='Card no' required onChange={handleChange} value={personFormData.cardNo} autoFocus />
           <input type='text' name='personName' placeholder='Enter name' required onChange={handleChange} value={personFormData.personName} />
           <input type='number' name='amountTaken' placeholder='Enter total amount' required onChange={handleChange} value={personFormData.amount} />
@@ -153,7 +137,7 @@ export const Navbar = () => {
       )}
     </nav>
 
-    {selectedDay.length !== 0 && villages.length === 0 ? <AddVillage dayName={selectedDay[0].dayName} /> : selectedVillage.length === 0 && <SelectVillage />}
+    {selectedDay.length !== 0 && selectedDay[0].villages.length === 0 ? <AddVillage dayName={selectedDay[0].name} /> : selectedVillage.length === 0 && <SelectVillage />}
   </>
   )
 }

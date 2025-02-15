@@ -9,8 +9,8 @@ import "../styles/Sign.css";
 export const Sign = () => {
     const { setUserData, navigate, loading, setLoading } = useContext(finbookContext);
     const [formData, setFormData] = useState({
-        gmail: '',
-        password: ''
+        gmail: 'abhi@gmail.com',
+        password: '12345'
     });
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value.toLowerCase() });
@@ -26,7 +26,7 @@ export const Sign = () => {
                 throw new Error("Enter 5 letters password atleast")
             }
             setLoading(true);
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/users/registerOrLogin`, {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_SERVER_URL}/api/v1/auth/registerOrLogin`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -35,12 +35,12 @@ export const Sign = () => {
             });
 
             const jsonResponse = await response.json();
-            console.log(jsonResponse)
             setLoading(false);
             if (!jsonResponse.success) {
                 throw new Error(jsonResponse.message);
             }
-            window.localStorage.setItem("token", jsonResponse.jwt)            
+            window.localStorage.setItem("token", jsonResponse.jwt)      
+            window.localStorage.setItem("user",JSON.stringify(jsonResponse.message));      
             setUserData(jsonResponse.message);
             navigate("/");
         } catch (error) {

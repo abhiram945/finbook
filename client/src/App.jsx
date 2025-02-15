@@ -24,7 +24,7 @@ export const App = () => {
   const [loading, setLoading] = useState(false);
   const [selectedDay, setSelectedDay] = useState([]);
   const [selectedVillage, setSelectedVillage] = useState([]);
-  const [days, setDays] = useState(JSON.parse(window.localStorage.getItem("daysData")) || []);
+  const [days, setDays] = useState(JSON.parse(window.localStorage.getItem("days")) || []);
   const [currentPage, setCurrentPage] = useState(1);
   const [persons, setPersons] = useState([]);
   const [villages, setVillages] = useState([]);
@@ -52,7 +52,7 @@ export const App = () => {
       return;
     }
     if (token && token.length !== 0) {
-      verifyUser();
+      // verifyUser();
     }
   }, []);
 
@@ -80,7 +80,7 @@ export const App = () => {
         <Route path='/' element={<ProtectedRoutes />}>
           <Route path="/" element={<Days />}></Route>
           <Route path="days/:dayId" element={selectedDay.length === 0 ? <Navigate to="/" /> : <Navbar />}></Route>
-          <Route path=':dayId/:villageId' element={(selectedDay.length === 0 || selectedVillage.length === 0) ? <Navigate to="/" /> : <><Navbar /><Table /></>} />
+          <Route path=':dayId/:villageId' element={(selectedDay.length === 0 || selectedVillage === "") ? <Navigate to="/" /> : <><Navbar /><Table /></>} />
           <Route path="dashboard/:user" element={userData.length!==0 ?<Dashboard /> : <Navigate to="/signin"/>}></Route>
           <Route path="admin" element={userData!==null && userData.isAdmin ? <Admin /> : <Navigate to="/"/>}/>
           <Route path="*" element={<Navigate to="/signin" />}></Route>

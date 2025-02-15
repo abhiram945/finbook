@@ -12,26 +12,31 @@ export const Table = () => {
   const { userData, selectedDay, setSelectedDay, selectedVillage, setSelectedVillage, loading, setLoading, persons, setPersons,
     currentPage, setCurrentPage, days, villages, setVillages, setDays
   } = useContext(finbookContext);
-  const { dayId, villageId } = useParams();
   const navigate = useNavigate();
   const [personToBeEdited, setPersonToBeEdited] = useState();
   const [addingAmount, setAddingAmount] = useState(false);
   const [amount, setAmount] = useState("");
   const [totals, setTotals] = useState([]);
 
-  const filteredPersons = persons.filter(person => {
-    const weeksLength = person.weeks.length;
-    const basePageNo = person.pageNo;
-    const pagesForWeeks = Math.ceil(weeksLength / 5);
-    if (person.pageNo > currentPage) {
-      return false;
-    }
-    if (person.balance > 0) {
-      return true;
-    }
-    const endPage = basePageNo + pagesForWeeks - 1;
-    return currentPage >= basePageNo && currentPage <= endPage;
-  });
+  const AllFilteredPersons = ({ persons, currentPage }) => {
+    const filteredPersons = useMemo(() => {
+      return persons.filter(person => {
+        const weeksLength = person.weeks.length;
+        const basePageNo = person.pageNo;
+        const pagesForWeeks = Math.ceil(weeksLength / 5);
+
+        if (person.pageNo > currentPage) {
+          return false;
+        }
+        if (person.balance > 0) {
+          return true;
+        }
+        const endPage = basePageNo + pagesForWeeks - 1;
+        return currentPage >= basePageNo && currentPage <= endPage;
+      });
+    }, [persons, currentPage]);
+    return filteredPersons;
+  };
 
   const handleEditPerson = async (e) => {
     e.preventDefault();
@@ -110,52 +115,6 @@ export const Table = () => {
   }, [currentPage, persons]);
 
 
-  useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      try {
-        setLoading(true);
-        const dayInUrl = days.find(d => d._id === dayId);
-        if (!dayInUrl) {
-          setLoading(false);
-          return navigate("/");
-        }
-        setSelectedDay([dayInUrl]);
-        const { villagesSuccess, villagesMessage } = await getVillagesInDay(dayInUrl._id);
-        if (!villagesSuccess) {
-          toast.error(villagesMessage);
-          setLoading(false);
-          return navigate("/");
-        }
-        setVillages(villagesMessage);
-        const villageInUrl = villagesMessage.find(v => v._id === villageId);
-        if (!villageInUrl) {
-          toast.error("Village not found");
-          setLoading(false);
-          return navigate("/");
-        }
-        setSelectedVillage([villageInUrl]);
-        const { personsSuccess, personsMessage } = await getPersonsInVillage(villageInUrl._id);
-        if (!personsSuccess) {
-          toast.error(personsMessage);
-          setLoading(false);
-          return navigate("/");
-        }
-        setPersons(personsMessage);
-        setLoading(false)
-      } catch (error) {
-        toast.error("An unexpected error occurred");
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    })();
-    return () => {
-      isMounted = false;
-    };
-  }, [dayId, villageId]);
-
 
   return <>
     {
@@ -182,7 +141,7 @@ export const Table = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredPersons?.map((person, personIndex) => (
+                  {AllFilteredPersons?.map((person, personIndex) => (
                     <tr key={personIndex} className={person.balance <= 0 ? "paid" : ""}>
                       <td> {person.date.split("T")[0]} </td>
                       <td>{person.cardNo}</td>
