@@ -61,11 +61,12 @@ export const addVillage = async (req, res) => {
     day,
   };
   try {
-    const result = await User.updateOne( //returns nModified
+    const result = await User.findOneAndUpdate(
       { _id: userId },
-      { $push: { villages: newVillage } }
-    );
-    res.status(200).json({ success: true, message: `${name} added` })
+      { $push: { villages: newVillage } },
+      { new: true } // This option returns the updated document
+    );   
+    res.status(200).json({ success: true, message: result.villages })
   } catch (error) {
     res.status(400).json({ success: false, message: error.message })
   }
