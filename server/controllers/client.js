@@ -4,7 +4,6 @@ import { updateDayGiven, updateDayCollected } from "./user.js";
 
 export const addClient = async (req, res) => {
     const { userId, day, villageId, name, amountTaken, date, cardNumber, page } = req.body;
-    // date:new Date().toLocaleDateString("en-GB"),
     const session = await mongoose.startSession();
     try {
         session.startTransaction();
@@ -20,7 +19,7 @@ export const addClient = async (req, res) => {
             throw new Error(message)
         }
         await session.commitTransaction();
-        res.status(200).json({ success: true, message: "Client added" })
+        res.status(200).json({ success: true, message: newClient })
     } catch (error) {
         await session.abortTransaction();
         res.status(400).json({ success: false, message: error.message });
