@@ -159,3 +159,14 @@ export const updateDayCollected = async (userId, dayName, collectedAmount) => {
   }
 };
 
+
+export const getDaysDetails = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findById(userId);
+    res.status(200).json({ success: true, message: user.days });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
