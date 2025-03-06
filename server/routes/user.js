@@ -1,10 +1,11 @@
 import express from 'express';
-import { registerOrLogin, addVillage, getDaysDetails } from '../controllers/user.js';
+
+import { register } from '../controllers/user.js';
+import { getAllUsers } from '../controllers/admin.js'
+import { authMiddleware } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
-
-router.post('/registerOrLogin', registerOrLogin);
-router.post('/addVillage', addVillage);
-router.get('/getDaysDetails/:userId', getDaysDetails);
+router.post('/register', register);
+router.get('/getAllUsers',authMiddleware,getAllUsers)
 
 export default router;

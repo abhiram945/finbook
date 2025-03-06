@@ -1,20 +1,13 @@
-import { NavLink } from "react-router-dom"
-import { useContext } from "react"
-import { finbookContext } from '../App';
-import "../styles/Header.css";
-export const Header = () => {
-    const { userData, setUserData, setDays } = useContext(finbookContext);
-    const handleSignOut = () => {
-        window.localStorage.clear();
-        setUserData([]);
-        setDays([]);
-    }
-    return <header className="flex spaceBetween alignCenter">
-        <NavLink to="/" className="flex alignCenter"><img src="/assets/logo.svg" /><h1>FinBook</h1></NavLink>
-        {userData.length !== 0 && <div className="userOptions flex spaceBetween">
-            <NavLink to={`/dashboard/${userData.userName}`}>Dashboard</NavLink>
-            <NavLink onClick={handleSignOut} to="/signin">SignOut</NavLink>
-            {userData.isAdmin && <NavLink to="/admin" className="admin">Admin</NavLink>}
-        </div>}
+import React from 'react'
+const Header = () => {
+  return (
+    <header className='h-[10vh] w-full bg-black px-[2rem] flex justify-between items-center'>
+        <div className='w-auto h-full flex items-center gap-2'>
+            <img className='w-auto h-[75%]' src='/assets/logo.svg' alt='logo'/>
+            <h1 className='font-bold text-4xl text-(--primary)'>Finbook</h1>
+        </div>
     </header>
+  )
 }
+
+export default Header

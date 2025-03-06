@@ -1,15 +1,9 @@
-*{
-  margin: 0;
-  padding:0;
-  box-sizing: border-box;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  text-decoration: none;
-  transition: all ease 0.25s;
-}
+@import "tailwindcss";
+
 :root {
   --primary: #3167f3;
   --primaryLight:#3167f326;
-  --bg: #F9FBFD;
+  --bg: #fff;
   --dangerRed: #EE3E60;
   --dangerRedLight:#ef346326;
   --green:#0DA684;
@@ -22,38 +16,5 @@
   --boxShadow:0 0 0.75rem rgba(61, 71, 81, 0.05);
   --tableBoxShadow:0 0.5rem 0.75rem rgba(0, 0, 0, 0.075);
   --white:#FFFFFF;
-  --black:#0F111A;
   --headingBlack:#25282D;
-  --tableHeadBg:var(--btnBg);
-  --tableBg:var(--white);
-  --tableText:var(--headingBlack);
-  --tableEvenRowBg:var(--bg)
-}
-
-.flex{
-  display: flex;
-}
-.flexColumn{
-  flex-direction: column;
-}
-.justifyCenter{
-  justify-content: center;
-}
-.justifyLeft{
-  justify-content: left;
-}
-.justifyRight{
-  justify-content: right;
-}
-.spaceBetween{
-  justify-content: space-between;
-}
-.spaceEvenly{
-  justify-content: space-evenly;
-}
-.alignCenter{
-  align-items: center;
-}
-.alignDown{
-  align-items: end;
 }

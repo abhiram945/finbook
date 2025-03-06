@@ -1,13 +1,17 @@
 import jwt from 'jsonwebtoken';
 
 export const authMiddleware = async (req, res, next) => {
-  next();
-  // const token = req.header('Authorization');
-  // if (!token) return res.status(401).json({ message: "Access denied" });
-  // try {
-  //   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  //   req.user = decoded;
-  // } catch (err) {
-  //   res.status(400).json({ message: "Invalid token" });
-  // }
+  try {
+    const token = req.header('Authorization');
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Access denided" });
+    }
+    const decoded =await jwt.verify(token, process.env.JWT_SECRET);
+    if(decoded.gmail!==process.env.ADMIN_GMAIL){
+      return res.status(401).json({ success: false, message: "Access denided" });
+    }
+    next();
+  } catch (error) {
+    return res.status(401).json({ success: false, message: error.message||"Authorization failed" });
+  }
 };

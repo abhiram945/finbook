@@ -5,7 +5,6 @@ import cors from "cors";
 
 import connectDb from "./db/connectDb.js";
 import userRoutes from './routes/user.js';
-import clientRoutes from './routes/client.js'
 
 dotenv.config();
 
@@ -24,9 +23,7 @@ app.use(cookieParser());
 
 
 app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/clients',clientRoutes);
 
-console.clear();
 connectDb()
   .then(() => {
     app.listen(8000, () =>
