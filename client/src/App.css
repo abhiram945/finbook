@@ -1,20 +1,28 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --primary: #3167f3;
-  --primaryLight:#3167f326;
-  --bg: #fff;
-  --dangerRed: #EE3E60;
-  --dangerRedLight:#ef346326;
-  --green:#0DA684;
-  --greenLight:#E6F6F2;
-  --border:1px solid #edf2f9;
-  --btnBg:#f4f6f9;
-  --btnHoverBg:#cfd1d4;
-  --placeholderText:#96A0B5;
-  --signInBoxShadow:0 2px 2px rgba(61, 71, 81, 0.05);
-  --boxShadow:0 0 0.75rem rgba(61, 71, 81, 0.05);
-  --tableBoxShadow:0 0.5rem 0.75rem rgba(0, 0, 0, 0.075);
-  --white:#FFFFFF;
-  --headingBlack:#25282D;
+  --primaryLight: #3167f326;
+  --primaryDark: #1e3c8a;
+  --red: #EE3E60;
+  --redLight: #ef346326;
+  --green: #0DA684;
+  --greenLight: #E6F6F2;
+  --border: 1px solid #edf2f9;
+  --white: #FFFFFF;
+  --gray: #ccc;
+}
+
+.animate{
+  transition: all 0.3s ease-in-out;
+    transform: translateY(2.5rem);
+    opacity: 0;
+}
+.animate.show{
+  transform: translateY(0);
+  opacity: 1;
 }
