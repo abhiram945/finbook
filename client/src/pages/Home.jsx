@@ -7,7 +7,8 @@ const Home = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("show");
-            entry.target.style.transitionDelay = `${entry.target.dataset.delay || 100}ms`;
+            entry.target.style.transitionDuration = `400ms`;
+            entry.target.style.transitionDelay = `${Number(entry.target.dataset.delay) || 150}ms`;
           }
         });
       },
@@ -33,19 +34,18 @@ const Home = () => {
   return (
     <>
       <div id="app" className="p-2 md:p-4">
-        <h2 className="animate text-4xl md:text-6xl font-bold">Do more with <span className="text-[var(--primary)] text-5xl md:text-6xl">Finbook App</span></h2>
-        <p className="animate mt-4 text-[var(--gray)] max-w-2xl mx-auto">Track, manage and optimize your finances with ease</p>
-        <p className="animate text-2xl font-semibold mt-2 md:mt-4">No internet needed, and no more worries about data loss</p>
-        <p className="animate text-[var(--gray)]">* Internet needed for sign-in, backup & recovery</p>
-        <div className="animate my-6 flex justify-center gap-4">
-          <button className="bg-[var(--primary)] px-4 md:px-6 py-3 rounded-lg text-white cursor-pointer">Download App</button>
+        <h2 data-delay={75} className="animate text-4xl md:text-6xl font-bold">Do more with <span className="text-[var(--primary)] text-5xl md:text-6xl">Finbook App</span></h2>
+        <p data-delay={150} className="animate mt-4 text-[var(--gray)] max-w-2xl mx-auto">Track, manage and optimize your finances with ease</p>
+        <p data-delay={225} className="animate text-2xl font-semibold mt-2 md:mt-4">No internet needed, and no more worries about data loss</p>
+        <div data-delay={300} className="animate my-6 flex justify-center gap-4">
+          <button className="bg-[var(--primary)] px-4 md:px-6 py-3 rounded-lg text-white cursor-pointer">App available soon</button>
           <a className="border border-[var(--primary)] text-[var(--primary)] px-2 md:px-6 py-3 rounded-lg cursor-pointer hover:bg-[var(--primary)] hover:text-white" href="#web">
             Check previous work
           </a>
         </div>
         <div className="flex flex-wrap justify-center items-center gap-8 px-2 md:px-0">
           {[2, 3, 4].map((number, index) => (
-            <div key={number} data-delay={index * 100}
+            <div key={number} data-delay={300+((index+1)*75)}
             className={`animate md:w-48 lg:w-64 h-max p-1 bg-[var(--primaryLight)] shadow-[0_0_1rem_0.25rem_var(--primaryDark)] rounded-xl overflow-hidden ${number === 3 ? "md:w-52 lg:w-80" : "" }`}>
               <img className="rounded-xl" src={`/assets/app/finbook${number}.jpg`} alt={`finbook${number}`}/>
             </div>
