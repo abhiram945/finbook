@@ -24,11 +24,17 @@ const Home = () => {
   }, []);
 
   const webv1Descriptions = [
+    "Sign-in/sign-up authentication",
+    "Adding new person",
     "User workspace",
-    "User dashboard v1",
-    "User dashboard v2",
+    "User dashboard",
+    "Admin dashboard (sensitive info masked)",
+  ];
+  const webv2Descriptions = [
+    "Sign-in/sign-up authentication",
+    "User workspace",
+    "User dashboard",
     "Admin dashboard",
-    "Simple sign-in/sign-up authentication"
   ];
 
   return (
@@ -86,27 +92,27 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Web Section */}
-      <div className="p-2 md:p-4" id="web">
+      {[webv2Descriptions,webv1Descriptions].map((descriptions,descriptionsIndex)=>
+      <div className="p-2 md:pb-4 px-4 pt-16" id="web" key={descriptionsIndex}>
         <h2 className="animate text-4xl md:text-6xl font-bold text-center">
-          <span className="text-[var(--primary)]">Finbook</span> website{" "}
+          <span className="text-[var(--primary)]">Finbook</span> website v{descriptionsIndex===0 ? "2" : "1"}{" "}
           <span className="font-normal text-sm text-[var(--red)] bg-[var(--redLight)] shadow px-2 py-1 align-middle rounded-3xl tracking-wider">
             discontinued
           </span>
         </h2>
-        <p className="animate my-4 font-semibold text-xl text-center">
+        {descriptionsIndex===0 && <p className="animate my-4 font-semibold text-xl text-center">
           A successful step towards transitioning to an enhanced version of the app with more powerful features.
-        </p>
-        <div className="animate flex justify-center items-center gap-4 text-lg"><p>Want to give it a try?</p><a href="#app" className="bg-[var(--primary)] px-4 py-2 rounded-3xl">Download App</a></div>
+        </p>}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-2 pt-6 md:pt-10">
-          {webv1Descriptions.map((description, index) => (
-            <div key={index} data-delay={index * 100} className="animate bg-[var(--primaryLight)] shadow-[0_0_1rem_0.25rem_var(--primaryDark)] rounded-lg overflow-hidden p-2">
+          {descriptions.map((description, index) => (
+            <div key={index} data-delay={index * 100} className="animate bg-[var(--primaryLight)] shadow-[0_0_1rem_0rem_var(--primaryDark)] rounded-lg overflow-hidden p-2">
               <p className="text-lg mb-2 font-semibold text-gray-200">{description}</p>
-              <img className="rounded-lg" src={`/assets/web/finbook${index + 1}.png`} alt={`finbook${index + 1}.png`}/>
+              <img className="rounded-lg" src={`/assets/web/finbookv${descriptionsIndex===0 ? "2" : "1"}-${index + 1}.png`} alt={`finbookv2-${index + 1}.png`}/>
             </div>
           ))}
         </div>
-      </div>
+        {descriptionsIndex===0 && <div className="animate flex justify-center items-center gap-4 text-lg mt-8"><p>Want to give it a try?</p><a href="#app" className="bg-[var(--primary)] px-4 py-2 rounded-3xl">Download App</a></div>}
+      </div>)}
 
       {/* Footer */}
       <div className="p-4 container mx-auto">
