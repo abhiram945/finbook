@@ -13,6 +13,21 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     trim: true,
   },
+  photo:{
+    type:String,
+  },
+  subscriptionPlan:{
+    type:String,
+    default:"test"
+  },
+  subscriptionStartDate:{
+    type:Date,
+    required:false,
+  },
+  subscriptionEndDate:{
+    type:Date,
+    required:false
+  }
 });
 
 const User = mongoose.model("User", userSchema);

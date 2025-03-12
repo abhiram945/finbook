@@ -24,9 +24,6 @@ app.use(cookieParser());
 
 app.use('/api/v1/users', userRoutes);
 
-app.get("/api/v1/app",(req,res)=>{
-  res.status(200).json({success:true, message:{newVersion:"1.0.0",features:["Bug fixes","New dashboard","Enhanced UI","Better optimization"]}})
-})
 
 connectDb()
   .then(() => {
