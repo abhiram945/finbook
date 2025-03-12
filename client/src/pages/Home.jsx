@@ -1,6 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const Home = () => {
+
+  const [apkUrl, setApkUrl] = useState("universal")
+  function getAndroidCpuArchitecture() {
+    const platform = navigator.platform.toLowerCase();
+    if (!platform.includes("linux")) {
+        return "universal";
+    }
+    if (platform.includes("armv8") || platform.includes("aarch64") || platform.includes("arm64")) {
+        return "arm64-v8a";
+    } else if (platform.includes("arm")) {
+        return "armeabi-v7a";
+    } else if (platform.includes("x86_64")) {
+        return "x86_64";
+    } else if (platform.includes("x86")) {
+        return "x86";
+    }
+    return "universal";
+}
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -14,12 +33,12 @@ const Home = () => {
       },
       { threshold: 0.1 }
     );
-
     const elements = document.querySelectorAll(".animate");
     elements.forEach((element) => {
       observer.observe(element);
     });
-
+    const apkType = getAndroidCpuArchitecture();
+    setApkUrl(apkType)
     return () => observer.disconnect();
   }, []);
 
@@ -44,7 +63,7 @@ const Home = () => {
         <p data-delay={150} className="animate mt-4 text-[var(--gray)] max-w-2xl mx-auto">Track, manage and optimize your finances with ease</p>
         <p data-delay={225} className="animate text-2xl font-semibold mt-2 md:mt-4">No internet needed, and no more worries about data loss</p>
         <div data-delay={300} className="animate my-6 flex justify-center gap-4">
-          <button className="bg-[var(--primary)] px-4 md:px-6 py-3 rounded-lg text-white cursor-pointer">App available soon</button>
+          <a href={`/assets/app/finbook-${apkUrl}.apk`} className="bg-[var(--primary)] px-4 md:px-6 py-3 rounded-lg text-white cursor-pointer">Download App</a>
           <a className="border border-[var(--primary)] text-[var(--primary)] px-2 md:px-6 py-3 rounded-lg cursor-pointer hover:bg-[var(--primary)] hover:text-white" href="#web">
             Check previous work
           </a>
