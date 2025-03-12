@@ -40,7 +40,7 @@ const Home = () => {
     const apkType = getAndroidCpuArchitecture();
     let url = ""
     if(apkType==="universal"){
-      url = "https://drive.google.com/uc?id1qCPSPKE3n6xe4Y9r0rBXATWgDIydzZG6&export=download"
+      url = "https://drive.google.com/uc?id=1qCPSPKE3n6xe4Y9r0rBXATWgDIydzZG6&export=download"
     }else{
       url = `/assets/app/finbook-${apkType}.apk`
     }
