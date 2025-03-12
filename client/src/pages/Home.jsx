@@ -38,7 +38,13 @@ const Home = () => {
       observer.observe(element);
     });
     const apkType = getAndroidCpuArchitecture();
-    setApkUrl(`/assets/app/finbook-${apkType}.apk`)
+    let url = ""
+    if(apkType==="universal"){
+      url = "https://drive.google.com/uc?id1qCPSPKE3n6xe4Y9r0rBXATWgDIydzZG6&export=download"
+    }else{
+      url = `/assets/app/finbook-${apkType}.apk`
+    }
+    setApkUrl(url)
     return () => observer.disconnect();
   }, []);
 
