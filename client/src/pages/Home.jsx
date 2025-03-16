@@ -75,7 +75,7 @@ const Home = () => {
             Check previous work
           </a>
         </div>
-        <div data-delay={350} className="my-2 flex gap-2 justify-center mb-4"><p className="">App not working?</p><a href={universalApkUrl} target="_blank" className="text-[var(--primary)]">Click here</a></div>
+        <div data-delay={350} className="animate my-2 flex gap-2 justify-center mb-4"><p className="">App not working?</p><a href={universalApkUrl} target="_blank" className="text-[var(--primary)]">Click here</a></div>
         <div className="flex flex-wrap justify-center items-center gap-8 px-2 md:px-0">
           {[2, 3, 4].map((number, index) => (
             <div key={number} data-delay={350 + ((index + 1) * 75)}
