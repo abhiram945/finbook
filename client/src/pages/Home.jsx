@@ -75,10 +75,10 @@ const Home = () => {
             Check previous work
           </a>
         </div>
-        <div className="my-2 flex gap-2 justify-center mb-4"><p className="">App not working?</p><a href={universalApkUrl} target="_blank" className="text-[var(--primary)]">Click here</a></div>
+        <div data-delay={350} className="my-2 flex gap-2 justify-center mb-4"><p className="">App not working?</p><a href={universalApkUrl} target="_blank" className="text-[var(--primary)]">Click here</a></div>
         <div className="flex flex-wrap justify-center items-center gap-8 px-2 md:px-0">
           {[2, 3, 4].map((number, index) => (
-            <div key={number} data-delay={300 + ((index + 1) * 75)}
+            <div key={number} data-delay={350 + ((index + 1) * 75)}
               className={`animate md:w-48 lg:w-64 h-max p-1 bg-[var(--primaryLight)] shadow-[0_0_1rem_0.25rem_var(--primaryDark)] rounded-xl overflow-hidden ${number === 3 ? "md:w-52 lg:w-80" : ""}`}>
               <img className="rounded-xl" src={`/assets/app/finbook${number}.jpg`} alt={`finbook${number}`} />
             </div>
