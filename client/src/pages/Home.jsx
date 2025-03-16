@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 
 const Home = () => {
 
-  const [apkUrl, setApkUrl] = useState("universal")
+  const [apkUrl, setApkUrl] = useState("universal");
+  const universalApkUrl = "https://drive.google.com/uc?id=1qCPSPKE3n6xe4Y9r0rBXATWgDIydzZG6&export=download"
   function getAndroidCpuArchitecture() {
     const platform = navigator.platform.toLowerCase();
     if (!platform.includes("linux")) {
@@ -40,7 +41,7 @@ const Home = () => {
     const apkType = getAndroidCpuArchitecture();
     let url = ""
     if(apkType==="universal"){
-      url = "https://drive.google.com/uc?id=1qCPSPKE3n6xe4Y9r0rBXATWgDIydzZG6&export=download"
+      url = universalApkUrl
     }else{
       url = `/assets/app/finbook-${apkType}.apk`
     }
@@ -68,12 +69,13 @@ const Home = () => {
         <h2 data-delay={75} className="animate text-4xl md:text-6xl font-bold">Do more with <span className="text-[var(--primary)] text-5xl md:text-6xl">Finbook App</span></h2>
         <p data-delay={150} className="animate mt-4 text-[var(--gray)] max-w-2xl mx-auto">Track, manage and optimize your finances with ease</p>
         <p data-delay={225} className="animate text-2xl font-semibold mt-2 md:mt-4">No internet needed, and no more worries about data loss</p>
-        <div data-delay={300} className="animate my-6 flex justify-center gap-4">
+        <div data-delay={300} className="animate mt-6 flex justify-center gap-4">
           <a href={apkUrl} download={"finbook.apk"} className="bg-[var(--primary)] px-4 md:px-6 py-3 rounded-lg text-white cursor-pointer">Download App</a>
           <a className="border border-[var(--primary)] text-[var(--primary)] px-2 md:px-6 py-3 rounded-lg cursor-pointer hover:bg-[var(--primary)] hover:text-white" href="#web">
             Check previous work
           </a>
         </div>
+        <div className="my-2 flex gap-2 justify-center mb-4"><p className="">App not working?</p><a href={universalApkUrl} target="_blank" className="text-[var(--primary)]">Click here</a></div>
         <div className="flex flex-wrap justify-center items-center gap-8 px-2 md:px-0">
           {[2, 3, 4].map((number, index) => (
             <div key={number} data-delay={300 + ((index + 1) * 75)}
