@@ -24,7 +24,9 @@ app.use(cookieParser());
 
 app.use('/api/v1/users', userRoutes);
 
-
+app.get("/",(req,res)=>{
+  res.send("Home route")
+})
 connectDb()
   .then(() => {
     app.listen(8000, () =>
