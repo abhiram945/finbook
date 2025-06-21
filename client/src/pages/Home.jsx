@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 const Home = () => {
 
   const [apkUrl, setApkUrl] = useState("universal");
-  const universalApkUrl = "https://drive.google.com/uc?id=1qCPSPKE3n6xe4Y9r0rBXATWgDIydzZG6&export=download"
+  const universalApkUrl = "https://drive.google.com/uc?id=1x5Rpv7IRt8sZBBMC8zLNrvobzGDS6X_r&export=download"
   function getAndroidCpuArchitecture() {
     const platform = navigator.platform.toLowerCase();
     if (!platform.includes("linux")) {

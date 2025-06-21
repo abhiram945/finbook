@@ -1,7 +1,7 @@
 import User from '../models/user.js';
 import jwt from "jsonwebtoken"
 
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
   try {
     const { name, gmail, photo } = req.body;
     let token = "";
@@ -20,12 +20,14 @@ export const register = async (req, res) => {
     await newUser.save();
     res.status(201).json({ success: true, isNew: true, message: {token:token, user:newUser} });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message || "Failed to register user" });
+    error.message = error.message || "Failed to register user";
+    error.statusCode = error.statusCode || 500;
+    next(err);
   }
 };
 
 
-export const updateSubscription = async (req, res) => {
+export const updateSubscription = async (req, res, next) => {
   try {
     const { userId, newPlan } = req.body;
     const updatedSubscription = await User.findByIdAndUpdate(userId,
@@ -37,7 +39,9 @@ export const updateSubscription = async (req, res) => {
       { new: true })
     res.status(200).json({ success: true, message: "Successfully upgraded to PRO" })
   } catch (error) {
-    res.status(400).json({ success: false, message: error.message || "Failed to update subscription" })
+    error.message = error.message || "Failed to update subscription";
+    error.statusCode = error.statusCode || 400;
+    next(error)
   }
 }
 
@@ -50,6 +54,8 @@ export const verifyAppVersionAndUserSubscriptionPlan=async(req,res)=>{
     }
     res.status(200).json({success:true, message:{newVersion:"test",newFeatures:["Bug fixes","New dashboard","Enhanced UI","Better optimization"], userExists: existingUser ? true : false, user:existingUser}})
   } catch (error) {
-    res.status(400).json({ success: false, message: error.message || "Failed to validate App & User subscription" })
+    error.message = error.message || "Failed to validate App & User subscription";
+    error.statusCode = error.statusCode || 400;
+    next(error);
   }
 }

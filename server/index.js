@@ -22,11 +22,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
-app.use('/api/v1/users', userRoutes);
-
 app.get("/",(req,res)=>{
   res.send("Home route")
 })
+
+app.use('/api/v1/users', userRoutes);
+
+app.use((err,req,res,next)=>{
+  return res.status(err.statusCode).json({success:false, message:err.message||"Something went wrong"});
+})
+
 connectDb()
   .then(() => {
     app.listen(8000, () =>
@@ -34,5 +39,5 @@ connectDb()
     );
   })
   .catch((error) => {
-    console.log(error);
+    console.log(error.message || error);
   });
