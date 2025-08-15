@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 
 const Home = () => {
 
-  const [apkUrl, setApkUrl] = useState("universal");
-  const universalApkUrl = "https://drive.google.com/uc?id=1x5Rpv7IRt8sZBBMC8zLNrvobzGDS6X_r&export=download"
+  const [apkUrl, setApkUrl] = useState("/assets/app/finbook-universal.apk");
   function getAndroidCpuArchitecture() {
     const platform = navigator.platform.toLowerCase();
     if (!platform.includes("linux")) {
@@ -39,12 +38,7 @@ const Home = () => {
       observer.observe(element);
     });
     const apkType = getAndroidCpuArchitecture();
-    let url = ""
-    if(apkType==="universal"){
-      url = universalApkUrl
-    }else{
-      url = `/assets/app/finbook-${apkType}.apk`
-    }
+    const url = `/assets/app/finbook-${apkType}.apk`
     setApkUrl(url)
     return () => observer.disconnect();
   }, []);
@@ -75,7 +69,7 @@ const Home = () => {
             Check previous work
           </a>
         </div>
-        <div data-delay={350} className="animate my-2 flex gap-2 justify-center mb-4"><p className="">App not working?</p><a href={universalApkUrl} target="_blank" className="text-[var(--primary)]">Click here</a></div>
+        <div data-delay={350} className="animate my-2 flex gap-2 justify-center mb-4"><p className="">App not working?</p><a href="/assets/app/finbook-universal.apk" target="_blank" className="text-[var(--primary)]">Click here</a></div>
         <div className="flex flex-wrap justify-center items-center gap-8 px-2 md:px-0">
           {[2, 3, 4].map((number, index) => (
             <div key={number} data-delay={350 + ((index + 1) * 75)}
@@ -107,7 +101,7 @@ const Home = () => {
           {[1, 5].map((number, index) => (
             <div key={number} data-delay={index * 100} className="animate md:w-48 lg:w-64 h-max p-1 bg-[var(--primaryLight)] shadow-[0_0_1rem_0.25rem_var(--primaryDark)] rounded-xl overflow-hidden">
               {number === 5 && (
-                <div className="mb-4 mt-2 px-4 text-center">
+                <div className="mb-8 lg:mb-12 mt-2 px-4 text-center">
                   <p className="text-2xl font-semibold mb-4">Backup & Recover with Google Drive</p>
                   <p className="text-[var(--gray)]">✔ Secured On-Device Storage</p>
                   <p className="text-[var(--gray)]">✔ One-Click G-Drive Backup & Restore</p>
